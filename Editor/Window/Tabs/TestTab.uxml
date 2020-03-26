@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="window-root">
+        <Style src="TestTab.uss" />
+        <ui:Button text="Connect" name="connect-btn" />
+    </ui:VisualElement>
+</ui:UXML>

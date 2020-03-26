@@ -1,0 +1,18 @@
+{
+    "name": "StansAssets.GoogleDocConnector.Editor",
+    "references": [
+        "GUID:e322f1a843d5b4f8095d71c70e5fbccc",
+        "GUID:db0eb1f6c1244402aa4d287a997cdb47"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
