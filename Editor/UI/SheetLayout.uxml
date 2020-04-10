@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement name="sheetRoot" style="height: 32px;&#10;">
+        <Style src="SheetLayout.uss" />
+        <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" style="-unity-font-style: bold;&#10;-unity-text-align: middle-left;&#10;" />
+        <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" style="-unity-text-align: middle-left;&#10;" />
+    </ui:VisualElement>
+</ui:UXML>

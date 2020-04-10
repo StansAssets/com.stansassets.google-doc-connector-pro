@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using StansAssets.Foundation;
+using StansAssets.Foundation.Editor;
+using StansAssets.Foundation.Patterns;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -9,19 +10,19 @@ using UnityEditor;
 
 namespace StansAssets.GoogleDoc
 {
-    public class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
+    internal class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
     {
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
-        public override string SettingsLocations => $"Assets/Settings/";
+        public override string SettingsLocations => FoundationConstants.RuntimeResourcesFolder;
 
         [SerializeField]
         List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
-        internal IEnumerable<Spreadsheet> Spreadsheets => m_Spreadsheets;
+        public IEnumerable<Spreadsheet> Spreadsheets => m_Spreadsheets;
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
 
-#if UNITY_EDITOR
-        internal Spreadsheet CreateSpreadsheet(string id)
+
+        public Spreadsheet CreateSpreadsheet(string id)
         {
             if (m_SpreadsheetsMap.ContainsKey(id))
             {
@@ -31,12 +32,14 @@ namespace StansAssets.GoogleDoc
             var spreadsheet = new Spreadsheet(id);
             m_Spreadsheets.Add(spreadsheet);
             m_SpreadsheetsMap.Add(id, spreadsheet);
-            EditorUtility.SetDirty(this);
 
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
             return spreadsheet;
         }
 
-        internal void RemoveSpreadsheet(string id)
+        public void RemoveSpreadsheet(string id)
         {
             var spreadsheet = GetSpreadsheet(id);
             if (spreadsheet == null)
@@ -44,10 +47,10 @@ namespace StansAssets.GoogleDoc
                 throw new KeyNotFoundException ($"Spreadsheet with Id:{id} DOESN'T exist");
             }
 
+            spreadsheet.CleanUpLocalCache();
             m_Spreadsheets.Remove(spreadsheet);
             m_SpreadsheetsMap.Remove(spreadsheet.Id);
         }
-#endif
 
         internal Spreadsheet GetSpreadsheet(string id)
         {
@@ -70,6 +73,7 @@ namespace StansAssets.GoogleDoc
             foreach (var spreadsheet in m_Spreadsheets)
             {
                 m_SpreadsheetsMap[spreadsheet.Id] = spreadsheet;
+                spreadsheet.InitFromCache();
             }
         }
     }

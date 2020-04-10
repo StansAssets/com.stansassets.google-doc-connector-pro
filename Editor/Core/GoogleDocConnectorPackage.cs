@@ -9,5 +9,6 @@ namespace StansAssets.GoogleDoc
         public static readonly PackageInfo Info = PackageManagerUtility.GetPackageInfo(GoogleDocConnectorSettings.Instance.PackageName);
 
         public static readonly string WindowTabsPath = $"{RootPath}/Editor/Window/Tabs";
+        public static readonly string UILayoutPath = $"{RootPath}/Editor/UI";
     }
 }

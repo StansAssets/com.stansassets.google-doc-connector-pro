@@ -7,19 +7,15 @@ namespace StansAssets.GoogleDoc
         readonly string m_Id;
         public string Id => m_Id;
 
-        string m_Name;
+        readonly string m_Name;
         public string Name => m_Name;
 
         List<Cell> m_Cells = new List<Cell>();
         public IEnumerable<Cell> Cells => m_Cells;
 
-        public NamedRange(string id)
+        public NamedRange(string id, string name)
         {
             m_Id = id;
-        }
-
-        public void SetName(string name)
-        {
             m_Name = name;
         }
 

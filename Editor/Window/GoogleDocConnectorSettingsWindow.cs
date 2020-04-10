@@ -1,4 +1,5 @@
 ﻿using StansAssets.Foundation.Editor;
+using StansAssets.Foundation.Editor.Plugins;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,6 +22,6 @@ namespace StansAssets.GoogleDoc
             var window = ShowTowardsInspector(WindowTitle.text, WindowTitle.image);
         }
 
-        private static GUIContent WindowTitle => new GUIContent("Google Doc Connector Pro");
+        static GUIContent WindowTitle => new GUIContent("Google Doc Connector Pro");
     }
 }

@@ -3,8 +3,5 @@
   "displayName": "Stans Assets - Google Doc Connector Pro",
   "version": "0.0.1",
   "unity": "2020.1",
-  "description": "The Google Sheets API lets you read and modify any aspect of a spreadsheet. Spreadsheets have many settings that let you craft beautiful and functional sheets, so the API has many settings too. ",
-  "dependencies": {
-		"com.stansassets.foundation": "0.0.1"
-	}
+  "description": "The Google Sheets API lets you read and modify any aspect of a spreadsheet. Spreadsheets have many settings that let you craft beautiful and functional sheets, so the API has many settings too. "
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Google.Apis.Auth.OAuth2;
@@ -54,12 +55,19 @@ namespace StansAssets.GoogleDoc
             rangeRequest.IncludeGridData = true;
             var spreadsheetData = rangeRequest.Execute();
 
+            m_Spreadsheet.SyncDateTime = DateTime.Now;
             m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
+
+            string projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
+            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsLocations, m_Spreadsheet.Name);
+            m_Spreadsheet.SetPath(spreadsheetPath);
+            m_Spreadsheet.CleanupSheets();
+
             foreach (var sheetData in spreadsheetData.Sheets)
             {
                 int sheetId = sheetData.Properties.SheetId ?? 0;
-                var sheet = m_Spreadsheet.GetOrCreateSheet(sheetId);
-                sheet.SetName(sheetData.Properties.Title);
+                var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
+                sheet.CleanupRows();
 
                 var gridData = sheetData.Data[0];
                 int rowIndex = 0;
@@ -83,34 +91,35 @@ namespace StansAssets.GoogleDoc
                 }
             }
 
-            foreach (var namedRangeData in spreadsheetData.NamedRanges)
+            if (spreadsheetData.NamedRanges != null)
             {
-                int sheetId = namedRangeData.Range.SheetId ?? 0;
-                var sheet = m_Spreadsheet.GetOrCreateSheet(sheetId);
-                var namedRange = sheet.GetOrCreateNamedRange(namedRangeData.NamedRangeId);
-                namedRange.SetName(namedRangeData.Name);
-
-                var range = namedRangeData.Range;
-
-                Debug.Assert(range.StartRowIndex != null, "range.StartRowIndex != null");
-                Debug.Assert(range.EndRowIndex != null, "range.EndRowIndex != null");
-                Debug.Assert(range.StartColumnIndex != null, "range.StartColumnIndex != null");
-                Debug.Assert(range.EndColumnIndex != null, "range.EndColumnIndex != null");
-
-                var cells = new List<Cell>();
-                for (int i = range.StartRowIndex.Value; i < range.EndRowIndex.Value; i++)
+                foreach (var namedRangeData in spreadsheetData.NamedRanges)
                 {
-                    for (int j = range.StartColumnIndex.Value; j < range.EndColumnIndex.Value; j++)
-                    {
-                        var cell = new Cell(i, j);
-                        cells.Add(cell);
-                    }
-                }
+                    int sheetId = namedRangeData.Range.SheetId ?? 0;
+                    var sheet = m_Spreadsheet.GetSheet(sheetId);
+                    var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
+                    var range = namedRangeData.Range;
 
-                namedRange.SetCells(cells);
+                    Debug.Assert(range.StartRowIndex != null, "range.StartRowIndex != null");
+                    Debug.Assert(range.EndRowIndex != null, "range.EndRowIndex != null");
+                    Debug.Assert(range.StartColumnIndex != null, "range.StartColumnIndex != null");
+                    Debug.Assert(range.EndColumnIndex != null, "range.EndColumnIndex != null");
+
+                    var cells = new List<Cell>();
+                    for (int i = range.StartRowIndex.Value; i < range.EndRowIndex.Value; i++)
+                    {
+                        for (int j = range.StartColumnIndex.Value; j < range.EndColumnIndex.Value; j++)
+                        {
+                            var cell = new Cell(i, j);
+                            cells.Add(cell);
+                        }
+                    }
+
+                    namedRange.SetCells(cells);
+                }
             }
 
-            File.WriteAllText(GoogleDocConnectorSettings.Instance.SettingsLocations + m_Spreadsheet.Id, JsonConvert.SerializeObject(m_Spreadsheet));
+            File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
         }
     }
 }

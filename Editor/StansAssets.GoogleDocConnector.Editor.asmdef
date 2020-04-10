@@ -1,6 +1,7 @@
 {
     "name": "StansAssets.GoogleDocConnector.Editor",
     "references": [
+        "GUID:cab1c19acbf774c75ad707ed435825ff",
         "GUID:e322f1a843d5b4f8095d71c70e5fbccc",
         "GUID:db0eb1f6c1244402aa4d287a997cdb47"
     ],
