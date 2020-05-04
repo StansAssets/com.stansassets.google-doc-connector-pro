@@ -63,10 +63,12 @@ namespace StansAssets.GoogleDoc
         {
             m_Path = path;
         }
+        
         internal void SetMachineName(string name)
         {
             m_LastSyncMachineName = name;
         }
+        
         public void CleanupSheets()
         {
             m_Sheets.Clear();
