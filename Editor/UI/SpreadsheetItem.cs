@@ -11,6 +11,7 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
         readonly Label m_SpreadsheetDate;
+        readonly Label m_SpreadsheetLastSyncMachineName;
 
         readonly VisualElement m_SheetsContainer;
 
@@ -24,8 +25,10 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetId = this.Q<Label>("spreadsheetId");
             m_SpreadsheetName = this.Q<Label>("spreadsheetName");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
+            m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
 
             m_SheetsContainer = this.Q<VisualElement>("sheetsContainer");
+            
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -38,6 +41,8 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetName.text = spreadsheet.Name;
             m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : "[Not Synced]";
+            m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
+            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text += " |";}
 
             foreach (var sheet in spreadsheet.Sheets)
             {

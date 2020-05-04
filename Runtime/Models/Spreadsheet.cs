@@ -24,6 +24,10 @@ namespace StansAssets.GoogleDoc
         [SerializeField]
         string m_Path;
         public string Path => m_Path;
+        
+        [SerializeField]
+        string m_LastSyncMachineName;
+        public string LastSyncMachineName => m_LastSyncMachineName;
 
         [SerializeField]
         string m_DateTimeStr;
@@ -59,7 +63,10 @@ namespace StansAssets.GoogleDoc
         {
             m_Path = path;
         }
-
+        internal void SetMachineName(string name)
+        {
+            m_LastSyncMachineName = name;
+        }
         public void CleanupSheets()
         {
             m_Sheets.Clear();
