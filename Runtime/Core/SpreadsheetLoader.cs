@@ -61,6 +61,7 @@ namespace StansAssets.GoogleDoc
             string projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
             var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsLocations, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
+            m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
             m_Spreadsheet.CleanupSheets();
 
             foreach (var sheetData in spreadsheetData.Sheets)

@@ -1,0 +1,12 @@
+.sheet-container {
+    height: 32px;
+}
+
+.sheet-name {
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.sheet-id {
+    -unity-text-align: middle-left;
+}
