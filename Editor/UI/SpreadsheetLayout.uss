@@ -1,0 +1,30 @@
+.root {
+    flex-grow: 1;
+}
+
+.top-panel {
+    flex-direction: row;
+}
+
+.spreadsheet-name {
+    -unity-font-style: bold;
+    flex-grow: 1;
+    -unity-text-align: middle-left;
+}
+
+.spreadsheet-date {
+    -unity-text-align: middle-right;
+}
+
+.spreadsheet-id {
+    -unity-text-align: middle-left;
+}
+
+.sheets-label {
+    -unity-font-style: bold;
+}
+
+.sheets-container {
+    flex-grow: 1;
+    margin-left: 15px;
+}
