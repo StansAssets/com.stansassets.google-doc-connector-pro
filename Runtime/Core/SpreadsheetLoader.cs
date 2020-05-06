@@ -7,7 +7,11 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
+using System.Collections;
+using System.Threading.Tasks;
+using UnityEditor.VersionControl;
 using UnityEngine;
+using FileMode = System.IO.FileMode;
 
 namespace StansAssets.GoogleDoc
 {
@@ -24,10 +28,10 @@ namespace StansAssets.GoogleDoc
         {
             m_Spreadsheet = spreadsheet;
         }
-
-        //TODO: Sync Load call for now. Should be Async with the next update
-        public void Load()
+        
+        public async void Load()
         {
+            m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
             //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
             using (var stream = new FileStream("Assets/Settings/credentials.json", FileMode.Open, FileAccess.Read))
@@ -42,7 +46,8 @@ namespace StansAssets.GoogleDoc
                     CancellationToken.None,
                     new FileDataStore(credPath, true)).Result;
             }
-
+            //Thread.Sleep(10000);
+            var s = new WaitForSeconds(600f);
             // Create Google Sheets API service.
             var service = new SheetsService(new BaseClientService.Initializer()
             {
@@ -53,7 +58,7 @@ namespace StansAssets.GoogleDoc
             // Define request parameters.
             SpreadsheetsResource.GetRequest rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
             rangeRequest.IncludeGridData = true;
-            var spreadsheetData = rangeRequest.Execute();
+            var spreadsheetData = await rangeRequest.ExecuteAsync();
 
             m_Spreadsheet.SyncDateTime = DateTime.Now;
             m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
@@ -121,6 +126,8 @@ namespace StansAssets.GoogleDoc
             }
 
             File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
+            m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
+            //return 0;
         }
     }
 }

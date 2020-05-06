@@ -1,4 +1,5 @@
 ﻿using System;
+using StansAssets.Foundation.UIElements;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -26,11 +27,22 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetName = this.Q<Label>("spreadsheetName");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
-            
-            m_SheetsContainer = this.Q<VisualElement>("sheetsContainer");
 
+            m_SheetsContainer = this.Q<VisualElement>("sheetsContainer");
+            
+            var spinner = this.Q<LoadingSpinner>("loadingSpinner");
+            spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+            
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
+            spreadsheet.OnSyncStateChange += (sh, state) =>
+            {
+                spinner.visible = (state == Spreadsheet.SyncState.InProgress);
+                if (state == Spreadsheet.SyncState.Synced)
+                {
+                    InitWithData(sh);
+                }
+            };
 
             InitWithData(spreadsheet);
         }

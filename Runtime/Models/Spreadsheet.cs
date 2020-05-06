@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using System.Collections;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc
@@ -9,6 +10,19 @@ namespace StansAssets.GoogleDoc
     [Serializable]
     public class Spreadsheet
     {
+        public enum SyncState
+        {
+            Synced,
+            NoSynced,
+            InProgress
+        }
+        
+        public event Action<Spreadsheet, SyncState> OnSyncStateChange = delegate { };
+        
+        [SerializeField]
+        SyncState m_State;
+        public  SyncState State => m_State;
+        
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
         public IEnumerable<Sheet> Sheets => m_Sheets;
@@ -53,7 +67,13 @@ namespace StansAssets.GoogleDoc
             m_Id = id;
             m_Name = k_DefaultName;
         }
-
+        
+        internal void ChangeStatus(SyncState state)
+        {
+            m_State = state;
+            OnSyncStateChange(this, m_State);
+        }
+        
         internal void SetName(string name)
         {
             m_Name = name;
