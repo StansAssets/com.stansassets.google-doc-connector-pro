@@ -7,6 +7,7 @@ namespace StansAssets.GoogleDoc
     {
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
+        readonly Foldout m_NamedRangeContainer;
 
         public SheetItem(Sheet sheet)
         {
@@ -17,6 +18,7 @@ namespace StansAssets.GoogleDoc
 
             m_SpreadsheetId = this.Q<Label>("sheetId");
             m_SpreadsheetName = this.Q<Label>("sheetName");
+            m_NamedRangeContainer = this.Q<Foldout>("namedRangeList");
             InitWithData(sheet);
         }
 
@@ -24,6 +26,10 @@ namespace StansAssets.GoogleDoc
         {
             m_SpreadsheetId.text = sheet.Id.ToString();
             m_SpreadsheetName.text = sheet.Name;
+        }
+        public void AddNamedRange(NamedRangeItem range)
+        {
+            m_NamedRangeContainer.Add(range);
         }
     }
 }

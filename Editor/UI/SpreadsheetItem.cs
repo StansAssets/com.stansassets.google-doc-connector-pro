@@ -13,7 +13,8 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
 
-        readonly VisualElement m_SheetsContainer;
+        readonly Foldout m_SheetsContainer;
+        
 
         public SpreadsheetItem(Spreadsheet spreadsheet)
         {
@@ -26,9 +27,9 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetName = this.Q<Label>("spreadsheetName");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
-            
-            m_SheetsContainer = this.Q<VisualElement>("sheetsContainer");
 
+            m_SheetsContainer = this.Q<Foldout>("sheetList");
+            
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
 
@@ -47,6 +48,10 @@ namespace StansAssets.GoogleDoc
             {
                 var item = new SheetItem(sheet);
                 m_SheetsContainer.Add(item);
+                foreach (var range in sheet.NamedRanges)
+                {
+                    item.AddNamedRange(new NamedRangeItem(range));
+                }
             }
         }
     }

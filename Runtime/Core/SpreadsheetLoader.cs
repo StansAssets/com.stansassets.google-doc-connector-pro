@@ -62,8 +62,8 @@ namespace StansAssets.GoogleDoc
             var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsLocations, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
-            m_Spreadsheet.CleanupSheets();
-
+            m_Spreadsheet.CleanupSheets(); 
+            //Set Sheets
             foreach (var sheetData in spreadsheetData.Sheets)
             {
                 int sheetId = sheetData.Properties.SheetId ?? 0;
@@ -91,7 +91,7 @@ namespace StansAssets.GoogleDoc
                     rowIndex++;
                 }
             }
-
+            //Set NamedRanges
             if (spreadsheetData.NamedRanges != null)
             {
                 foreach (var namedRangeData in spreadsheetData.NamedRanges)

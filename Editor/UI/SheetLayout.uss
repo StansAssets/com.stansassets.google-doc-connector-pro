@@ -1,5 +1,6 @@
 .sheet-container {
     height: 32px;
+    margin-bottom: 5px;
 }
 
 .sheet-name {
@@ -9,4 +10,10 @@
 
 .sheet-id {
     -unity-text-align: middle-left;
+}
+
+.sheet-list {
+    flex-grow: 1;
+    margin-left: 15px;
+    -unity-font-style: bold;
 }

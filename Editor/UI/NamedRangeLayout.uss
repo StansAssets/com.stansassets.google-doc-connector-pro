@@ -1,0 +1,12 @@
+.namedRange-container {
+    height: 32px;
+}
+
+.namedRange-name {
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.namedRange-id {
+    -unity-text-align: middle-left;
+}
