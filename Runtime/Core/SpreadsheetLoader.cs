@@ -7,11 +7,10 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
-using System.Collections;
-using System.Threading.Tasks;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using FileMode = System.IO.FileMode;
+using Task = System.Threading.Tasks.Task;
+using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
 namespace StansAssets.GoogleDoc
 {
@@ -29,7 +28,7 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet = spreadsheet;
         }
 
-        public async void Load()
+        public async Task Load()
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
@@ -58,7 +57,7 @@ namespace StansAssets.GoogleDoc
             // Define request parameters.
             SpreadsheetsResource.GetRequest rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
             rangeRequest.IncludeGridData = true;
-            var spreadsheetData = new Google.Apis.Sheets.v4.Data.Spreadsheet();
+            var spreadsheetData = new GoogleSheet.Spreadsheet();
             try
             {
                 spreadsheetData = await rangeRequest.ExecuteAsync();
@@ -66,7 +65,7 @@ namespace StansAssets.GoogleDoc
             catch (Exception ex)
             {
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.NoSynced);
-                throw ex;
+                throw;
             }
 
             m_Spreadsheet.SyncDateTime = DateTime.Now;
