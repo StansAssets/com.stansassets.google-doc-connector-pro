@@ -86,7 +86,7 @@ namespace StansAssets.GoogleDoc
         /// Get range by name of Named range
         /// </summary>
         /// <param name="name">name of Named range to search</param>
-        /// <returns>List<object> if ok and empty list if not find range</returns>
+        /// <returns>List of object if ok and empty list if not find range </returns>
         public List<object> GetRange(string name)
         {
             var range = GetNamedRange(name);
