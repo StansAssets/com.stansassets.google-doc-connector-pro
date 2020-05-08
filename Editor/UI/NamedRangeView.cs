@@ -10,7 +10,7 @@ namespace StansAssets.GoogleDoc
 
         public NamedRangeView(NamedRange range)
         {
-            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/NamedRangeLayout.uxml";
+            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/NamedRangeView.uxml";
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
             visualTree.CloneTree(this);
             style.flexGrow = 1.0f;
