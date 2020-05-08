@@ -57,7 +57,7 @@ namespace StansAssets.GoogleDoc
             // Define request parameters.
             SpreadsheetsResource.GetRequest rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
             rangeRequest.IncludeGridData = true;
-            var spreadsheetData = new GoogleSheet.Spreadsheet();
+            GoogleSheet.Spreadsheet spreadsheetData;
             try
             {
                 spreadsheetData = await rangeRequest.ExecuteAsync();
