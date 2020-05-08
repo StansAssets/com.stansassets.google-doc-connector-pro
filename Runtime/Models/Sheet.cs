@@ -42,31 +42,25 @@ namespace StansAssets.GoogleDoc
         {
             m_Rows = rows;
         }
-
-        internal bool HasNamedRange(string id)
+        
+        /// <summary>
+        /// Determines whether an element is in the sheet
+        /// </summary>
+        /// <param name="name">name of Named range to search</param>
+        /// <returns>boolean</returns>
+        internal bool HasNamedRange(string name)
         {
-            foreach (var range in m_NamedRanges)
-            {
-                if (id.Equals(range.Id))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return m_NamedRanges.Exists(n => name.Equals(n.Name));
         }
-
-        internal NamedRange GetNamedRange(string id)
+        
+        /// <summary>
+        /// Get Named range by name
+        /// </summary>
+        /// <param name="name">name of Named range to search</param>
+        /// <returns>NamedRange if ok and null if not find range</returns>
+        internal NamedRange GetNamedRange(string name)
         {
-            foreach (var range in m_NamedRanges)
-            {
-                if (id.Equals(range.Id))
-                {
-                    return range;
-                }
-            }
-
-            return null;
+            return m_NamedRanges.FirstOrDefault(n => name.Equals(n.Name));
         }
 
         internal NamedRange CreateNamedRange(string id, string name)
@@ -87,15 +81,19 @@ namespace StansAssets.GoogleDoc
 
             return null;
         }
-
-        public List<object> GetRange(string id)
+        
+        /// <summary>
+        /// Get range by name of Named range
+        /// </summary>
+        /// <param name="name">name of Named range to search</param>
+        /// <returns>List<object> if ok and empty list if not find range</returns>
+        public List<object> GetRange(string name)
         {
-            List<object> data = new List<object>();
-            var range = GetNamedRange(id);
-            foreach (var cell in range.Cells)
-                data.Add(GetCell(cell.Row, cell.Column));
-
-            return data;
+            var range = GetNamedRange(name);
+            if (range is null)
+                return new List<object>();
+            
+            return range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
         }
 
         public List<object> GetRow(int row)
