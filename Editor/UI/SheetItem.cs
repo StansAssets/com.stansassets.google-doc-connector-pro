@@ -27,7 +27,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetId.text = sheet.Id.ToString();
             m_SpreadsheetName.text = sheet.Name;
         }
-        public void AddNamedRange(NamedRangeItem range)
+        public void AddNamedRange(NamedRangeView range)
         {
             m_NamedRangeContainer.Add(range);
         }

@@ -43,14 +43,15 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : "[Not Synced]";
             m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text += " |"; }
-
+            
+            m_SheetsContainer.Clear();
             foreach (var sheet in spreadsheet.Sheets)
             {
                 var item = new SheetItem(sheet);
                 m_SheetsContainer.Add(item);
                 foreach (var range in sheet.NamedRanges)
                 {
-                    item.AddNamedRange(new NamedRangeItem(range));
+                    item.AddNamedRange(new NamedRangeView(range));
                 }
             }
         }

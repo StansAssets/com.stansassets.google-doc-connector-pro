@@ -3,12 +3,12 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class NamedRangeItem : VisualElement
+    public class NamedRangeView : VisualElement
     {
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
 
-        public NamedRangeItem(NamedRange range)
+        public NamedRangeView(NamedRange range)
         {
             var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/NamedRangeLayout.uxml";
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
