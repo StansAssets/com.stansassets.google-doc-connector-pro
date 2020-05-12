@@ -12,9 +12,9 @@ namespace StansAssets.GoogleDoc
 
         readonly ListView m_SpreadsheetsListView;
 
-        const string k_SpreadsheetId = "19Bs5Ts6OBXh7SFNdI3W0ZK-BrNiCHVt10keUBwHX2fc";
-        const string k_SpreadsheetId2 = "1QuJ0M7s25KxX_E0mRtmJiZQciKjvVt77yKMlUkvOWrc";
-        const string k_RangeName = "ywsb82myrvvs";
+        const string k_SpreadsheetId = "1z2AWmrP33cBMm8IY6KiMsewM4Q1rdGFUeFaPrUwt7To";
+        const string k_SpreadsheetId2 = "1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo";
+        const string k_RangeName = "Bike1";
 
         public TestTab()
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab.uxml")
@@ -76,6 +76,7 @@ namespace StansAssets.GoogleDoc
             {
                 var item = new SpreadsheetItem(spreadsheet);
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
+                item.OnRefreshClick += OnSpreadsheetRefreshClick;
                 m_SpreadsheetsListView.Add(item);
             }
         }
@@ -84,6 +85,14 @@ namespace StansAssets.GoogleDoc
         {
             GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
             m_SpreadsheetsListView.Remove(sender);
+        }
+        
+        void OnSpreadsheetRefreshClick(SpreadsheetItem sender, Spreadsheet spreadsheet)
+        {
+            OnSpreadsheetRemoveClick(sender, spreadsheet);
+            var spreadsheetNew = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheet.Id);
+            spreadsheetNew.Load();
+            PopulateListView();
         }
     }
 }

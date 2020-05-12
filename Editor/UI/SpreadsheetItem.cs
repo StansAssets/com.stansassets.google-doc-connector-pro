@@ -8,6 +8,7 @@ namespace StansAssets.GoogleDoc
     public class SpreadsheetItem : VisualElement
     {
         public event Action<SpreadsheetItem, Spreadsheet> OnRemoveClick = delegate { };
+        public event Action<SpreadsheetItem, Spreadsheet> OnRefreshClick = delegate { };
 
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
@@ -37,6 +38,9 @@ namespace StansAssets.GoogleDoc
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
+            
+            var refreshButton = this.Q<Button>("refreshBtn");
+            refreshButton.clicked += () => { OnRefreshClick(this, spreadsheet); };
 
             spreadsheet.OnSyncStateChange += StateChange;
 
