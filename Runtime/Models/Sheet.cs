@@ -46,18 +46,18 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Determines whether an element is in the sheet
         /// </summary>
-        /// <param name="name">name of Named range to search</param>
-        /// <returns>boolean</returns>
+        /// <param name="name">Name of Named Range to search</param>
+        /// <returns>true if the element is in the sheet; otherwise, false</returns>
         internal bool HasNamedRange(string name)
         {
             return m_NamedRanges.Exists(n => name.Equals(n.Name));
         }
         
         /// <summary>
-        /// Get Named range by name
+        /// Get Named Range
         /// </summary>
-        /// <param name="name">name of Named range to search</param>
-        /// <returns>NamedRange if ok and null if not find range</returns>
+        /// <param name="name">Name of Named Range to search</param>
+        /// <returns>type NamedRange if the element is in the sheet; otherwise, NULL</returns>
         internal NamedRange GetNamedRange(string name)
         {
             return m_NamedRanges.FirstOrDefault(n => name.Equals(n.Name));
@@ -83,16 +83,15 @@ namespace StansAssets.GoogleDoc
         }
         
         /// <summary>
-        /// Get range by name of Named range
+        /// Get range of Named Range
         /// </summary>
-        /// <param name="name">name of Named range to search</param>
-        /// <returns>List of object if ok and empty list if not find range </returns>
+        /// <param name="name">Name of Named Range to search</param>
         public List<object> GetRange(string name)
         {
             var range = GetNamedRange(name);
             if (range is null)
                 return new List<object>();
-            
+
             return range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
         }
 
