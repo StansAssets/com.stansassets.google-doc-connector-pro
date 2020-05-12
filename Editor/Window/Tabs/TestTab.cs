@@ -24,6 +24,7 @@ namespace StansAssets.GoogleDoc
             {
                 var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
                 spreadsheet1 = spreadsheet1 ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
+                spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
                 spreadsheet1.Load();
 
                 var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
@@ -31,8 +32,6 @@ namespace StansAssets.GoogleDoc
                 spreadsheet.Load();
 
                 PopulateListView();
-                
-                spreadsheet1.OnSyncStateChange += SheetGetRange;
             };
 
             var spreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
@@ -51,8 +50,13 @@ namespace StansAssets.GoogleDoc
             PopulateListView();
         }
 
-        static void SheetGetRange(Spreadsheet spreadsheet)
+        static void OnSheetStateChanged(Spreadsheet spreadsheet)
         {
+            if (spreadsheet.State != Spreadsheet.SyncState.Synced)
+            {
+                return;
+            }
+            
             var sheet = spreadsheet.GetSheet(0);
             Debug.Log(sheet.GetCell(3, 0));
             List<object> range = sheet.GetRange(k_RangeName);
