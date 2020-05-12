@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement name="sheetRoot" class="sheet-container" style="height: auto;">
+    <ui:VisualElement name="sheetRoot" class="sheet-container">
         <Style src="SheetLayout.uss" />
         <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" class="sheet-name" />
         <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id" />
-        <ui:Foldout text="Named Range:" name="namedRangeList" value="false" class="sheet-list" />
+        <ui:Foldout text="Named Range:" name="namedRangeFoldout" value="false" class="sheet-list" />
     </ui:VisualElement>
 </ui:UXML>

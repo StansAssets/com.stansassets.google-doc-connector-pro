@@ -3,10 +3,11 @@
 }
 
 .namedRange-name {
-    -unity-font-style: bold;
     -unity-text-align: middle-left;
+    -unity-font-style: normal;
 }
 
 .namedRange-id {
     -unity-text-align: middle-left;
+    -unity-font-style: normal;
 }

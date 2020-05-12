@@ -56,17 +56,9 @@ namespace StansAssets.GoogleDoc
             return false;
         }
 
-        internal NamedRange GetNamedRange(string id)
+        internal NamedRange GetNamedRange(string name)
         {
-            foreach (var range in m_NamedRanges)
-            {
-                if (id.Equals(range.Id))
-                {
-                    return range;
-                }
-            }
-
-            return null;
+            return m_NamedRanges.FirstOrDefault(n => name.Equals(n.Name));
         }
 
         internal NamedRange CreateNamedRange(string id, string name)
@@ -88,10 +80,10 @@ namespace StansAssets.GoogleDoc
             return null;
         }
 
-        public List<object> GetRange(string id)
+        public List<object> GetRange(string name)
         {
             List<object> data = new List<object>();
-            var range = GetNamedRange(id);
+            var range = GetNamedRange(name);
             foreach (var cell in range.Cells)
                 data.Add(GetCell(cell.Row, cell.Column));
 

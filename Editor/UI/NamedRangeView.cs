@@ -5,8 +5,8 @@ namespace StansAssets.GoogleDoc
 {
     public class NamedRangeView : VisualElement
     {
-        readonly Label m_SpreadsheetId;
-        readonly Label m_SpreadsheetName;
+        readonly Label m_NamedRangeId;
+        readonly Label m_NamedRangeName;
 
         public NamedRangeView(NamedRange range)
         {
@@ -15,15 +15,15 @@ namespace StansAssets.GoogleDoc
             visualTree.CloneTree(this);
             style.flexGrow = 1.0f;
 
-            m_SpreadsheetId = this.Q<Label>("namedRangeId");
-            m_SpreadsheetName = this.Q<Label>("namedRangeName");
+            m_NamedRangeId = this.Q<Label>("namedRangeId");
+            m_NamedRangeName = this.Q<Label>("namedRangeName");
             InitWithData(range);
         }
 
         void InitWithData(NamedRange sheet)
         {
-            m_SpreadsheetId.text = sheet.Id;
-            m_SpreadsheetName.text = sheet.Name;
+            m_NamedRangeId.text = sheet.Id;
+            m_NamedRangeName.text = sheet.Name;
         }
     }
 }

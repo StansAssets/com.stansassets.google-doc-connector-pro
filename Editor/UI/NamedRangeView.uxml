@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="namedRangeRoot" class="namedRange-container">
-        <Style src="NamedRangeLayout.uss" />
+        <Style src="NamedRangeView.uss" />
         <ui:Label text="&lt;namedRange Name&gt;" name="namedRangeName" class="namedRange-name" />
         <ui:Label text="&lt;namedRange Id&gt;" name="namedRangeId" class="namedRange-id" />
     </ui:VisualElement>

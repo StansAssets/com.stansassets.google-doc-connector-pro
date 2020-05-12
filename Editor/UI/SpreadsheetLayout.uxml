@@ -8,6 +8,6 @@
             <ui:Button text="x" name="removeBtn" />
         </ui:VisualElement>
         <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
-        <ui:Foldout text="Sheets:" name="sheetList" value="true"  class="spreadsheet-list" />
+        <ui:Foldout text="Sheets:" name="sheetList" value="true" class="spreadsheet-list" />
     </ui:VisualElement>
 </ui:UXML>
