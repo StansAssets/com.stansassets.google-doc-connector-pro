@@ -51,7 +51,7 @@ namespace StansAssets.GoogleDoc
             PopulateListView();
         }
 
-        void SheetGetRange(Spreadsheet spreadsheet)
+        static void SheetGetRange(Spreadsheet spreadsheet)
         {
             var sheet = spreadsheet.GetSheet(0);
             Debug.Log(sheet.GetCell(3, 0));
