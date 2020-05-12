@@ -12,9 +12,9 @@ namespace StansAssets.GoogleDoc
 
         readonly ListView m_SpreadsheetsListView;
 
-        const string k_SpreadsheetId = "1z2AWmrP33cBMm8IY6KiMsewM4Q1rdGFUeFaPrUwt7To";
+        const string k_SpreadsheetId = "19Bs5Ts6OBXh7SFNdI3W0ZK-BrNiCHVt10keUBwHX2fc";	             
         const string k_SpreadsheetId2 = "1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo";
-        const string k_RangeName = "Bike1";
+        const string k_RangeName = "ywsb82myrvvs";
 
         public TestTab()
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab.uxml")
