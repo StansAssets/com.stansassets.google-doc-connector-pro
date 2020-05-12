@@ -62,7 +62,7 @@ namespace StansAssets.GoogleDoc
             {
                 spreadsheetData = await rangeRequest.ExecuteAsync();
             }
-            catch (Exception ex)
+            catch
             {
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.NoSynced);
                 throw;

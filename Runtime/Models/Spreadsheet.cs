@@ -17,8 +17,8 @@ namespace StansAssets.GoogleDoc
             InProgress
         }
         
-        public event Action<Spreadsheet, SyncState> OnSyncStateChange = delegate { };
-        
+        public event Action<Spreadsheet> OnSyncStateChange = delegate { };
+
         [SerializeField]
         SyncState m_State;
         public  SyncState State => m_State;
@@ -71,7 +71,7 @@ namespace StansAssets.GoogleDoc
         internal void ChangeStatus(SyncState state)
         {
             m_State = state;
-            OnSyncStateChange(this, m_State);
+            OnSyncStateChange(this);
         }
         
         internal void SetName(string name)
@@ -149,7 +149,7 @@ namespace StansAssets.GoogleDoc
         public void Load()
         {
             var loader = new SpreadsheetLoader(this);
-            loader.Load();
+            _ = loader.Load();
         }
     }
 }

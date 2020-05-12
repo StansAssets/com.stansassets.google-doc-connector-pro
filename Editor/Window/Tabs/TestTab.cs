@@ -22,27 +22,17 @@ namespace StansAssets.GoogleDoc
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>
             {
-                var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
-                spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
-                spreadsheet.Load();
+                var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
+                spreadsheet1 = spreadsheet1 ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
+                spreadsheet1.Load();
 
-                var sheet = spreadsheet.GetSheet(0);
-                Debug.Log(sheet.GetCell(3, 0));
-
-                List<object> range = sheet.GetRange(k_RangeName);
-                var builder = new StringBuilder($"NamedRange Id:{k_RangeName} Data:");
-                foreach (var obj in range)
-                {
-                    builder.Append(obj);
-                    builder.Append(",");
-                }
-                Debug.Log(builder);
-
-                spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
+                var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
                 spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
                 spreadsheet.Load();
 
                 PopulateListView();
+                
+                spreadsheet1.OnSyncStateChange += SheetGetRange;
             };
 
             var spreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
@@ -60,6 +50,20 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetsListView = this.Q<ListView>("spreadsheetsContainer");
             PopulateListView();
         }
+
+        void SheetGetRange(Spreadsheet spreadsheet)
+        {
+            var sheet = spreadsheet.GetSheet(0);
+            Debug.Log(sheet.GetCell(3, 0));
+            List<object> range = sheet.GetRange(k_RangeName);
+            var builder = new StringBuilder($"NamedRange Id:{k_RangeName} Data:");
+            foreach (var obj in range)
+            {
+                builder.Append(obj);
+                builder.Append(",");
+            }
+            Debug.Log(builder);
+        } 
 
         void PopulateListView()
         {

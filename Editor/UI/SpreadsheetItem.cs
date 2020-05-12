@@ -13,6 +13,8 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetName;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
+        
+        readonly VisualElement m_Spinner;
 
         readonly VisualElement m_SheetsContainer;
 
@@ -30,21 +32,24 @@ namespace StansAssets.GoogleDoc
 
             m_SheetsContainer = this.Q<VisualElement>("sheetsContainer");
             
-            var spinner = this.Q<LoadingSpinner>("loadingSpinner");
-            spinner.visible = false;
-            
+            m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
+            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
-            spreadsheet.OnSyncStateChange += (sh, state) =>
-            {
-                spinner.visible = (state == Spreadsheet.SyncState.InProgress);
-                if (state == Spreadsheet.SyncState.Synced)
-                {
-                    InitWithData(sh);
-                }
-            };
+
+            spreadsheet.OnSyncStateChange += StateChange;
 
             InitWithData(spreadsheet);
+        }
+
+        void StateChange(Spreadsheet spreadsheet)
+        {
+            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+            if (spreadsheet.State == Spreadsheet.SyncState.Synced)
+            {
+                InitWithData(spreadsheet);
+            }
         }
 
         void InitWithData(Spreadsheet spreadsheet)
