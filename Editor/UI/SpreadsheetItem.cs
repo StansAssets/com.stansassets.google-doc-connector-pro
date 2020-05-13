@@ -35,7 +35,7 @@ namespace StansAssets.GoogleDoc
             
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-
+            
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
             
@@ -45,6 +45,13 @@ namespace StansAssets.GoogleDoc
             spreadsheet.OnSyncStateChange += StateChange;
 
             InitWithData(spreadsheet);
+        }
+        
+        public void UpdateChange(Spreadsheet spreadsheet)
+        {
+            spreadsheet.OnSyncStateChangeClaer();
+            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+            spreadsheet.OnSyncStateChange += StateChange;
         }
 
         void StateChange(Spreadsheet spreadsheet)

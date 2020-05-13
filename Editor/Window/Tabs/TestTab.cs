@@ -89,10 +89,11 @@ namespace StansAssets.GoogleDoc
         
         void OnSpreadsheetRefreshClick(SpreadsheetItem sender, Spreadsheet spreadsheet)
         {
-            OnSpreadsheetRemoveClick(sender, spreadsheet);
-            var spreadsheetNew = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheet.Id);
-            spreadsheetNew.Load();
-            PopulateListView();
+            // OnSpreadsheetRemoveClick(sender, spreadsheet);
+            // var spreadsheetNew = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheet.Id);
+            spreadsheet.Load();
+            sender.UpdateChange(spreadsheet);
+            //PopulateListView();
         }
     }
 }
