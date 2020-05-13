@@ -31,7 +31,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
 
-            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");;
+            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
             
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
