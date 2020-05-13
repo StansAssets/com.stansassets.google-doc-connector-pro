@@ -1,4 +1,5 @@
 ﻿using System;
+using StansAssets.Foundation.UIElements;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -12,6 +13,8 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetName;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
+        
+        readonly VisualElement m_Spinner;
 
         readonly Foldout m_SheetsFoldout;
         
@@ -28,12 +31,27 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
 
-            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
+            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");;
+            
+            m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
+            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+
             
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
 
+            spreadsheet.OnSyncStateChange += StateChange;
+
             InitWithData(spreadsheet);
+        }
+
+        void StateChange(Spreadsheet spreadsheet)
+        {
+            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+            if (spreadsheet.State == Spreadsheet.SyncState.Synced)
+            {
+                InitWithData(spreadsheet);
+            }
         }
 
         void InitWithData(Spreadsheet spreadsheet)
@@ -45,6 +63,7 @@ namespace StansAssets.GoogleDoc
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text += " |"; }
             
             m_SheetsFoldout.Clear();
+
             foreach (var sheet in spreadsheet.Sheets)
             {
                 var item = new SheetItem(sheet);

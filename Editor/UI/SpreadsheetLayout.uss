@@ -12,6 +12,10 @@
     -unity-text-align: middle-left;
 }
 
+.spreadsheet-loading {
+    margin-left: 10px;
+}
+
 .spreadsheet-date {
     -unity-text-align: middle-right;
 }

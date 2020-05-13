@@ -7,7 +7,11 @@
             <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
             <ui:Button text="x" name="removeBtn" />
         </ui:VisualElement>
-        <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
+        <ui:VisualElement name="spreadsheetIdPanel" class="top-panel">
+            <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
+            <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
+        </ui:VisualElement>
         <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout" />
+
     </ui:VisualElement>
 </ui:UXML>
