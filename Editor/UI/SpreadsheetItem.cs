@@ -28,7 +28,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
 
-            m_SheetsFoldout = this.Q<Foldout>("sheetList");
+            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
             
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };

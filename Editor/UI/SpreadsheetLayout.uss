@@ -20,7 +20,7 @@
     -unity-text-align: middle-left;
 }
 
-.spreadsheet-list {
+.spreadsheet-foldout {
     flex-grow: 1;
     margin-left: 5px;
     -unity-font-style: bold;
