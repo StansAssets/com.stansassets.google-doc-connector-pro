@@ -42,20 +42,22 @@ namespace StansAssets.GoogleDoc
         {
             m_Rows = rows;
         }
-
-        internal bool HasNamedRange(string id)
+        
+        /// <summary>
+        /// Determines whether an element is in the sheet
+        /// </summary>
+        /// <param name="name">Name of Named Range to search</param>
+        /// <returns>True if the element is in the sheet; otherwise, false</returns>
+        internal bool HasNamedRange(string name)
         {
-            foreach (var range in m_NamedRanges)
-            {
-                if (id.Equals(range.Id))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return m_NamedRanges.Exists(n => name.Equals(n.Name));
         }
-
+        
+        /// <summary>
+        /// Returns NamedRange with provided name
+        /// </summary>
+        /// <param name="name">Name of Named Range to search for</param>
+        /// <returns>NamedRange if the element with provided name exists, otherwise null</returns>
         internal NamedRange GetNamedRange(string name)
         {
             return m_NamedRanges.FirstOrDefault(n => name.Equals(n.Name));
@@ -79,15 +81,18 @@ namespace StansAssets.GoogleDoc
 
             return null;
         }
-
+      
+        /// <summary>
+        /// Returns a list of objects of the requested Name Range
+        /// </summary>
+        /// <param name="name">Name of the requested Named Range</param>
         public List<object> GetRange(string name)
         {
-            List<object> data = new List<object>();
             var range = GetNamedRange(name);
-            foreach (var cell in range.Cells)
-                data.Add(GetCell(cell.Row, cell.Column));
+            if (range is null)
+                return new List<object>();
 
-            return data;
+            return range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
         }
 
         public List<object> GetRow(int row)
