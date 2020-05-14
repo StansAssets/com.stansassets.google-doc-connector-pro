@@ -81,7 +81,7 @@ namespace StansAssets.GoogleDoc
 
             return null;
         }
-        
+      
         /// <summary>
         /// Returns a list of objects of the requested Name Range
         /// </summary>

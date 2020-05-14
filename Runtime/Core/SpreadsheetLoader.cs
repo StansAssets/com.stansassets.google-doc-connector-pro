@@ -8,6 +8,9 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
 using UnityEngine;
+using FileMode = System.IO.FileMode;
+using Task = System.Threading.Tasks.Task;
+using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
 namespace StansAssets.GoogleDoc
 {
@@ -25,10 +28,11 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet = spreadsheet;
         }
 
-        //TODO: Sync Load call for now. Should be Async with the next update
-        public void Load()
+        public async Task Load()
         {
+            m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
+
             //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
             using (var stream = new FileStream("Assets/Settings/credentials.json", FileMode.Open, FileAccess.Read))
             {
@@ -53,7 +57,16 @@ namespace StansAssets.GoogleDoc
             // Define request parameters.
             SpreadsheetsResource.GetRequest rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
             rangeRequest.IncludeGridData = true;
-            var spreadsheetData = rangeRequest.Execute();
+            GoogleSheet.Spreadsheet spreadsheetData;
+            try
+            {
+                spreadsheetData = await rangeRequest.ExecuteAsync();
+            }
+            catch
+            {
+                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.NoSynced);
+                throw;
+            }
 
             m_Spreadsheet.SyncDateTime = DateTime.Now;
             m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
@@ -62,8 +75,8 @@ namespace StansAssets.GoogleDoc
             var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsLocations, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
-            m_Spreadsheet.CleanupSheets();
-
+            m_Spreadsheet.CleanupSheets(); 
+            //Set Sheets
             foreach (var sheetData in spreadsheetData.Sheets)
             {
                 int sheetId = sheetData.Properties.SheetId ?? 0;
@@ -86,12 +99,13 @@ namespace StansAssets.GoogleDoc
                             columnIndex++;
                         }
                     }
+
                     sheet.AddRow(row);
 
                     rowIndex++;
                 }
             }
-
+            //Set NamedRanges
             if (spreadsheetData.NamedRanges != null)
             {
                 foreach (var namedRangeData in spreadsheetData.NamedRanges)
@@ -121,6 +135,7 @@ namespace StansAssets.GoogleDoc
             }
 
             File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
+            m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
         }
     }
 }

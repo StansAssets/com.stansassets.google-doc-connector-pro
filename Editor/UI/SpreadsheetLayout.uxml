@@ -1,14 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement name="spreadsheetRoot" class="root">
+    <ui:VisualElement name="spreatsheetRoot" class="root">
         <Style src="SpreadsheetLayout.uss" />
         <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name" />
-            <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date"  />
+            <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date" />
             <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
             <ui:Button text="x" name="removeBtn" />
         </ui:VisualElement>
-        <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
-        <ui:Label text="Sheets:" class="sheets-label" />
-        <ui:VisualElement name="sheetsContainer" class="sheets-container" />
+        <ui:VisualElement name="spreadsheetIdPanel" class="top-panel">
+            <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
+            <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
+        </ui:VisualElement>
+        <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout" />
+
     </ui:VisualElement>
 </ui:UXML>
