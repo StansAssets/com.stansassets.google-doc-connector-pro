@@ -48,13 +48,6 @@ namespace StansAssets.GoogleDoc
             InitWithData(spreadsheet);
         }
         
-        public void UpdateChange(Spreadsheet spreadsheet)
-        {
-            spreadsheet.OnSyncStateChangeClaer();
-            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-            spreadsheet.OnSyncStateChange += StateChange;
-        }
-
         void StateChange(Spreadsheet spreadsheet)
         {
             m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);

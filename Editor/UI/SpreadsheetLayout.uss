@@ -31,5 +31,5 @@
 }
 
 .btn-refresh {
-    background-image: url(images/refresh.jpg);
+    background-image: url(Resources/refresh.png);
 }

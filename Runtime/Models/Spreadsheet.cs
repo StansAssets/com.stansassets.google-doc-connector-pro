@@ -145,11 +145,6 @@ namespace StansAssets.GoogleDoc
                 File.Delete(m_Path);
             }
         }
-        
-        public void OnSyncStateChangeClaer()
-        {
-            OnSyncStateChange = delegate { };
-        }
 
         public void Load()
         {
