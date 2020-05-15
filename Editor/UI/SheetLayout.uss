@@ -1,12 +1,19 @@
 .sheet-container {
-    height: 32px;
+    margin-bottom: 5px;
 }
 
 .sheet-name {
-    -unity-font-style: bold;
+    -unity-font-style: normal;
     -unity-text-align: middle-left;
 }
 
 .sheet-id {
+    -unity-font-style: normal;
     -unity-text-align: middle-left;
+}
+
+.sheet-foldout {
+    flex-grow: 1;
+    margin-left: 15px;
+    -unity-font-style: bold;
 }

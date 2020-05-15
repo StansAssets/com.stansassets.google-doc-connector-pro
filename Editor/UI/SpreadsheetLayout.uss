@@ -24,13 +24,10 @@
     -unity-text-align: middle-left;
 }
 
-.sheets-label {
-    -unity-font-style: bold;
-}
-
-.sheets-container {
+.spreadsheet-foldout {
     flex-grow: 1;
-    margin-left: 15px;
+    margin-left: 5px;
+    -unity-font-style: bold;
 }
 
 .btn-refresh {
