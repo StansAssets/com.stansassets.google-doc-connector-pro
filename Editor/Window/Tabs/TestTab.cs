@@ -87,7 +87,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetsListView.Remove(sender);
         }
         
-        void OnSpreadsheetRefreshClick(SpreadsheetItem sender, Spreadsheet spreadsheet)
+        static void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
             spreadsheet.Load();
         }
