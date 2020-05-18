@@ -5,8 +5,8 @@
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name" />
             <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date" />
             <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
-            <ui:Button text="" name="refreshBtn" class="btn-refresh" />
-            <ui:Button text="x" name="removeBtn" />
+            <ui:Button text="" name="refreshBtn" class="btn-refresh spreadsheet-button" />
+            <ui:Button text="" name="removeBtn" class="btn-remove spreadsheet-button" />
         </ui:VisualElement>
         <ui:VisualElement name="spreadsheetIdPanel" class="top-panel">
             <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />

@@ -33,3 +33,18 @@
 .btn-refresh {
     background-image: url(Resources/refresh.png);
 }
+
+.btn-remove {
+    background-image: url(Resources/cross.png);
+}
+
+.spreadsheet-button {
+    margin: 3px;
+    border-radius: 3px;
+    border-width: 1px;
+    font-size: 12px;
+    height: 22px;
+    width: 22px;
+    background-color: #585858;
+    border-color: #262626;
+}
