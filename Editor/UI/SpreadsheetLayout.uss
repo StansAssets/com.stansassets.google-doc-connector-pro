@@ -48,3 +48,7 @@
     background-color: #585858;
     border-color: #262626;
 }
+
+.spreadsheet-button:hover {
+    background-color: #868686;
+}
