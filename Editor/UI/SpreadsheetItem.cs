@@ -12,6 +12,7 @@ namespace StansAssets.GoogleDoc
 
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
+        readonly Label m_SpreadsheetErrorMessage;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
         
@@ -29,6 +30,7 @@ namespace StansAssets.GoogleDoc
 
             m_SpreadsheetId = this.Q<Label>("spreadsheetId");
             m_SpreadsheetName = this.Q<Label>("spreadsheetName");
+            m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
 
@@ -51,7 +53,15 @@ namespace StansAssets.GoogleDoc
         void StateChange(Spreadsheet spreadsheet)
         {
             m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-            if (spreadsheet.State == Spreadsheet.SyncState.Synced)
+            if (spreadsheet.State == Spreadsheet.SyncState.SyncedWithError)
+            {
+                m_SpreadsheetDate.text = "[Synced With Error]";
+                m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
+                if (!m_SpreadsheetErrorMessage.ClassListContains("spreadsheet-error"))
+                {
+                    m_SpreadsheetErrorMessage.AddToClassList("spreadsheet-error");
+                }
+            } else if (spreadsheet.State == Spreadsheet.SyncState.Synced)
             {
                 InitWithData(spreadsheet);
             }
@@ -71,9 +81,12 @@ namespace StansAssets.GoogleDoc
             {
                 var item = new SheetItem(sheet);
                 m_SheetsFoldout.Add(item);
-                foreach (var range in sheet.NamedRanges)
+                if (sheet.NamedRanges != null)
                 {
-                    item.AddNamedRange(new NamedRangeView(range));
+                    foreach (var range in sheet.NamedRanges)
+                    {
+                        item.AddNamedRange(new NamedRangeView(range));
+                    }
                 }
             }
         }

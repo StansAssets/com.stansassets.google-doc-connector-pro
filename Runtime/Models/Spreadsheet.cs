@@ -13,7 +13,8 @@ namespace StansAssets.GoogleDoc
         public enum SyncState
         {
             Synced,
-            NoSynced,
+            NotSynced,
+            SyncedWithError,
             InProgress
         }
         
@@ -21,7 +22,11 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         SyncState m_State;
-        public  SyncState State => m_State;
+        public SyncState State => m_State;
+        
+        [SerializeField]
+        string m_SyncErrorMassage;
+        public string SyncErrorMassage => m_SyncErrorMassage;
         
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
@@ -77,6 +82,11 @@ namespace StansAssets.GoogleDoc
         internal void SetName(string name)
         {
             m_Name = name;
+        }
+        
+        internal void SetError(string error)
+        {
+            m_SyncErrorMassage = error;
         }
 
         internal void SetPath(string path)
