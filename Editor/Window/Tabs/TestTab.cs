@@ -76,6 +76,7 @@ namespace StansAssets.GoogleDoc
             {
                 var item = new SpreadsheetItem(spreadsheet);
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
+                item.OnRefreshClick += OnSpreadsheetRefreshClick;
                 m_SpreadsheetsListView.Add(item);
             }
         }
@@ -84,6 +85,11 @@ namespace StansAssets.GoogleDoc
         {
             GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
             m_SpreadsheetsListView.Remove(sender);
+        }
+        
+        static void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
+        {
+            spreadsheet.Load();
         }
     }
 }

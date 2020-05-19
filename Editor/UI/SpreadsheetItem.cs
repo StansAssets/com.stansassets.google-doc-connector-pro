@@ -8,6 +8,7 @@ namespace StansAssets.GoogleDoc
     public class SpreadsheetItem : VisualElement
     {
         public event Action<SpreadsheetItem, Spreadsheet> OnRemoveClick = delegate { };
+        public event Action<Spreadsheet> OnRefreshClick = delegate { };
 
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
@@ -35,16 +36,18 @@ namespace StansAssets.GoogleDoc
             
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-
             
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
+            
+            var refreshButton = this.Q<Button>("refreshBtn");
+            refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
 
             spreadsheet.OnSyncStateChange += StateChange;
 
             InitWithData(spreadsheet);
         }
-
+        
         void StateChange(Spreadsheet spreadsheet)
         {
             m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);

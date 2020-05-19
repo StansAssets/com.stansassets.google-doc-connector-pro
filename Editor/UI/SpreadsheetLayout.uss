@@ -29,3 +29,73 @@
     margin-left: 5px;
     -unity-font-style: bold;
 }
+
+.btn-refresh {
+    background-image: url('Resources/refresh.png');
+    width: 16px;
+    height: 16px;
+    border-left-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-right-width: 1px;
+    -unity-text-align: middle-center;
+    flex: 0 0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    color: rgb(228, 228, 228);
+    border-width: 1px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 1px;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    border-radius: 3px;
+    font-size: 12px;
+    flex-shrink: 0;
+    border-top-right-radius: -1px;
+    border-bottom-right-radius: -1px;
+}
+.btn-refresh:hover,
+.btn-remove:hover{
+    background-color: #868686;
+}
+
+.btn-remove {
+    background-image: url('Resources/cross.png');
+    width: 16px;
+    height: 16px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    -unity-text-align: middle-center;
+    flex: 0 0 auto;
+    overflow: hidden;
+    white-space: nowrap;
+    color: rgb(228, 228, 228);
+    border-width: 1px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 1px;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    border-radius: 3px;
+    font-size: 12px;
+    flex-shrink: 0;
+    border-bottom-left-radius: -1px;
+    border-top-left-radius: -1px;
+    border-left-width: -1px;
+}
+
+.spreadsheet-button-panel {
+    margin-left: 3px;
+    margin-right: 3px;
+    flex: 0 0 auto;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
