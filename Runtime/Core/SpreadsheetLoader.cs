@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
@@ -32,19 +33,27 @@ namespace StansAssets.GoogleDoc
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
-
             //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
-            using (var stream = new FileStream("Assets/Settings/credentials.json", FileMode.Open, FileAccess.Read))
+            try 
             {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                string credPath = "Assets/Settings/token.json";
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                using (var stream = new FileStream("Assets/Settings/credentials.json", FileMode.Open, FileAccess.Read))
+                {
+                    // The file token.json stores the user's access and refresh tokens, and is created
+                    // automatically when the authorization flow completes for the first time.
+                    string credPath = "Assets/Settings/token.json";
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
                     s_Scopes,
                     "user",
                     CancellationToken.None,
                     new FileDataStore(credPath, true)).Result;
+                }
+            }
+            catch (Exception ex)
+            {
+                m_Spreadsheet.SetError(ex.Message);
+                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                return;
             }
 
             // Create Google Sheets API service.
@@ -62,11 +71,17 @@ namespace StansAssets.GoogleDoc
             {
                 spreadsheetData = await rangeRequest.ExecuteAsync();
             }
-            catch (Exception ex)
+            catch (GoogleApiException exception)
             {
-                m_Spreadsheet.SetError(ex.Message);
+                m_Spreadsheet.SetError(exception.Error.Message);
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
-                throw;
+                return;
+            }
+            catch (Exception exception)
+            {
+                m_Spreadsheet.SetError(exception.Message);
+                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                return;
             }
 
             m_Spreadsheet.SyncDateTime = DateTime.Now;
