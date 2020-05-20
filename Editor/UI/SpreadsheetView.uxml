@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="spreatsheetRoot" class="root">
-        <Style src="SpreadsheetLayout.uss" />
+        <Style src="SpreadsheetView.uss" />
         <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name" />
             <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date" />

@@ -5,9 +5,9 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class SpreadsheetItem : VisualElement
+    public class SpreadsheetView : VisualElement
     {
-        public event Action<SpreadsheetItem, Spreadsheet> OnRemoveClick = delegate { };
+        public event Action<SpreadsheetView, Spreadsheet> OnRemoveClick = delegate { };
         public event Action<Spreadsheet> OnRefreshClick = delegate { };
 
         readonly Label m_SpreadsheetId;
@@ -21,9 +21,9 @@ namespace StansAssets.GoogleDoc
         readonly Foldout m_SheetsFoldout;
         
 
-        public SpreadsheetItem(Spreadsheet spreadsheet)
+        public SpreadsheetView(Spreadsheet spreadsheet)
         {
-            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetLayout.uxml";
+            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView.uxml";
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
             visualTree.CloneTree(this);
             style.flexGrow = 1.0f;
@@ -79,7 +79,7 @@ namespace StansAssets.GoogleDoc
 
             foreach (var sheet in spreadsheet.Sheets)
             {
-                var item = new SheetItem(sheet);
+                var item = new SheetView(sheet);
                 m_SheetsFoldout.Add(item);
                 if (sheet.NamedRanges != null)
                 {
