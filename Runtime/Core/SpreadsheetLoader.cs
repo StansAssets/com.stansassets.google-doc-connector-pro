@@ -51,8 +51,7 @@ namespace StansAssets.GoogleDoc
             }
             catch (Exception ex)
             {
-                m_Spreadsheet.SetError(ex.Message);
-                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                SpreadsheetError(m_Spreadsheet, ex.Message);
                 return;
             }
 
@@ -73,14 +72,12 @@ namespace StansAssets.GoogleDoc
             }
             catch (GoogleApiException exception)
             {
-                m_Spreadsheet.SetError(exception.Error.Message);
-                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                SpreadsheetError(m_Spreadsheet, exception.Error.Message);
                 return;
             }
             catch (Exception exception)
             {
-                m_Spreadsheet.SetError(exception.Message);
-                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                SpreadsheetError(m_Spreadsheet, exception.Message);
                 return;
             }
 
@@ -152,6 +149,14 @@ namespace StansAssets.GoogleDoc
 
             File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
+        }
+        
+        private void SpreadsheetError(Spreadsheet spreadsheet, string exceptionMessage) 
+        {
+            spreadsheet.SetError($"Error: {exceptionMessage}");
+            spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+            spreadsheet.SetMachineName(SystemInfo.deviceName);
+            m_Spreadsheet.SyncDateTime = DateTime.Now;
         }
     }
 }

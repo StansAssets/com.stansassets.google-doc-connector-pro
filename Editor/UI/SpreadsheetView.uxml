@@ -14,7 +14,7 @@
             <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
             <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
         </ui:VisualElement>
-        <ui:Label name="spreadsheetError"/>
+        <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
         <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout" />
     </ui:VisualElement>
 </ui:UXML>
