@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using StansAssets.Foundation.Editor.Plugins;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -47,6 +48,7 @@ namespace StansAssets.GoogleDoc
             };
 
             m_SpreadsheetsListView = this.Q<ListView>("spreadsheetsContainer");
+
             PopulateListView();
         }
 
@@ -56,7 +58,7 @@ namespace StansAssets.GoogleDoc
             {
                 return;
             }
-            
+
             var sheet = spreadsheet.GetSheet(0);
             Debug.Log(sheet.GetCell(3, 0));
             List<object> range = sheet.GetRange(k_RangeName);
@@ -66,8 +68,9 @@ namespace StansAssets.GoogleDoc
                 builder.Append(obj);
                 builder.Append(",");
             }
+
             Debug.Log(builder);
-        } 
+        }
 
         void PopulateListView()
         {
@@ -83,10 +86,17 @@ namespace StansAssets.GoogleDoc
 
         void OnSpreadsheetRemoveClick(SpreadsheetItem sender, Spreadsheet spreadsheet)
         {
-            GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
-            m_SpreadsheetsListView.Remove(sender);
+            var dialog = EditorUtility.DisplayDialog("Confirm",
+                $"Are you sure want to remove '{spreadsheet.Name}' spreadsheet?",
+                "Yes",
+                "No");
+            if (dialog)
+            {
+                GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
+                m_SpreadsheetsListView.Remove(sender);
+            }
         }
-        
+
         static void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
             spreadsheet.Load();
