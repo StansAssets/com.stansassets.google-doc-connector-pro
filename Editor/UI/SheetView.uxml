@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="sheetRoot" class="sheet-container">
-        <Style src="SheetLayout.uss" />
+        <Style src="SheetView.uss" />
         <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" class="sheet-name" />
         <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id" />
         <ui:Foldout text="Named Range:" name="namedRangeFoldout" value="false" class="sheet-foldout" />

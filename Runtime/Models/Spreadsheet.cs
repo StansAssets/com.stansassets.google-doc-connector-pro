@@ -13,15 +13,23 @@ namespace StansAssets.GoogleDoc
         public enum SyncState
         {
             Synced,
-            NoSynced,
+            NotSynced,
+            SyncedWithError,
             InProgress
         }
         
         public event Action<Spreadsheet> OnSyncStateChange = delegate { };
+        
+        public static readonly string SyncedWithErrorStringStatus ="[Synced With Error]";
+        public static readonly string NotSyncedStringStatus ="[Not Synced]";
 
         [SerializeField]
         SyncState m_State;
-        public  SyncState State => m_State;
+        public SyncState State => m_State;
+        
+        [SerializeField]
+        string m_SyncErrorMassage;
+        public string SyncErrorMassage => m_SyncErrorMassage;
         
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
@@ -45,6 +53,11 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_DateTimeStr;
+        
+        public bool Synced => m_State == SyncState.Synced;
+        public bool InProgress => m_State == SyncState.InProgress;
+        public bool NotSynced => m_State == SyncState.NotSynced;
+        public bool SyncedWithError => m_State == SyncState.SyncedWithError;
 
         public DateTime? SyncDateTime
         {
@@ -77,6 +90,11 @@ namespace StansAssets.GoogleDoc
         internal void SetName(string name)
         {
             m_Name = name;
+        }
+        
+        internal void SetError(string error)
+        {
+            m_SyncErrorMassage = error;
         }
 
         internal void SetPath(string path)

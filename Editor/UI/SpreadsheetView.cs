@@ -5,41 +5,42 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class SpreadsheetItem : VisualElement
+    public class SpreadsheetView : VisualElement
     {
-        public event Action<SpreadsheetItem, Spreadsheet> OnRemoveClick = delegate { };
+        public event Action<SpreadsheetView, Spreadsheet> OnRemoveClick = delegate { };
         public event Action<Spreadsheet> OnRefreshClick = delegate { };
 
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
+        readonly Label m_SpreadsheetErrorMessage;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
-        
+
         readonly VisualElement m_Spinner;
 
         readonly Foldout m_SheetsFoldout;
-        
 
-        public SpreadsheetItem(Spreadsheet spreadsheet)
+        public SpreadsheetView(Spreadsheet spreadsheet)
         {
-            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetLayout.uxml";
+            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView.uxml";
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
             visualTree.CloneTree(this);
             style.flexGrow = 1.0f;
 
             m_SpreadsheetId = this.Q<Label>("spreadsheetId");
             m_SpreadsheetName = this.Q<Label>("spreadsheetName");
+            m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
 
             m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
-            
+
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
-            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-            
+            m_Spinner.visible = spreadsheet.InProgress;
+
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
-            
+
             var refreshButton = this.Q<Button>("refreshBtn");
             refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
 
@@ -47,11 +48,11 @@ namespace StansAssets.GoogleDoc
 
             InitWithData(spreadsheet);
         }
-        
+
         void StateChange(Spreadsheet spreadsheet)
         {
-            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-            if (spreadsheet.State == Spreadsheet.SyncState.Synced)
+            m_Spinner.visible = spreadsheet.InProgress;
+            if (spreadsheet.Synced || spreadsheet.SyncedWithError)
             {
                 InitWithData(spreadsheet);
             }
@@ -61,19 +62,27 @@ namespace StansAssets.GoogleDoc
         {
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetName.text = spreadsheet.Name;
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : "[Not Synced]";
+            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : Spreadsheet.NotSyncedStringStatus;
             m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text += " |"; }
-            
+
+            //Synced With Error
+            m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
+            m_SpreadsheetErrorMessage.style.display = spreadsheet.SyncedWithError ? DisplayStyle.Flex : DisplayStyle.None;
+            if (spreadsheet.SyncedWithError) { m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}"; }
+
             m_SheetsFoldout.Clear();
 
             foreach (var sheet in spreadsheet.Sheets)
             {
-                var item = new SheetItem(sheet);
+                var item = new SheetView(sheet);
                 m_SheetsFoldout.Add(item);
-                foreach (var range in sheet.NamedRanges)
+                if (sheet.NamedRanges != null)
                 {
-                    item.AddNamedRange(new NamedRangeView(range));
+                    foreach (var range in sheet.NamedRanges)
+                    {
+                        item.AddNamedRange(new NamedRangeView(range));
+                    }
                 }
             }
         }

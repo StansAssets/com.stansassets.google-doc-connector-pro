@@ -3,15 +3,15 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class SheetItem : VisualElement
+    public class SheetView : VisualElement
     {
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
         readonly Foldout m_NamedRangeFoldout;
 
-        public SheetItem(Sheet sheet)
+        public SheetView(Sheet sheet)
         {
-            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SheetLayout.uxml";
+            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SheetView.uxml";
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
             visualTree.CloneTree(this);
             style.flexGrow = 1.0f;

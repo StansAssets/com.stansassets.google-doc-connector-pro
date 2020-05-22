@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="spreatsheetRoot" class="root">
-        <Style src="SpreadsheetLayout.uss" />
+        <Style src="SpreadsheetView.uss" />
         <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name" />
             <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date" />
@@ -14,6 +14,7 @@
             <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
             <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
         </ui:VisualElement>
+        <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
         <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout" />
     </ui:VisualElement>
 </ui:UXML>

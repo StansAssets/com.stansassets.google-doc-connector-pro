@@ -1,5 +1,7 @@
 .root {
     flex-grow: 1;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .top-panel {
@@ -22,6 +24,18 @@
 
 .spreadsheet-id {
     -unity-text-align: middle-left;
+}
+
+.spreadsheet-error {
+    -unity-text-align: middle-left;
+    border-width: 1px;
+    color: rgba(255, 0, 16, 0.6);
+    border-color: rgba(255, 0, 16, 0.8);
+    border-radius: 3px;
+    white-space: normal;
+    flex-wrap: wrap;
+    margin: 5px 0 5px 0;
+    padding: 3px;
 }
 
 .spreadsheet-foldout {
@@ -58,8 +72,9 @@
     border-top-right-radius: -1px;
     border-bottom-right-radius: -1px;
 }
+
 .btn-refresh:hover,
-.btn-remove:hover{
+.btn-remove:hover {
     background-color: #868686;
 }
 

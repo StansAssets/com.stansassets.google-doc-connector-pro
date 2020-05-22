@@ -77,14 +77,14 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetsListView.Clear();
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
             {
-                var item = new SpreadsheetItem(spreadsheet);
+                var item = new SpreadsheetView(spreadsheet);
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;
                 m_SpreadsheetsListView.Add(item);
             }
         }
 
-        void OnSpreadsheetRemoveClick(SpreadsheetItem sender, Spreadsheet spreadsheet)
+        void OnSpreadsheetRemoveClick(SpreadsheetView sender, Spreadsheet spreadsheet)
         {
             var dialog = EditorUtility.DisplayDialog("Confirm",
                 $"Are you sure want to remove '{spreadsheet.Name}' spreadsheet?",
