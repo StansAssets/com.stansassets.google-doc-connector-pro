@@ -51,7 +51,7 @@ namespace StansAssets.GoogleDoc
             }
             catch (Exception ex)
             {
-                SpreadsheetError(m_Spreadsheet, ex.Message);
+                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
                 return;
             }
 
@@ -72,12 +72,12 @@ namespace StansAssets.GoogleDoc
             }
             catch (GoogleApiException exception)
             {
-                SpreadsheetError(m_Spreadsheet, exception.Error.Message);
+                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
                 return;
             }
             catch (Exception exception)
             {
-                SpreadsheetError(m_Spreadsheet, exception.Message);
+                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
         }
         
-        private void SpreadsheetError(Spreadsheet spreadsheet, string exceptionMessage) 
+        private void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage) 
         {
             spreadsheet.SetError($"Error: {exceptionMessage}");
             spreadsheet.SetMachineName(SystemInfo.deviceName);

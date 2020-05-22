@@ -53,6 +53,11 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_DateTimeStr;
+        
+        public bool Synced => m_State == SyncState.Synced;
+        public bool InProgress => m_State == SyncState.InProgress;
+        public bool NotSynced => m_State == SyncState.NotSynced;
+        public bool SyncedWithError => m_State == SyncState.SyncedWithError;
 
         public DateTime? SyncDateTime
         {
@@ -139,26 +144,6 @@ namespace StansAssets.GoogleDoc
             var newSheet = new Sheet(sheetId, name);
             m_Sheets.Add(newSheet);
             return newSheet;
-        }
-        
-        internal bool Synced()
-        {
-            return m_State == SyncState.Synced;
-        }
-
-        internal bool InProgress()
-        {
-            return m_State == SyncState.InProgress;
-        }
-
-        internal bool NotSynced()
-        {
-            return m_State == SyncState.NotSynced;
-        }
-        
-        internal bool SyncedWithError()
-        {
-            return m_State == SyncState.SyncedWithError;
         }
 
         internal void InitFromCache()
