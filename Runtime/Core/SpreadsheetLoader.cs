@@ -154,9 +154,10 @@ namespace StansAssets.GoogleDoc
         private void SpreadsheetError(Spreadsheet spreadsheet, string exceptionMessage) 
         {
             spreadsheet.SetError($"Error: {exceptionMessage}");
-            spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
             spreadsheet.SetMachineName(SystemInfo.deviceName);
             m_Spreadsheet.SyncDateTime = DateTime.Now;
+            
+            spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
         }
     }
 }

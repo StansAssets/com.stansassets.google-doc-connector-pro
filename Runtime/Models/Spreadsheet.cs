@@ -140,6 +140,26 @@ namespace StansAssets.GoogleDoc
             m_Sheets.Add(newSheet);
             return newSheet;
         }
+        
+        internal bool Synced()
+        {
+            return m_State == SyncState.Synced;
+        }
+
+        internal bool InProgress()
+        {
+            return m_State == SyncState.InProgress;
+        }
+
+        internal bool NotSynced()
+        {
+            return m_State == SyncState.NotSynced;
+        }
+        
+        internal bool SyncedWithError()
+        {
+            return m_State == SyncState.SyncedWithError;
+        }
 
         internal void InitFromCache()
         {

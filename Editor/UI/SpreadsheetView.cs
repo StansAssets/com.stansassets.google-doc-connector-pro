@@ -36,7 +36,7 @@ namespace StansAssets.GoogleDoc
             m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
-            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
+            m_Spinner.visible = spreadsheet.InProgress();
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -51,8 +51,8 @@ namespace StansAssets.GoogleDoc
 
         void StateChange(Spreadsheet spreadsheet)
         {
-            m_Spinner.visible = (spreadsheet.State == Spreadsheet.SyncState.InProgress);
-            if (spreadsheet.State == Spreadsheet.SyncState.Synced || spreadsheet.State == Spreadsheet.SyncState.SyncedWithError)
+            m_Spinner.visible = spreadsheet.InProgress();
+            if (spreadsheet.Synced() || spreadsheet.SyncedWithError())
             {
                 InitWithData(spreadsheet);
             }
@@ -68,8 +68,8 @@ namespace StansAssets.GoogleDoc
 
             //Synced With Error
             m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
-            m_SpreadsheetErrorMessage.visible = !String.IsNullOrEmpty(spreadsheet.SyncErrorMassage);
-            if (spreadsheet.State == Spreadsheet.SyncState.SyncedWithError) { m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}"; }
+            m_SpreadsheetErrorMessage.visible = spreadsheet.SyncedWithError();
+            if (spreadsheet.SyncedWithError()) { m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}"; }
 
             m_SheetsFoldout.Clear();
 
