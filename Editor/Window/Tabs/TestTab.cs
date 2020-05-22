@@ -87,7 +87,7 @@ namespace StansAssets.GoogleDoc
         void OnSpreadsheetRemoveClick(SpreadsheetItem sender, Spreadsheet spreadsheet)
         {
             var dialog = EditorUtility.DisplayDialog("Confirm",
-                $"Are you sure want to remove spreadsheet '{spreadsheet.Name}'?",
+                $"Are you sure want to remove '{spreadsheet.Name}' spreadsheet?",
                 "Yes",
                 "No");
             if (dialog)
