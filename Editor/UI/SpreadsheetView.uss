@@ -1,7 +1,16 @@
 .root {
     flex-grow: 1;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 0;
+    margin-right: 0;
+    border-bottom-width: 1px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .top-panel {
@@ -15,15 +24,30 @@
 }
 
 .spreadsheet-loading {
-    margin-left: 10px;
+    margin-left: 0;
+    margin-right: 3px;
 }
 
 .spreadsheet-date {
     -unity-text-align: middle-right;
 }
-
+.id-panel {
+    flex-direction: row;
+    margin-bottom: 5px;
+}
 .spreadsheet-id {
     -unity-text-align: middle-left;
+}
+
+.spreadsheet-id-bold {
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
+}
+.spreadsheet-id-copy{
+    background-image: url("Resources/file_copy.png");
+    padding-left: 5px;
+    width: 16px;
+    height: 16px;
 }
 
 .spreadsheet-error {
@@ -74,8 +98,9 @@
 }
 
 .btn-refresh:hover,
-.btn-remove:hover {
-    background-color: #868686;
+.btn-remove:hover,
+.spreadsheet-id-copy:hover{
+    background-color: rgb(134, 134, 134);
 }
 
 .btn-remove {
@@ -113,4 +138,24 @@
     flex: 0 0 auto;
     flex-direction: row;
     flex-wrap: nowrap;
+}
+
+.spreadsheet-arrowToggle {
+    border-width: 0;
+    background-image: url('Resources/arrow.png');
+    background-color: initial;
+    margin-right: 5px;
+}
+
+.spreadsheet-arrowToggle-down {
+    background-image: url('Resources/arrow_down.png');
+}
+
+.bottom-panel {
+    padding-left: 23px;
+    flex-direction: row;
+}
+
+.expanded-panel {
+    padding: 5px 15px 5px 30px;
 }
