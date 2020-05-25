@@ -1,6 +1,7 @@
 ﻿using System;
 using StansAssets.Foundation.UIElements;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
@@ -17,8 +18,11 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetLastSyncMachineName;
 
         readonly VisualElement m_Spinner;
+        readonly VisualElement m_SpreadsheetExpandedPanel;
 
         readonly Foldout m_SheetsFoldout;
+
+        bool expandedPanel = false;
 
         public SpreadsheetView(Spreadsheet spreadsheet)
         {
@@ -32,11 +36,26 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
+            
+            m_SpreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
+            m_SpreadsheetExpandedPanel.style.display = expandedPanel ? DisplayStyle.Flex : DisplayStyle.None;
 
             m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
-            m_Spinner.visible = spreadsheet.InProgress;
+            m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
+            
+            var arrowToggleButton = this.Q<Button>("ArrowToggleBtn");
+            arrowToggleButton.clicked += () => { ExpandingPanel(arrowToggleButton); };
+            
+            var copyIdButton = this.Q<Button>("CopyIdBtn");
+            copyIdButton.clicked += () =>
+            {
+                TextEditor te = new TextEditor();
+                te.text = spreadsheet.Id;
+                te.SelectAll();
+                te.Copy();
+            };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -48,10 +67,25 @@ namespace StansAssets.GoogleDoc
 
             InitWithData(spreadsheet);
         }
+        
+        void ExpandingPanel(Button btn)
+        {
+            expandedPanel = !expandedPanel;
+            if (expandedPanel)
+            {
+                btn.AddToClassList("spreadsheet-arrowToggle-down");
+                m_SpreadsheetExpandedPanel.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                btn.RemoveFromClassList("spreadsheet-arrowToggle-down"); 
+                m_SpreadsheetExpandedPanel.style.display = DisplayStyle.None;
+            }
+        }
 
         void StateChange(Spreadsheet spreadsheet)
         {
-            m_Spinner.visible = spreadsheet.InProgress;
+            m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             if (spreadsheet.Synced || spreadsheet.SyncedWithError)
             {
                 InitWithData(spreadsheet);

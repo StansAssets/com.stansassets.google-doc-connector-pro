@@ -1,20 +1,31 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="spreatsheetRoot" class="root">
-        <Style src="SpreadsheetView.uss" />
+        <Style src="SpreadsheetView.uss"/>
         <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
-            <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name" />
-            <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date" />
-            <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
+            <ui:Button name="ArrowToggleBtn" class="spreadsheet-arrowToggle"/>
+            <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
+            <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name"/>
             <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
-                <ui:Button name="refreshBtn" class="btn-refresh" />
-                <ui:Button name="removeBtn" class="btn-remove" />
+                <ui:Button name="refreshBtn" class="btn-refresh"/>
+                <ui:Button name="removeBtn" class="btn-remove"/>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="spreadsheetIdPanel" class="top-panel">
-            <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id" />
-            <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
+        <ui:VisualElement name="spreadsheetBottomPanel" class="bottom-panel">
+            <ui:Label text="Label" name="StatusIcon"/>
+            <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date"/>
+            <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date"/>
         </ui:VisualElement>
-        <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
-        <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout" />
+        <ui:VisualElement name="spreadsheetExpandedPanel" class="expanded-panel">
+            <ui:VisualElement name="spreadsheetIdPanel" class="id-panel">
+                <ui:Label text="Id:" name="spreadsheetIdTitle" class="spreadsheet-id-bold"/>
+                <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id"/>
+                <ui:Button name="CopyIdBtn" tooltip="Copy spreadsheet to Clipboard" class="spreadsheet-id-copy"/>
+            </ui:VisualElement>
+            <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
+            <ui:VisualElement name="sheetFoldoutPanel" class="top-panel">
+                <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout"/>
+                <ui:Label text="" name="sheetFoldoutLable" class="spreadsheet-id"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
