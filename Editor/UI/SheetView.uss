@@ -1,5 +1,7 @@
-.sheet-container {
+.sheet-panel {
     margin-bottom: 5px;
+    border-width: 1px;
+    border-top-color: #c4c4c4;
 }
 
 .sheet-name {
@@ -12,8 +14,17 @@
     -unity-text-align: middle-left;
 }
 
-.sheet-foldout {
-    flex-grow: 1;
+.namedRange-panel {
+    flex-direction: row;
+}
+
+.namedRange-foldout {
+    /*flex-grow: 1;*/
     margin-left: 15px;
     -unity-font-style: bold;
+}
+
+.namedRange-foldout-label {
+    -unity-text-align: middle-left;
+    -unity-font-style: italic;
 }

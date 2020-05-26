@@ -31,10 +31,7 @@
 .spreadsheet-date {
     -unity-text-align: middle-right;
 }
-.id-panel {
-    flex-direction: row;
-    margin-bottom: 5px;
-}
+
 .spreadsheet-id {
     -unity-text-align: middle-left;
 }
@@ -43,7 +40,8 @@
     -unity-text-align: middle-left;
     -unity-font-style: bold;
 }
-.spreadsheet-id-copy{
+
+.spreadsheet-id-copy {
     background-image: url("Resources/file_copy.png");
     padding-left: 5px;
     width: 16px;
@@ -60,12 +58,6 @@
     flex-wrap: wrap;
     margin: 5px 0 5px 0;
     padding: 3px;
-}
-
-.spreadsheet-foldout {
-    flex-grow: 1;
-    margin-left: 5px;
-    -unity-font-style: bold;
 }
 
 .btn-refresh {
@@ -99,7 +91,7 @@
 
 .btn-refresh:hover,
 .btn-remove:hover,
-.spreadsheet-id-copy:hover{
+.spreadsheet-id-copy:hover {
     background-color: rgb(134, 134, 134);
 }
 
@@ -157,5 +149,43 @@
 }
 
 .expanded-panel {
-    padding: 5px 15px 5px 30px;
+    padding: 5px 35px 5px 30px;
+}
+
+.sheet-foldout {
+    /*flex-grow: 1;*/
+    margin-left: 5px;
+    -unity-font-style: bold;
+}
+
+.sheet-foldout-panel {
+    flex-direction: row;
+    margin-top: 5px;
+    max-height: 150px;
+    overflow: hidden;
+}
+
+.sheet-foldout-label {
+    -unity-text-align: middle-left;
+    -unity-font-style: italic;
+}
+
+.status-icon-yellow,
+.status-icon-red,
+.status-icon-green {
+    margin: 2px 5px 0 5px;
+    height: 10px;
+    width: 10px;
+}
+
+.status-icon-yellow {
+    background-image: url('Resources/circle_yellow.png');
+}
+
+.status-icon-green {
+    background-image: url('Resources/circle_green.png');
+}
+
+.status-icon-red {
+    background-image: url('Resources/circle_red.png');
 }

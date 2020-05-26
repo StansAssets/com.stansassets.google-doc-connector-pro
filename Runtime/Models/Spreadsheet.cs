@@ -22,6 +22,7 @@ namespace StansAssets.GoogleDoc
         
         public static readonly string SyncedWithErrorStringStatus ="[Synced With Error]";
         public static readonly string NotSyncedStringStatus ="[Not Synced]";
+        public static readonly string SyncedStringStatus ="[Synced]";
 
         [SerializeField]
         SyncState m_State;
@@ -33,7 +34,7 @@ namespace StansAssets.GoogleDoc
         
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
-        public IEnumerable<Sheet> Sheets => m_Sheets;
+        public List<Sheet> Sheets => m_Sheets;
 
         [SerializeField]
         string m_Id;
