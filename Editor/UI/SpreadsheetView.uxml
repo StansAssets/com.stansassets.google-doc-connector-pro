@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement name="spreatsheetRoot" class="root">
+    <ui:VisualElement name="spreadsheetRoot" class="root">
         <Style src="SpreadsheetView.uss"/>
         <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
             <ui:Button name="ArrowToggleBtn" class="spreadsheet-arrowToggle"/>
@@ -11,20 +11,22 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="spreadsheetBottomPanel" class="bottom-panel">
-            <ui:Label text="Label" name="StatusIcon"/>
+            <ui:Label text="" name="StatusIcon" class="status-icon-yellow"/>
             <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date"/>
-            <ui:Label text="last sync machine name" name="lastSyncMachineName" class="spreadsheet-date"/>
+            <ui:Label text="" name="lastSyncMachineName" class="spreadsheet-date"/>
         </ui:VisualElement>
         <ui:VisualElement name="spreadsheetExpandedPanel" class="expanded-panel">
-            <ui:VisualElement name="spreadsheetIdPanel" class="id-panel">
+            <ui:VisualElement name="spreadsheetIdPanel" class="top-panel">
                 <ui:Label text="Id:" name="spreadsheetIdTitle" class="spreadsheet-id-bold"/>
                 <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id"/>
                 <ui:Button name="CopyIdBtn" tooltip="Copy spreadsheet to Clipboard" class="spreadsheet-id-copy"/>
             </ui:VisualElement>
             <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
-            <ui:VisualElement name="sheetFoldoutPanel" class="top-panel">
-                <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="spreadsheet-foldout"/>
-                <ui:Label text="" name="sheetFoldoutLable" class="spreadsheet-id"/>
+            <ui:VisualElement name="sheetFoldoutPanel" class="sheet-foldout-panel">
+                <ui:ScrollView name="sheetFoldoutScrollView">
+                    <ui:Foldout text="Sheets:" name="sheetFoldout" value="true" class="sheet-foldout"/>
+                </ui:ScrollView>
+                <ui:Label text="No sheets" name="sheetFoldoutLabel" class="sheet-foldout-label"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

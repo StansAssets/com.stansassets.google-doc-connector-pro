@@ -1,8 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:VisualElement name="sheetRoot" class="sheet-container">
-        <Style src="SheetView.uss" />
-        <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" class="sheet-name" />
-        <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id" />
-        <ui:Foldout text="Named Range:" name="namedRangeFoldout" value="false" class="sheet-foldout" />
+    <ui:VisualElement name="sheetRoot" class="sheet-panel">
+        <Style src="SheetView.uss"/>
+        <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" class="sheet-name"/>
+        <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id"/>
+        <ui:VisualElement name="sheetRoot" class="namedRange-panel">
+            <ui:Foldout text="Named Range:" name="namedRangeFoldout" value="false" class="namedRange-foldout"/>
+            <ui:Label text="No Named Ranges" name="namedRangeFoldoutLabel" class="namedRange-foldout-label"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

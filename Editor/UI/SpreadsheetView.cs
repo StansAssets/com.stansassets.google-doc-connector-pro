@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using StansAssets.Foundation.UIElements;
 using UnityEditor;
 using UnityEngine;
@@ -16,13 +17,15 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetErrorMessage;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
+        readonly Label m_SpreadsheetStatusIcon;
+        readonly Label m_SpreadsheetFoldoutLabel;
 
         readonly VisualElement m_Spinner;
         readonly VisualElement m_SpreadsheetExpandedPanel;
 
         readonly Foldout m_SheetsFoldout;
 
-        bool expandedPanel = false;
+        bool m_ExpandedPanel = false;
 
         public SpreadsheetView(Spreadsheet spreadsheet)
         {
@@ -36,9 +39,11 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
+            m_SpreadsheetStatusIcon = this.Q<Label>("StatusIcon");
+            m_SpreadsheetFoldoutLabel = this.Q<Label>("sheetFoldoutLabel");
             
             m_SpreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
-            m_SpreadsheetExpandedPanel.style.display = expandedPanel ? DisplayStyle.Flex : DisplayStyle.None;
+            m_SpreadsheetExpandedPanel.style.display = m_ExpandedPanel ? DisplayStyle.Flex : DisplayStyle.None;
 
             m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
 
@@ -46,16 +51,10 @@ namespace StansAssets.GoogleDoc
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
             var arrowToggleButton = this.Q<Button>("ArrowToggleBtn");
-            arrowToggleButton.clicked += () => { ExpandingPanel(arrowToggleButton); };
+            arrowToggleButton.clicked += () => { ExpandingPanelChange(arrowToggleButton); };
             
             var copyIdButton = this.Q<Button>("CopyIdBtn");
-            copyIdButton.clicked += () =>
-            {
-                TextEditor te = new TextEditor();
-                te.text = spreadsheet.Id;
-                te.SelectAll();
-                te.Copy();
-            };
+            copyIdButton.clicked += () => { OnCopyIdClick(spreadsheet); };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -67,11 +66,54 @@ namespace StansAssets.GoogleDoc
 
             InitWithData(spreadsheet);
         }
-        
-        void ExpandingPanel(Button btn)
+      
+        void InitWithData(Spreadsheet spreadsheet)
         {
-            expandedPanel = !expandedPanel;
-            if (expandedPanel)
+            m_SpreadsheetId.text = spreadsheet.Id;
+            m_SpreadsheetName.text = spreadsheet.Name;
+            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : Spreadsheet.NotSyncedStringStatus;
+            //m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
+            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $" | {spreadsheet.LastSyncMachineName}"; }
+
+            //Synced With Error
+            m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
+            m_SpreadsheetErrorMessage.style.display = spreadsheet.SyncedWithError ? DisplayStyle.Flex : DisplayStyle.None;
+            if (spreadsheet.SyncedWithError)
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
+                // m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}";
+            } 
+            else if (spreadsheet.Synced)
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-green");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
+            }
+            
+            m_SpreadsheetFoldoutLabel.visible = (spreadsheet.Sheets.Count < 1);
+
+            m_SheetsFoldout.Clear();
+            
+            spreadsheet.Sheets.ForEach(sheet => m_SheetsFoldout.Add(new SheetView(sheet)));
+
+            /*foreach (var sheet in spreadsheet.Sheets)
+            {
+                var item = new SheetView(sheet);
+                m_SheetsFoldout.Add(item);
+
+                    foreach (var range in sheet.NamedRanges)
+                    {
+                        item.AddNamedRange(new NamedRangeView(range));
+                    }
+            }*/
+        }
+        
+        void ExpandingPanelChange(VisualElement btn)
+        {
+            m_ExpandedPanel = !m_ExpandedPanel;
+            if (m_ExpandedPanel)
             {
                 btn.AddToClassList("spreadsheet-arrowToggle-down");
                 m_SpreadsheetExpandedPanel.style.display = DisplayStyle.Flex;
@@ -90,35 +132,23 @@ namespace StansAssets.GoogleDoc
             {
                 InitWithData(spreadsheet);
             }
-        }
-
-        void InitWithData(Spreadsheet spreadsheet)
-        {
-            m_SpreadsheetId.text = spreadsheet.Id;
-            m_SpreadsheetName.text = spreadsheet.Name;
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : Spreadsheet.NotSyncedStringStatus;
-            m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
-            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text += " |"; }
-
-            //Synced With Error
-            m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
-            m_SpreadsheetErrorMessage.style.display = spreadsheet.SyncedWithError ? DisplayStyle.Flex : DisplayStyle.None;
-            if (spreadsheet.SyncedWithError) { m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}"; }
-
-            m_SheetsFoldout.Clear();
-
-            foreach (var sheet in spreadsheet.Sheets)
+            else
             {
-                var item = new SheetView(sheet);
-                m_SheetsFoldout.Add(item);
-                if (sheet.NamedRanges != null)
-                {
-                    foreach (var range in sheet.NamedRanges)
-                    {
-                        item.AddNamedRange(new NamedRangeView(range));
-                    }
-                }
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-yellow");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.NotSyncedStringStatus;
             }
+        }
+        
+        void OnCopyIdClick(Spreadsheet spreadsheet)
+        {
+            var te = new TextEditor()
+            {
+                text = spreadsheet.Id
+            };
+                
+            te.SelectAll();
+            te.Copy();
         }
     }
 }
