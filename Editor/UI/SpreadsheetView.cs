@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using StansAssets.Foundation.UIElements;
 using UnityEditor;
@@ -18,10 +19,11 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
         readonly Label m_SpreadsheetStatusIcon;
-        readonly Label m_SpreadsheetFoldoutLabel;
 
         readonly VisualElement m_Spinner;
         readonly VisualElement m_SpreadsheetExpandedPanel;
+        readonly VisualElement m_SheetFoldoutLabelPanel;
+        readonly ScrollView m_SheetFoldoutScrollView;
 
         readonly Foldout m_SheetsFoldout;
 
@@ -40,7 +42,9 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("StatusIcon");
-            m_SpreadsheetFoldoutLabel = this.Q<Label>("sheetFoldoutLabel");
+            
+            m_SheetFoldoutLabelPanel = this.Q<VisualElement>("sheetFoldoutLabelPanel");
+            m_SheetFoldoutScrollView = this.Q<ScrollView>("sheetFoldoutScrollView");
             
             m_SpreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
             m_SpreadsheetExpandedPanel.style.display = m_ExpandedPanel ? DisplayStyle.Flex : DisplayStyle.None;
@@ -71,9 +75,8 @@ namespace StansAssets.GoogleDoc
         {
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetName.text = spreadsheet.Name;
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : Spreadsheet.NotSyncedStringStatus;
-            //m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
-            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $" | {spreadsheet.LastSyncMachineName}"; }
+            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : Spreadsheet.NotSyncedStringStatus;
+            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| [{spreadsheet.LastSyncMachineName}]"; }
 
             //Synced With Error
             m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
@@ -83,7 +86,6 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.ClearClassList();
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
-                // m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}";
             } 
             else if (spreadsheet.Synced)
             {
@@ -92,22 +94,12 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
             }
             
-            m_SpreadsheetFoldoutLabel.visible = (spreadsheet.Sheets.Count < 1);
+            m_SheetFoldoutLabelPanel.style.display = (spreadsheet.Sheets.Count < 1) ? DisplayStyle.Flex : DisplayStyle.None;
+            m_SheetFoldoutScrollView.style.display = (spreadsheet.Sheets.Count < 1) ? DisplayStyle.None : DisplayStyle.Flex;
 
             m_SheetsFoldout.Clear();
             
             spreadsheet.Sheets.ForEach(sheet => m_SheetsFoldout.Add(new SheetView(sheet)));
-
-            /*foreach (var sheet in spreadsheet.Sheets)
-            {
-                var item = new SheetView(sheet);
-                m_SheetsFoldout.Add(item);
-
-                    foreach (var range in sheet.NamedRanges)
-                    {
-                        item.AddNamedRange(new NamedRangeView(range));
-                    }
-            }*/
         }
         
         void ExpandingPanelChange(VisualElement btn)

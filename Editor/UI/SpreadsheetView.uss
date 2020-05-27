@@ -7,10 +7,8 @@
     border-right-color: rgb(0, 0, 0);
     border-top-color: rgb(0, 0, 0);
     border-bottom-color: rgb(0, 0, 0);
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0 5px 5px 5px;
+    background-color: #4d4d4d;
 }
 
 .top-panel {
@@ -56,7 +54,7 @@
     border-radius: 3px;
     white-space: normal;
     flex-wrap: wrap;
-    margin: 5px 0 5px 0;
+    margin: 5px 35px 0 25px;
     padding: 3px;
 }
 
@@ -143,18 +141,17 @@
     background-image: url('Resources/arrow_down.png');
 }
 
-.bottom-panel {
+.spreadsheet-bottom-panel {
     padding-left: 23px;
     flex-direction: row;
 }
 
-.expanded-panel {
-    padding: 5px 35px 5px 30px;
+.spreadsheet-expanded-panel {
+    padding: 5px 35px 5px 25px;
 }
 
 .sheet-foldout {
-    /*flex-grow: 1;*/
-    margin-left: 5px;
+    flex-grow: 1;
     -unity-font-style: bold;
 }
 
@@ -163,11 +160,17 @@
     margin-top: 5px;
     max-height: 150px;
     overflow: hidden;
+    background-color: #383838;
 }
 
-.sheet-foldout-label {
+.sheet-foldout-label-italic {
     -unity-text-align: middle-left;
     -unity-font-style: italic;
+}
+
+.sheet-foldout-label-bold {
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
 }
 
 .status-icon-yellow,

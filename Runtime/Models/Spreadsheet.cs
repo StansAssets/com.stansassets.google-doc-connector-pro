@@ -20,9 +20,9 @@ namespace StansAssets.GoogleDoc
         
         public event Action<Spreadsheet> OnSyncStateChange = delegate { };
         
-        public static readonly string SyncedWithErrorStringStatus ="[Synced With Error]";
-        public static readonly string NotSyncedStringStatus ="[Not Synced]";
-        public static readonly string SyncedStringStatus ="[Synced]";
+        public static readonly string SyncedWithErrorStringStatus ="Synced With Error";
+        public static readonly string NotSyncedStringStatus ="Not Synced";
+        public static readonly string SyncedStringStatus ="Synced";
 
         [SerializeField]
         SyncState m_State;
