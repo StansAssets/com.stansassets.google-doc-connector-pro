@@ -5,7 +5,10 @@
         <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id"/>
         <ui:VisualElement name="sheetRoot" class="namedRange-panel">
             <ui:Foldout text="Named Range:" name="namedRangeFoldout" value="false" class="namedRange-foldout"/>
-            <ui:Label text="No Named Ranges" name="namedRangeFoldoutLabel" class="namedRange-foldout-label"/>
+            <ui:VisualElement name="namedRangeLabelPanel" class="namedRange-panel">
+                <ui:Label text="Named Range:" name="namedRangeFoldoutLabelBold" class="namedRange-foldout-label-bold"/>
+                <ui:Label text="No Named Ranges" name="namedRangeFoldoutLabelItalic" class="namedRange-foldout-label-italic"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
