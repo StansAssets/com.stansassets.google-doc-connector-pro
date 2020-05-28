@@ -1,5 +1,5 @@
 ﻿using StansAssets.Foundation.Editor;
-using StansAssets.Foundation.Editor.Plugins;
+using StansAssets.Plugins.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,11 +15,13 @@ namespace StansAssets.GoogleDoc
         protected override void OnWindowEnable(VisualElement root)
         {
             AddTab("TEST", new TestTab());
+            AddTab("About", new AboutTab());
         }
 
-        [MenuItem("Stan's Assets/Google Doc Connector/Settings", false, 0)]
-        public static void OpenSettingsTest() {
-            var window = ShowTowardsInspector(WindowTitle.text, WindowTitle.image);
+        [MenuItem(PackagesConfigEditor.RootMenu + "/" + GoogleDocConnectorPackage.DisplayName + "/Settings", false, 0)]
+        public static void OpenSettingsTest()
+        {
+            ShowTowardsInspector(WindowTitle.text, WindowTitle.image);
         }
 
         static GUIContent WindowTitle => new GUIContent("Google Doc Connector Pro");

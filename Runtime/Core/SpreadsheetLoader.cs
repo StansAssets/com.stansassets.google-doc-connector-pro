@@ -34,7 +34,7 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
             //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
-            try 
+            try
             {
                 using (var stream = new FileStream("Assets/Settings/credentials.json", FileMode.Open, FileAccess.Read))
                 {
@@ -85,10 +85,10 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
 
             string projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
-            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsLocations, m_Spreadsheet.Name);
+            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsFolderPath, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
-            m_Spreadsheet.CleanupSheets(); 
+            m_Spreadsheet.CleanupSheets();
             //Set Sheets
             foreach (var sheetData in spreadsheetData.Sheets)
             {
@@ -150,13 +150,13 @@ namespace StansAssets.GoogleDoc
             File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
         }
-        
-        private void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage) 
+
+        private void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
         {
             spreadsheet.SetError($"Error: {exceptionMessage}");
             spreadsheet.SetMachineName(SystemInfo.deviceName);
             m_Spreadsheet.SyncDateTime = DateTime.Now;
-            
+
             spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
         }
     }
