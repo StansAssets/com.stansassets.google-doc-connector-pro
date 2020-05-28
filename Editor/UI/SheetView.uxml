@@ -3,11 +3,16 @@
         <Style src="SheetView.uss"/>
         <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" class="sheet-name"/>
         <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id"/>
-        <ui:VisualElement name="sheetRoot" class="namedRange-panel">
-            <ui:Foldout text="Named Range:" name="namedRangeFoldout" value="false" class="namedRange-foldout"/>
+        <ui:VisualElement name="namedRangeRoot">
             <ui:VisualElement name="namedRangeLabelPanel" class="namedRange-panel">
-                <ui:Label text="Named Range:" name="namedRangeFoldoutLabelBold" class="namedRange-foldout-label-bold"/>
-                <ui:Label text="No Named Ranges" name="namedRangeFoldoutLabelItalic" class="namedRange-foldout-label-italic"/>
+                <ui:Button text="►" name="namedRangeArrowToggleBtn" class="namedRange-arrowToggle"/>
+                <ui:Label text="Named Range:" name="namedRangeLabel" class="namedRange-foldout"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="namedRangeContainer" class="namedRange-container">
+            </ui:VisualElement>
+            <ui:VisualElement name="namedRangeFoldoutLabelPanel" class="namedRange-panel">
+                <ui:Label text="No Named Ranges" name="namedRangeFoldoutLabelItalic"
+                          class="namedRange-foldout-label-italic"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
