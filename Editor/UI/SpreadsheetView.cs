@@ -25,9 +25,10 @@ namespace StansAssets.GoogleDoc
         readonly VisualElement m_SheetFoldoutLabelPanel;
         readonly ScrollView m_SheetFoldoutScrollView;
 
-        readonly Foldout m_SheetsFoldout;
+        readonly VisualElement m_SheetsContainer;
 
         bool m_ExpandedPanel = false;
+        bool m_ExpandedSheets = true;
 
         public SpreadsheetView(Spreadsheet spreadsheet)
         {
@@ -49,14 +50,18 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
             m_SpreadsheetExpandedPanel.style.display = m_ExpandedPanel ? DisplayStyle.Flex : DisplayStyle.None;
 
-            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
+            m_SheetsContainer = this.Q<VisualElement>("sheetContainer");
+            m_SheetsContainer.style.display = m_ExpandedSheets ? DisplayStyle.Flex : DisplayStyle.None;
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
             var arrowToggleButton = this.Q<Button>("ArrowToggleBtn");
-            arrowToggleButton.clicked += () => { ExpandingPanelChange(arrowToggleButton); };
+            arrowToggleButton.clicked += () => { ExpandingPanelChange(arrowToggleButton, m_SpreadsheetExpandedPanel, ref m_ExpandedPanel); };
             
+            var sheetArrowToggleButton = this.Q<Button>("SheetArrowToggleBtn");
+            sheetArrowToggleButton.clicked += () => { ExpandingPanelChange(sheetArrowToggleButton, m_SheetsContainer, ref m_ExpandedSheets); };
+
             var copyIdButton = this.Q<Button>("CopyIdBtn");
             copyIdButton.clicked += () => { OnCopyIdClick(spreadsheet); };
 
@@ -75,8 +80,8 @@ namespace StansAssets.GoogleDoc
         {
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetName.text = spreadsheet.Name;
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : Spreadsheet.NotSyncedStringStatus;
-            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| [{spreadsheet.LastSyncMachineName}]"; }
+            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
+            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
 
             //Synced With Error
             m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
@@ -97,23 +102,23 @@ namespace StansAssets.GoogleDoc
             m_SheetFoldoutLabelPanel.style.display = (spreadsheet.Sheets.Count < 1) ? DisplayStyle.Flex : DisplayStyle.None;
             m_SheetFoldoutScrollView.style.display = (spreadsheet.Sheets.Count < 1) ? DisplayStyle.None : DisplayStyle.Flex;
 
-            m_SheetsFoldout.Clear();
+            m_SheetsContainer.Clear();
             
-            spreadsheet.Sheets.ForEach(sheet => m_SheetsFoldout.Add(new SheetView(sheet)));
+            spreadsheet.Sheets.ForEach(sheet => m_SheetsContainer.Add(new SheetView(sheet)));
         }
         
-        void ExpandingPanelChange(VisualElement btn)
+        void ExpandingPanelChange(Button btn, VisualElement element, ref bool state)
         {
-            m_ExpandedPanel = !m_ExpandedPanel;
-            if (m_ExpandedPanel)
+            state = !state;
+            if (state)
             {
-                btn.AddToClassList("spreadsheet-arrowToggle-down");
-                m_SpreadsheetExpandedPanel.style.display = DisplayStyle.Flex;
+                btn.text = "▼";
+                element.style.display = DisplayStyle.Flex;
             }
             else
             {
-                btn.RemoveFromClassList("spreadsheet-arrowToggle-down"); 
-                m_SpreadsheetExpandedPanel.style.display = DisplayStyle.None;
+                btn.text = "►";
+                element.style.display = DisplayStyle.None;
             }
         }
 

@@ -1,4 +1,6 @@
 .namedRange-container {
+    background-color: #333333;
+    flex-grow: 1;
     height: 32px;
 }
 

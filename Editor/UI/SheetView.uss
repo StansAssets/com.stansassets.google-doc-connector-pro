@@ -1,25 +1,24 @@
 .sheet-panel {
-    margin-bottom: 5px;
+    margin-bottom: 1px;
 }
 
 .sheet-name {
     -unity-font-style: normal;
     -unity-text-align: middle-left;
+    padding: 0;
 }
 
 .sheet-id {
     -unity-font-style: normal;
     -unity-text-align: middle-left;
+    padding: 0;
 }
 
 .namedRange-panel {
     flex-direction: row;
-    background-color: #333333;
 }
 
 .namedRange-foldout {
-    /*flex-grow: 1;*/
-    margin-left: 15px;
     -unity-font-style: bold;
 }
 
@@ -28,7 +27,20 @@
     -unity-font-style: italic;
 }
 
-.namedRange-foldout-label-bold {
-    -unity-text-align: middle-left;
-    -unity-font-style: bold;
+.namedRange-arrowToggle {
+    border-width: 0;
+    background-color: initial;
+    margin-right: 3px;
+    opacity: 0.5;
+    font-size: 10px;
+    margin: 0;
+    padding: 0;
+}
+
+.namedRange-panel {
+    flex-direction: row;
+}
+
+.namedRange-container {
+    flex-grow: 1;
 }
