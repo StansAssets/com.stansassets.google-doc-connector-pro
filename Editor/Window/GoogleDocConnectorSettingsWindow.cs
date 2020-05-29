@@ -24,6 +24,6 @@ namespace StansAssets.GoogleDoc
             ShowTowardsInspector(WindowTitle.text, WindowTitle.image);
         }
 
-        static GUIContent WindowTitle => new GUIContent("Google Doc Connector Pro");
+        static GUIContent WindowTitle => new GUIContent(GoogleDocConnectorPackage.DisplayName);
     }
 }
