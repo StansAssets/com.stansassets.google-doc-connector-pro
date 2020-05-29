@@ -1,8 +1,9 @@
 {
     "name": "StansAssets.GoogleDocConnector",
     "references": [
-        "GUID:db0eb1f6c1244402aa4d287a997cdb47",
-        "GUID:e322f1a843d5b4f8095d71c70e5fbccc"
+        "StansAssets.Foundation",
+        "StansAssets.Foundation.Editor",
+        "StansAssets.Plugins"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using StansAssets.Foundation.Editor.Plugins;
+using StansAssets.Plugins.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
