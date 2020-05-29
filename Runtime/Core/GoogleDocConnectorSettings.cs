@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using StansAssets.Foundation.Editor;
-using StansAssets.Foundation.Patterns;
+using StansAssets.Plugins;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -10,10 +9,9 @@ using UnityEditor;
 
 namespace StansAssets.GoogleDoc
 {
-    internal class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
+    class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
     {
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
-        public override string SettingsLocations => FoundationConstants.RuntimeResourcesFolder;
 
         [SerializeField]
         List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
