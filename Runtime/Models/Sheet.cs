@@ -17,7 +17,7 @@ namespace StansAssets.GoogleDoc
         public int Id => m_Id;
 
         List<NamedRange> m_NamedRanges = new List<NamedRange>();
-        public List<NamedRange> NamedRanges => m_NamedRanges;
+        public IEnumerable<NamedRange> NamedRanges => m_NamedRanges;
 
         List<RowData> m_Rows = new List<RowData>();
         public IEnumerable<RowData> Rows => m_Rows;

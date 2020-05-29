@@ -4,10 +4,7 @@
         <ui:Label text="&lt;Sheet Name&gt;" name="sheetName" class="sheet-name"/>
         <ui:Label text="&lt;Sheet Id&gt;" name="sheetId" class="sheet-id"/>
         <ui:VisualElement name="namedRangeRoot">
-            <ui:VisualElement name="namedRangeLabelPanel" class="namedRange-panel">
-                <ui:Button text="►" name="namedRangeArrowToggleBtn" class="namedRange-arrowToggle"/>
-                <ui:Label text="Named Range:" name="namedRangeLabel" class="namedRange-foldout"/>
-            </ui:VisualElement>
+            <ui:Foldout text="Named Range:" value="false" name="namedRangFoldout" class="namedRange-foldout"/>
             <ui:VisualElement name="namedRangeContainer" class="namedRange-container">
             </ui:VisualElement>
             <ui:VisualElement name="namedRangeFoldoutLabelPanel" class="namedRange-panel">

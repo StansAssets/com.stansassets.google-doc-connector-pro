@@ -34,7 +34,7 @@ namespace StansAssets.GoogleDoc
         
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
-        public List<Sheet> Sheets => m_Sheets;
+        public IEnumerable<Sheet> Sheets => m_Sheets;
 
         [SerializeField]
         string m_Id;

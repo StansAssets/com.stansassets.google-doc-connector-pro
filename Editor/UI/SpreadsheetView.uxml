@@ -2,7 +2,7 @@
     <ui:VisualElement name="spreadsheetRoot" class="root">
         <Style src="SpreadsheetView.uss"/>
         <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
-            <ui:Button text="►" name="ArrowToggleBtn" class="spreadsheet-arrowToggle"/>
+            <ui:Foldout text="" value="false" name="arrowToggleFoldout" class="spreadsheet-arrowToggle"/>
             <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name"/>
             <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
@@ -11,7 +11,7 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="spreadsheetBottomPanel" class="spreadsheet-bottom-panel">
-            <ui:Label text="" name="StatusIcon" class="status-icon-yellow"/>
+            <ui:Label text="" name="statusIcon" class="status-icon-yellow"/>
             <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date"/>
             <ui:Label text="" name="lastSyncMachineName" class="spreadsheet-date"/>
         </ui:VisualElement>
@@ -24,10 +24,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="sheetFoldoutPanel" class="sheet-foldout-panel">
                 <ui:ScrollView name="sheetFoldoutScrollView" class="sheet-ScrollView">
-                    <ui:VisualElement name="SheetLabelPanel" class="top-panel">
-                        <ui:Button text="▼" name="SheetArrowToggleBtn" class="spreadsheet-arrowToggle"/>
-                        <ui:Label text="Sheets:" name="sheetLabel" class="sheet-foldout"/>
-                    </ui:VisualElement>
+                    <ui:Foldout text="Sheets:" value="true" name="sheetFoldout" class="sheet-foldout"/>
                     <ui:VisualElement name="sheetContainer" class="sheet-ScrollView">
                     </ui:VisualElement>
                 </ui:ScrollView>

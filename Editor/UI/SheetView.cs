@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
@@ -9,9 +10,8 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetName;
         readonly VisualElement m_NamedRangeFoldoutLabelPanel;
         readonly VisualElement m_NamedRangeContainer;
-        readonly VisualElement m_NamedRangeLabelPanel;
-
-        bool m_ExpandedNamedRanges = false;
+        readonly Foldout m_NamedRangFoldout;
+        
 
         public SheetView(Sheet sheet)
         {
@@ -23,38 +23,30 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetId = this.Q<Label>("sheetId");
             m_SpreadsheetName = this.Q<Label>("sheetName");
             m_NamedRangeFoldoutLabelPanel = this.Q<VisualElement>("namedRangeFoldoutLabelPanel");
-            m_NamedRangeLabelPanel = this.Q<VisualElement>("namedRangeLabelPanel");
             m_NamedRangeContainer = this.Q<VisualElement>("namedRangeContainer");
-            m_NamedRangeContainer.style.display = m_ExpandedNamedRanges ? DisplayStyle.Flex : DisplayStyle.None;
-            var arrowToggleButton = this.Q<Button>("namedRangeArrowToggleBtn");
-            arrowToggleButton.clicked += () => { ExpandingPanelChange(arrowToggleButton, m_NamedRangeContainer, ref m_ExpandedNamedRanges); };
+            
+            m_NamedRangFoldout = this.Q<Foldout>("namedRangFoldout");
+            m_NamedRangFoldout.RegisterValueChangedCallback(ev => ExpandingPanelChange(ev.newValue, m_NamedRangeContainer));
+            m_NamedRangeContainer.style.display = m_NamedRangFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
             InitWithData(sheet);
         }
 
-        void ExpandingPanelChange(Button btn, VisualElement element, ref bool state)
+        void ExpandingPanelChange(bool state, VisualElement element)
         {
-            state = !state;
-            if (state)
-            {
-                btn.text = "▼";
-                element.style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                btn.text = "►";
-                element.style.display = DisplayStyle.None;
-            }
+            element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         void InitWithData(Sheet sheet)
         {
             m_SpreadsheetId.text = $"Id: {sheet.Id.ToString()}";
             m_SpreadsheetName.text = $"Name: {sheet.Name}";
-            m_NamedRangeFoldoutLabelPanel.style.display = (sheet.NamedRanges == null || sheet.NamedRanges.Count < 1) ? DisplayStyle.Flex : DisplayStyle.None;
-            m_NamedRangeLabelPanel.style.display = (sheet.NamedRanges == null || sheet.NamedRanges.Count < 1) ? DisplayStyle.None : DisplayStyle.Flex;
+            var namedRangesList = sheet.NamedRanges?.ToList();
+            var emptyNamedRangesList = (namedRangesList == null || namedRangesList.Count < 1);
+            m_NamedRangeFoldoutLabelPanel.style.display = emptyNamedRangesList ? DisplayStyle.Flex : DisplayStyle.None;
+            m_NamedRangFoldout.style.display = emptyNamedRangesList ? DisplayStyle.None : DisplayStyle.Flex;
 
-            sheet.NamedRanges?.ForEach(range => m_NamedRangeContainer.Add(new NamedRangeView(range)));
+            namedRangesList?.ForEach(range => m_NamedRangeContainer.Add(new NamedRangeView(range)));
         }
     }
 }

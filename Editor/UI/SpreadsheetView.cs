@@ -21,14 +21,10 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetStatusIcon;
 
         readonly VisualElement m_Spinner;
-        readonly VisualElement m_SpreadsheetExpandedPanel;
         readonly VisualElement m_SheetFoldoutLabelPanel;
         readonly ScrollView m_SheetFoldoutScrollView;
 
         readonly VisualElement m_SheetsContainer;
-
-        bool m_ExpandedPanel = false;
-        bool m_ExpandedSheets = true;
 
         public SpreadsheetView(Spreadsheet spreadsheet)
         {
@@ -42,25 +38,25 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
-            m_SpreadsheetStatusIcon = this.Q<Label>("StatusIcon");
+            m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
             
             m_SheetFoldoutLabelPanel = this.Q<VisualElement>("sheetFoldoutLabelPanel");
             m_SheetFoldoutScrollView = this.Q<ScrollView>("sheetFoldoutScrollView");
             
-            m_SpreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
-            m_SpreadsheetExpandedPanel.style.display = m_ExpandedPanel ? DisplayStyle.Flex : DisplayStyle.None;
+            var spreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
 
             m_SheetsContainer = this.Q<VisualElement>("sheetContainer");
-            m_SheetsContainer.style.display = m_ExpandedSheets ? DisplayStyle.Flex : DisplayStyle.None;
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
-            var arrowToggleButton = this.Q<Button>("ArrowToggleBtn");
-            arrowToggleButton.clicked += () => { ExpandingPanelChange(arrowToggleButton, m_SpreadsheetExpandedPanel, ref m_ExpandedPanel); };
+            var arrowToggleFoldout = this.Q<Foldout>("arrowToggleFoldout");
+            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ExpandingPanelChange(ev.newValue, spreadsheetExpandedPanel));
+            spreadsheetExpandedPanel.style.display = arrowToggleFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             
-            var sheetArrowToggleButton = this.Q<Button>("SheetArrowToggleBtn");
-            sheetArrowToggleButton.clicked += () => { ExpandingPanelChange(sheetArrowToggleButton, m_SheetsContainer, ref m_ExpandedSheets); };
+            var sheetFoldout = this.Q<Foldout>("sheetFoldout");
+            sheetFoldout.RegisterValueChangedCallback(ev => ExpandingPanelChange(ev.newValue, m_SheetsContainer) );
+            m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
             var copyIdButton = this.Q<Button>("CopyIdBtn");
             copyIdButton.clicked += () => { OnCopyIdClick(spreadsheet); };
@@ -70,7 +66,7 @@ namespace StansAssets.GoogleDoc
 
             var refreshButton = this.Q<Button>("refreshBtn");
             refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
-
+            
             spreadsheet.OnSyncStateChange += StateChange;
 
             InitWithData(spreadsheet);
@@ -98,28 +94,20 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-green");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
             }
-            
-            m_SheetFoldoutLabelPanel.style.display = (spreadsheet.Sheets.Count < 1) ? DisplayStyle.Flex : DisplayStyle.None;
-            m_SheetFoldoutScrollView.style.display = (spreadsheet.Sheets.Count < 1) ? DisplayStyle.None : DisplayStyle.Flex;
+
+            var sheetList = spreadsheet.Sheets?.ToList();
+            var emptySheetList = (sheetList == null || sheetList.Count < 1);
+            m_SheetFoldoutLabelPanel.style.display = emptySheetList ? DisplayStyle.Flex : DisplayStyle.None;
+            m_SheetFoldoutScrollView.style.display = emptySheetList ? DisplayStyle.None : DisplayStyle.Flex;
 
             m_SheetsContainer.Clear();
             
-            spreadsheet.Sheets.ForEach(sheet => m_SheetsContainer.Add(new SheetView(sheet)));
+            sheetList?.ForEach(sheet => m_SheetsContainer.Add(new SheetView(sheet)));
         }
-        
-        void ExpandingPanelChange(Button btn, VisualElement element, ref bool state)
+
+        void ExpandingPanelChange(bool state, VisualElement element)
         {
-            state = !state;
-            if (state)
-            {
-                btn.text = "▼";
-                element.style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                btn.text = "►";
-                element.style.display = DisplayStyle.None;
-            }
+            element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         void StateChange(Spreadsheet spreadsheet)

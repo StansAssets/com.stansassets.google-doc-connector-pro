@@ -54,7 +54,7 @@
     border-radius: 3px;
     white-space: normal;
     flex-wrap: wrap;
-    margin: 5px 35px 0 25px;
+    margin: 5px 35px 0 18px;
     padding: 3px;
 }
 
@@ -131,27 +131,26 @@
 }
 
 .spreadsheet-arrowToggle {
-    border-width: 0;
-    background-color: initial;
-    margin-right: 3px;
-    opacity: 0.5;
-    font-size: 10px;
-    margin: 0;
-    padding: 0;
+    margin: -1px;
+    padding: -1px;
+    width: 18px;
 }
 
 .spreadsheet-bottom-panel {
-    padding-left: 9px;
+    padding-left: 18px;
     flex-direction: row;
     height: 9px;
 }
 
 .spreadsheet-expanded-panel {
-    padding: 2px 0 0 9px;
+    padding: 2px 0 0 18px;
 }
 
 .sheet-foldout {
     -unity-font-style: bold;
+    margin: -1px;
+    padding: -1px;
+    left: -4px;
 }
 
 .sheet-ScrollView {
