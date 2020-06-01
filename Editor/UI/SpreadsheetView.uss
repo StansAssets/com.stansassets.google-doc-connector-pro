@@ -170,6 +170,7 @@
 .sheet-foldout-label-italic {
     -unity-text-align: middle-left;
     -unity-font-style: italic;
+    padding-left: 18px;
 }
 
 .status-icon-yellow,
