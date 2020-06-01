@@ -1,10 +1,21 @@
 .root {
     flex-grow: 1;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 0;
+    margin-right: 0;
+    border-bottom-width: 1px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    padding-top: 1px;
+    background-color: #4d4d4d;
 }
 
-.top-panel {
+.spreadsheet-top-panel {
+    flex-direction: row;
+    padding-right: 1px;
+}
+.row-panel {
     flex-direction: row;
 }
 
@@ -15,7 +26,8 @@
 }
 
 .spreadsheet-loading {
-    margin-left: 10px;
+    margin-left: 1px;
+    margin-right: 1px;
 }
 
 .spreadsheet-date {
@@ -26,6 +38,21 @@
     -unity-text-align: middle-left;
 }
 
+.spreadsheet-id-bold {
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
+}
+
+.spreadsheet-id-copy {
+    background-image: url("Resources/file_copy.png");
+    padding-left: 5px;
+    width: 16px;
+    height: 16px;
+}
+.spreadsheet-id-panel {
+    padding-left: 18px;
+}
+
 .spreadsheet-error {
     -unity-text-align: middle-left;
     border-width: 1px;
@@ -34,14 +61,8 @@
     border-radius: 3px;
     white-space: normal;
     flex-wrap: wrap;
-    margin: 5px 0 5px 0;
+    margin: 5px 35px 5px 18px;
     padding: 3px;
-}
-
-.spreadsheet-foldout {
-    flex-grow: 1;
-    margin-left: 5px;
-    -unity-font-style: bold;
 }
 
 .btn-refresh {
@@ -60,8 +81,8 @@
     white-space: nowrap;
     color: rgb(228, 228, 228);
     border-width: 1px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 1px;
+    padding-right: 1px;
     padding-top: 1px;
     margin-right: 0;
     margin-bottom: 0;
@@ -74,8 +95,9 @@
 }
 
 .btn-refresh:hover,
-.btn-remove:hover {
-    background-color: #868686;
+.btn-remove:hover,
+.spreadsheet-id-copy:hover {
+    background-color: rgb(134, 134, 134);
 }
 
 .btn-remove {
@@ -93,8 +115,8 @@
     white-space: nowrap;
     color: rgb(228, 228, 228);
     border-width: 1px;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 1px;
+    padding-right: 1px;
     padding-top: 1px;
     margin-right: 0;
     margin-bottom: 0;
@@ -108,9 +130,65 @@
 }
 
 .spreadsheet-button-panel {
-    margin-left: 3px;
-    margin-right: 3px;
     flex: 0 0 auto;
     flex-direction: row;
     flex-wrap: nowrap;
+}
+
+.spreadsheet-arrowToggle {
+    margin: -1px;
+    padding: -1px;
+    width: 18px;
+}
+
+.spreadsheet-bottom-panel {
+    margin: 0 0 5px 18px;
+    flex-direction: row;
+    height: 9px;
+}
+
+.sheet-foldout {
+    -unity-font-style: bold;
+    margin: -1px;
+    padding: -1px;
+    left: -4px;
+    padding-left: 18px;
+}
+
+.sheet-ScrollView {
+    flex-grow: 1;
+}
+
+.sheet-foldout-panel {
+    margin-top: 2px;
+    background-color: #383838;
+    max-height: 150px;
+    overflow: hidden;
+    padding-bottom: 2px;
+}
+
+.sheet-foldout-label-italic {
+    -unity-text-align: middle-left;
+    -unity-font-style: italic;
+    padding-left: 18px;
+}
+
+.status-icon-yellow,
+.status-icon-red,
+.status-icon-green {
+    margin: 1px 2px 0 2px;
+    height: 8px;
+    width: 8px;
+}
+
+.status-icon-yellow {
+    background-image: url('Resources/circle_yellow.png');
+}
+
+.status-icon-green {
+    background-image: url('Resources/circle_green.png');
+}
+
+.status-icon-red {
+    background-image: url('Resources/circle_red.png');
 }

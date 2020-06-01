@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
@@ -7,7 +8,10 @@ namespace StansAssets.GoogleDoc
     {
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;
-        readonly Foldout m_NamedRangeFoldout;
+        readonly VisualElement m_NamedRangeFoldoutLabelPanel;
+        readonly VisualElement m_NamedRangeContainer;
+        readonly Foldout m_NamedRangFoldout;
+        
 
         public SheetView(Sheet sheet)
         {
@@ -18,19 +22,33 @@ namespace StansAssets.GoogleDoc
 
             m_SpreadsheetId = this.Q<Label>("sheetId");
             m_SpreadsheetName = this.Q<Label>("sheetName");
-            m_NamedRangeFoldout = this.Q<Foldout>("namedRangeFoldout");
+            m_NamedRangeFoldoutLabelPanel = this.Q<VisualElement>("namedRangeFoldoutLabelPanel");
+            m_NamedRangeContainer = this.Q<VisualElement>("namedRangeContainer");
+            
+            m_NamedRangFoldout = this.Q<Foldout>("namedRangFoldout");
+            m_NamedRangFoldout.RegisterValueChangedCallback(ev => ExpandingPanelChange(ev.newValue, m_NamedRangeContainer));
+            m_NamedRangeContainer.style.display = m_NamedRangFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+
             InitWithData(sheet);
+        }
+
+        void ExpandingPanelChange(bool state, VisualElement element)
+        {
+            element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         void InitWithData(Sheet sheet)
         {
-            m_SpreadsheetId.text = sheet.Id.ToString();
-            m_SpreadsheetName.text = sheet.Name;
-        }
-        
-        public void AddNamedRange(NamedRangeView range)
-        {
-            m_NamedRangeFoldout.Add(range);
+            m_SpreadsheetId.text = $"Id: {sheet.Id.ToString()}";
+            m_SpreadsheetName.text = $"Name: {sheet.Name}";
+            var emptyNamedRangesList = !sheet.NamedRanges.Any();
+            m_NamedRangeFoldoutLabelPanel.style.display = emptyNamedRangesList ? DisplayStyle.Flex : DisplayStyle.None;
+            m_NamedRangFoldout.style.display = emptyNamedRangesList ? DisplayStyle.None : DisplayStyle.Flex;
+            
+            foreach (var namedRange in sheet.NamedRanges)
+            {
+                m_NamedRangeContainer.Add(new NamedRangeView(namedRange));
+            }
         }
     }
 }

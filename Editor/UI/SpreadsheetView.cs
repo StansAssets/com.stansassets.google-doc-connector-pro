@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
 using StansAssets.Foundation.UIElements;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
@@ -15,10 +18,13 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetErrorMessage;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
+        readonly Label m_SpreadsheetStatusIcon;
 
         readonly VisualElement m_Spinner;
+        readonly VisualElement m_SheetFoldoutLabelPanel;
+        readonly ScrollView m_SheetFoldoutScrollView;
 
-        readonly Foldout m_SheetsFoldout;
+        readonly VisualElement m_SheetsContainer;
 
         public SpreadsheetView(Spreadsheet spreadsheet)
         {
@@ -32,59 +38,98 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
+            m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
+            
+            m_SheetFoldoutLabelPanel = this.Q<VisualElement>("sheetFoldoutLabelPanel");
+            m_SheetFoldoutScrollView = this.Q<ScrollView>("sheetFoldoutScrollView");
+            
+            var spreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
 
-            m_SheetsFoldout = this.Q<Foldout>("sheetFoldout");
+            m_SheetsContainer = this.Q<VisualElement>("sheetContainer");
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
-            m_Spinner.visible = spreadsheet.InProgress;
+            m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
+            
+            var arrowToggleFoldout = this.Q<Foldout>("arrowToggleFoldout");
+            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel));
+            spreadsheetExpandedPanel.style.display = arrowToggleFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+            
+            var sheetFoldout = this.Q<Foldout>("sheetFoldout");
+            sheetFoldout.RegisterValueChangedCallback(ev => ToggleElementDisplayState(ev.newValue, m_SheetsContainer) );
+            m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+
+            var copyIdButton = this.Q<Button>("CopyIdBtn");
+            copyIdButton.clicked += () => { OnCopyIdClick(spreadsheet); };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
 
             var refreshButton = this.Q<Button>("refreshBtn");
             refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
-
+            
             spreadsheet.OnSyncStateChange += StateChange;
 
             InitWithData(spreadsheet);
         }
-
-        void StateChange(Spreadsheet spreadsheet)
-        {
-            m_Spinner.visible = spreadsheet.InProgress;
-            if (spreadsheet.Synced || spreadsheet.SyncedWithError)
-            {
-                InitWithData(spreadsheet);
-            }
-        }
-
+      
         void InitWithData(Spreadsheet spreadsheet)
         {
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetName.text = spreadsheet.Name;
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("U") : Spreadsheet.NotSyncedStringStatus;
-            m_SpreadsheetLastSyncMachineName.text = spreadsheet.LastSyncMachineName;
-            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text += " |"; }
+            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
+            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
 
             //Synced With Error
             m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
             m_SpreadsheetErrorMessage.style.display = spreadsheet.SyncedWithError ? DisplayStyle.Flex : DisplayStyle.None;
-            if (spreadsheet.SyncedWithError) { m_SpreadsheetDate.text += $" | {Spreadsheet.SyncedWithErrorStringStatus}"; }
+            if (spreadsheet.SyncedWithError)
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
+            } 
+            else if (spreadsheet.Synced)
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-green");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
+            }
+            
+            var emptySheetList =  !spreadsheet.Sheets.Any();
+            m_SheetFoldoutLabelPanel.style.display = emptySheetList ? DisplayStyle.Flex : DisplayStyle.None;
+            m_SheetFoldoutScrollView.style.display = emptySheetList ? DisplayStyle.None : DisplayStyle.Flex;
 
-            m_SheetsFoldout.Clear();
-
+            m_SheetsContainer.Clear();
+            
             foreach (var sheet in spreadsheet.Sheets)
             {
-                var item = new SheetView(sheet);
-                m_SheetsFoldout.Add(item);
-                if (sheet.NamedRanges != null)
-                {
-                    foreach (var range in sheet.NamedRanges)
-                    {
-                        item.AddNamedRange(new NamedRangeView(range));
-                    }
-                }
+                m_SheetsContainer.Add(new SheetView(sheet));
             }
+        }
+
+        void ToggleElementDisplayState(bool state, VisualElement element)
+        {
+            element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        void StateChange(Spreadsheet spreadsheet)
+        {
+            m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
+            if (spreadsheet.Synced || spreadsheet.SyncedWithError)
+            {
+                InitWithData(spreadsheet);
+            }
+            else
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-yellow");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.NotSyncedStringStatus;
+            }
+        }
+        
+        void OnCopyIdClick(Spreadsheet spreadsheet)
+        {
+            GUIUtility.systemCopyBuffer = spreadsheet.Id;
         }
     }
 }

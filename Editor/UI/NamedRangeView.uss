@@ -1,4 +1,5 @@
-.namedRange-container {
+.namedRange-root {
+    flex-grow: 1;
     height: 32px;
 }
 
