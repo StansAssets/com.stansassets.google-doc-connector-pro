@@ -41,12 +41,14 @@ namespace StansAssets.GoogleDoc
         {
             m_SpreadsheetId.text = $"Id: {sheet.Id.ToString()}";
             m_SpreadsheetName.text = $"Name: {sheet.Name}";
-            var namedRangesList = sheet.NamedRanges?.ToList();
-            var emptyNamedRangesList = (namedRangesList == null || namedRangesList.Count < 1);
+            var emptyNamedRangesList = !sheet.NamedRanges.Any();
             m_NamedRangeFoldoutLabelPanel.style.display = emptyNamedRangesList ? DisplayStyle.Flex : DisplayStyle.None;
             m_NamedRangFoldout.style.display = emptyNamedRangesList ? DisplayStyle.None : DisplayStyle.Flex;
-
-            namedRangesList?.ForEach(range => m_NamedRangeContainer.Add(new NamedRangeView(range)));
+            
+            foreach (var namedRange in sheet.NamedRanges)
+            {
+                m_NamedRangeContainer.Add(new NamedRangeView(namedRange));
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="spreadsheetRoot" class="root">
         <Style src="SpreadsheetView.uss"/>
-        <ui:VisualElement name="spreadsheetTopPanel" class="top-panel">
+        <ui:VisualElement name="spreadsheetTopPanel" class="spreadsheet-top-panel">
             <ui:Foldout text="" value="false" name="arrowToggleFoldout" class="spreadsheet-arrowToggle"/>
             <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name"/>
@@ -17,7 +17,7 @@
         </ui:VisualElement>
         <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
         <ui:VisualElement name="spreadsheetExpandedPanel" class="spreadsheet-expanded-panel">
-            <ui:VisualElement name="spreadsheetIdPanel" class="top-panel">
+            <ui:VisualElement name="spreadsheetIdPanel" class="spreadsheet-id-panel row-panel">
                 <ui:Label text="Id:" name="spreadsheetIdTitle" class="spreadsheet-id-bold"/>
                 <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id"/>
                 <ui:Button name="CopyIdBtn" tooltip="Copy spreadsheet to Clipboard" class="spreadsheet-id-copy"/>
@@ -28,7 +28,7 @@
                     <ui:VisualElement name="sheetContainer" class="sheet-ScrollView">
                     </ui:VisualElement>
                 </ui:ScrollView>
-                <ui:VisualElement name="sheetFoldoutLabelPanel" class="top-panel">
+                <ui:VisualElement name="sheetFoldoutLabelPanel" class="row-panel">
                     <ui:Label text="No sheets" name="sheetFoldoutLabelItalic" class="sheet-foldout-label-italic"/>
                 </ui:VisualElement>
             </ui:VisualElement>

@@ -6,12 +6,14 @@
     -unity-font-style: normal;
     -unity-text-align: middle-left;
     padding: 0;
+    padding-left: 18px;
 }
 
 .sheet-id {
     -unity-font-style: normal;
     -unity-text-align: middle-left;
     padding: 0;
+    padding-left: 18px;
 }
 
 .namedRange-panel {
@@ -23,6 +25,7 @@
     margin: -1px;
     padding: -1px;
     left: -4px;
+    padding-left: 18px;
 }
 
 .namedRange-foldout-label-italic {
@@ -32,8 +35,11 @@
 
 .namedRange-panel {
     flex-direction: row;
+    padding-left: 18px;
 }
 
 .namedRange-container {
     flex-grow: 1;
+    padding-left: 18px;
+    background-color: #333333;
 }

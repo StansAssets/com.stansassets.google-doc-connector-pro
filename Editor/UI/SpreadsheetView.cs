@@ -94,15 +94,17 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-green");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
             }
-
-            var sheetList = spreadsheet.Sheets?.ToList();
-            var emptySheetList = (sheetList == null || sheetList.Count < 1);
+            
+            var emptySheetList =  !spreadsheet.Sheets.Any();
             m_SheetFoldoutLabelPanel.style.display = emptySheetList ? DisplayStyle.Flex : DisplayStyle.None;
             m_SheetFoldoutScrollView.style.display = emptySheetList ? DisplayStyle.None : DisplayStyle.Flex;
 
             m_SheetsContainer.Clear();
             
-            sheetList?.ForEach(sheet => m_SheetsContainer.Add(new SheetView(sheet)));
+            foreach (var sheet in spreadsheet.Sheets)
+            {
+                m_SheetsContainer.Add(new SheetView(sheet));
+            }
         }
 
         void ExpandingPanelChange(bool state, VisualElement element)
