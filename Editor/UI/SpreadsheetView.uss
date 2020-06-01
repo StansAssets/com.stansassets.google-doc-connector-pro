@@ -61,7 +61,7 @@
     border-radius: 3px;
     white-space: normal;
     flex-wrap: wrap;
-    margin: 5px 35px 0 18px;
+    margin: 5px 35px 5px 18px;
     padding: 3px;
 }
 
@@ -164,6 +164,7 @@
     background-color: #383838;
     max-height: 150px;
     overflow: hidden;
+    padding-bottom: 2px;
 }
 
 .sheet-foldout-label-italic {
