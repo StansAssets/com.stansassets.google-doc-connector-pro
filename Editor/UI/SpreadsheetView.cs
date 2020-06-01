@@ -51,11 +51,11 @@ namespace StansAssets.GoogleDoc
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
             var arrowToggleFoldout = this.Q<Foldout>("arrowToggleFoldout");
-            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ExpandingPanelChange(ev.newValue, spreadsheetExpandedPanel));
+            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel));
             spreadsheetExpandedPanel.style.display = arrowToggleFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             
             var sheetFoldout = this.Q<Foldout>("sheetFoldout");
-            sheetFoldout.RegisterValueChangedCallback(ev => ExpandingPanelChange(ev.newValue, m_SheetsContainer) );
+            sheetFoldout.RegisterValueChangedCallback(ev => ToggleElementDisplayState(ev.newValue, m_SheetsContainer) );
             m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
             var copyIdButton = this.Q<Button>("CopyIdBtn");
@@ -107,7 +107,7 @@ namespace StansAssets.GoogleDoc
             }
         }
 
-        void ExpandingPanelChange(bool state, VisualElement element)
+        void ToggleElementDisplayState(bool state, VisualElement element)
         {
             element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
         }
@@ -129,13 +129,7 @@ namespace StansAssets.GoogleDoc
         
         void OnCopyIdClick(Spreadsheet spreadsheet)
         {
-            var te = new TextEditor()
-            {
-                text = spreadsheet.Id
-            };
-                
-            te.SelectAll();
-            te.Copy();
+            GUIUtility.systemCopyBuffer = spreadsheet.Id;
         }
     }
 }
