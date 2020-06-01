@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
@@ -32,7 +34,7 @@ namespace StansAssets.GoogleDoc
                 spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
                 spreadsheet.Load();
 
-                PopulateListView();
+                PopulateListView(new List<Spreadsheet>() {spreadsheet1, spreadsheet});
             };
 
             var spreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
@@ -44,7 +46,7 @@ namespace StansAssets.GoogleDoc
                 var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheetIdField.text);
                 spreadsheet.Load();
                 spreadsheetIdField.value = k_SpreadsheetIdText;
-                PopulateListView();
+                PopulateListView(spreadsheet);
             };
 
             m_SpreadsheetsListView = this.Q<ListView>("spreadsheetsContainer");
@@ -75,13 +77,28 @@ namespace StansAssets.GoogleDoc
         void PopulateListView()
         {
             m_SpreadsheetsListView.Clear();
-            foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
+            PopulateListView(GoogleDocConnectorSettings.Instance.Spreadsheets);
+        }
+
+        void PopulateListView(IEnumerable<Spreadsheet> spreadsheets)
+        {
+            foreach (var spreadsheet in spreadsheets)
             {
-                var item = new SpreadsheetView(spreadsheet);
-                item.OnRemoveClick += OnSpreadsheetRemoveClick;
-                item.OnRefreshClick += OnSpreadsheetRefreshClick;
-                m_SpreadsheetsListView.Add(item);
+                PopulateListView(spreadsheet);
             }
+        }
+
+        void PopulateListView(Spreadsheet spreadsheet)
+        {
+            var spreadsheetView = new SpreadsheetView(spreadsheet);
+            if (m_SpreadsheetsListView.Contains(spreadsheetView))
+            {
+                return;
+            }
+            
+            spreadsheetView.OnRemoveClick += OnSpreadsheetRemoveClick;
+            spreadsheetView.OnRefreshClick += OnSpreadsheetRefreshClick;
+            m_SpreadsheetsListView.Add(spreadsheetView);
         }
 
         void OnSpreadsheetRemoveClick(SpreadsheetView sender, Spreadsheet spreadsheet)
