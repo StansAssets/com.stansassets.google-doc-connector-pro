@@ -59,7 +59,9 @@ namespace StansAssets.GoogleDoc
             m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
             var copyIdButton = this.Q<Button>("CopyIdBtn");
-            copyIdButton.clicked += () => { OnCopyIdClick(spreadsheet); };
+            copyIdButton.clicked += () => { OnCopyClick(spreadsheet.Id); };
+            var copyUrlButton = this.Q<Button>("CopyURLBtn");
+            copyUrlButton.clicked += () => { OnCopyClick(spreadsheet.Url); };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -127,9 +129,9 @@ namespace StansAssets.GoogleDoc
             }
         }
         
-        void OnCopyIdClick(Spreadsheet spreadsheet)
+        void OnCopyClick(string copyObject)
         {
-            GUIUtility.systemCopyBuffer = spreadsheet.Id;
+            GUIUtility.systemCopyBuffer = copyObject;
         }
     }
 }

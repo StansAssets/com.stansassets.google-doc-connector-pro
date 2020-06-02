@@ -15,6 +15,7 @@
     flex-direction: row;
     padding-right: 1px;
 }
+
 .row-panel {
     flex-direction: row;
 }
@@ -45,12 +46,18 @@
 
 .spreadsheet-id-copy {
     background-image: url("Resources/file_copy.png");
-    padding-left: 5px;
-    width: 16px;
-    height: 16px;
 }
+
+.spreadsheet-url-copy {
+    background-image: url("Resources/browser.png");
+}
+
 .spreadsheet-id-panel {
     padding-left: 18px;
+}
+
+.spreadsheet-button-id {
+    margin-left: 5px;
 }
 
 .spreadsheet-error {
@@ -65,8 +72,7 @@
     padding: 3px;
 }
 
-.btn-refresh {
-    background-image: url('Resources/refresh.png');
+.btn-left {
     width: 16px;
     height: 16px;
     border-left-width: 1px;
@@ -94,14 +100,16 @@
     border-bottom-right-radius: -1px;
 }
 
-.btn-refresh:hover,
-.btn-remove:hover,
-.spreadsheet-id-copy:hover {
+.btn-refresh {
+    background-image: url('Resources/refresh.png');
+}
+
+.btn-left:hover,
+.btn-right:hover {
     background-color: rgb(134, 134, 134);
 }
 
-.btn-remove {
-    background-image: url('Resources/cross.png');
+.btn-right {
     width: 16px;
     height: 16px;
     border-right-width: 1px;
@@ -127,6 +135,10 @@
     border-bottom-left-radius: -1px;
     border-top-left-radius: -1px;
     border-left-width: -1px;
+}
+
+.btn-remove {
+    background-image: url('Resources/cross.png');
 }
 
 .spreadsheet-button-panel {
