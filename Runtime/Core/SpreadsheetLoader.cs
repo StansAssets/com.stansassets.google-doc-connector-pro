@@ -85,8 +85,7 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
 
             string projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
-            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsFolderPath);
-            spreadsheetPath = string.Format(spreadsheetPath, Path.PathSeparator, m_Spreadsheet.Name);
+            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsFolderPath, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
             m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
@@ -149,8 +148,19 @@ namespace StansAssets.GoogleDoc
                 }
             }
             
+            try
+            {
+                var newFile = JsonConvert.SerializeObject(m_Spreadsheet);
+                FileInfo file = new FileInfo(spreadsheetPath);
+                file.Directory.Create();
+                File.WriteAllText(file.FullName, newFile);
+            }
+            catch (Exception ex)
+            {
+                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
+                return;
+            }
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
-            File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
         }
 
         private void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
