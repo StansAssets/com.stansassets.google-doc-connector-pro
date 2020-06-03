@@ -35,6 +35,9 @@ namespace StansAssets.GoogleDoc
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
         public IEnumerable<Sheet> Sheets => m_Sheets;
+        
+        internal bool SpreadsheetFoldOutUIState = true;
+        internal bool SheetFoldOutUIState  = true;
 
         [SerializeField]
         string m_Id;

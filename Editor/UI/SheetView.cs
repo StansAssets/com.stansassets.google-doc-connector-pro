@@ -26,15 +26,17 @@ namespace StansAssets.GoogleDoc
             m_NamedRangeContainer = this.Q<VisualElement>("namedRangeContainer");
             
             m_NamedRangFoldout = this.Q<Foldout>("namedRangFoldout");
-            m_NamedRangFoldout.RegisterValueChangedCallback(ev => ExpandingPanelChange(ev.newValue, m_NamedRangeContainer));
+            m_NamedRangFoldout.value = sheet.NamedRangeFoldOutUIState;
+            m_NamedRangFoldout.RegisterValueChangedCallback(ev => ExpandingPanelChange(ev.newValue, m_NamedRangeContainer, out sheet.NamedRangeFoldOutUIState));
             m_NamedRangeContainer.style.display = m_NamedRangFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
             InitWithData(sheet);
         }
 
-        void ExpandingPanelChange(bool state, VisualElement element)
+        void ExpandingPanelChange(bool state, VisualElement element, out bool uiState)
         {
             element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
+            uiState = state;
         }
 
         void InitWithData(Sheet sheet)

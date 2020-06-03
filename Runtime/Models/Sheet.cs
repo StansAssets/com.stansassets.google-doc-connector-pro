@@ -21,6 +21,8 @@ namespace StansAssets.GoogleDoc
 
         List<RowData> m_Rows = new List<RowData>();
         public IEnumerable<RowData> Rows => m_Rows;
+        
+        internal bool NamedRangeFoldOutUIState = false;
 
         public Sheet(int id, string name)
         {
