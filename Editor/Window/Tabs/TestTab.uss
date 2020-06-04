@@ -1,0 +1,6 @@
+
+.tab-spreadsheets-container{
+    flex-grow: 0;
+    max-height: initial;
+    overflow: hidden;
+}

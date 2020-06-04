@@ -1,11 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="window-root" style="flex-grow: 1;&#10;">
-        <Style src="TestTab.uss" />
-        <ui:Button text="Load Example" name="loadExampleConfigBtn" />
+        <Style src="TestTab.uss"/>
+        <ui:Button text="Load Example" name="loadExampleConfigBtn"/>
         <ui:VisualElement name="footerContainer" style="flex-direction: row;&#10;margin-top: 5px;&#10;">
-            <ui:TextField picking-mode="Ignore" text="Paste Spreadsheet Id here..." name="spreadsheetIdText" tooltip="Paste Spreadsheet Id here..." class="add-new-spreadsheet" style="flex-grow: 1;&#10;" />
-            <ui:Button text="+" name="addSpreadsheetBtn" />
+            <ui:TextField picking-mode="Ignore" text="Paste Spreadsheet Id here..." name="spreadsheetIdText"
+                          tooltip="Paste Spreadsheet Id here..." class="add-new-spreadsheet"
+                          style="flex-grow: 1;&#10;"/>
+            <ui:Button text="+" name="addSpreadsheetBtn"/>
         </ui:VisualElement>
-        <ui:ListView focusable="True" name="spreadsheetsContainer" style="flex-grow: 1;&#10;" />
+        <ui:ListView focusable="True" name="spreadsheetsContainer" class="tab-spreadsheets-container"/>
     </ui:VisualElement>
 </ui:UXML>
