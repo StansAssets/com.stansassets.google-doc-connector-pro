@@ -21,9 +21,9 @@
                 <ui:Label text="Id:" name="spreadsheetIdTitle" class="spreadsheet-id-bold"/>
                 <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id"/>
                 <ui:VisualElement name="spreadsheetButtonPanelID" class="spreadsheet-button-panel spreadsheet-button-id">
-                    <ui:Button name="CopyIdBtn" tooltip="Copy spreadsheet Id to Clipboard"
+                    <ui:Button name="copyIdBtn" tooltip="Copy spreadsheet Id to Clipboard"
                                class="spreadsheet-id-copy btn-left"/>
-                    <ui:Button name="CopyURLBtn" tooltip="Copy spreadsheet URL to Clipboard"
+                    <ui:Button name="copyURLBtn" tooltip="Copy spreadsheet URL to Clipboard"
                                class="spreadsheet-url-copy btn-right"/>
                 </ui:VisualElement>
             </ui:VisualElement>
