@@ -74,13 +74,13 @@ namespace StansAssets.GoogleDoc
 
         void PopulateListView()
         {
-            m_SpreadsheetsListView.Clear();
+            m_SpreadsheetsListView.hierarchy.Clear();
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
             {
                 var item = new SpreadsheetView(spreadsheet);
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;
-                m_SpreadsheetsListView.Add(item);
+                m_SpreadsheetsListView.hierarchy.Add(item);
             }
         }
 
