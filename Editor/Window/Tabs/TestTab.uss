@@ -1,6 +1,20 @@
-
-.tab-spreadsheets-container{
-    flex-grow: 0;
+.window-root {
+    flex-grow: 1;
     max-height: initial;
-    overflow: hidden;
+}
+
+.footer-container {
+    flex-direction: row;
+    margin: 5px 0 5px 0;
+    flex-shrink: 0;
+}
+
+.add-new-spreadsheet {
+    flex-grow: 1;
+}
+
+.tab-spreadsheets-container {
+    flex-grow: 0;
+    flex-shrink: 0;
+    max-height: initial;
 }
