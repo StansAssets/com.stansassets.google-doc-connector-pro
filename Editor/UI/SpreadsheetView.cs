@@ -51,11 +51,13 @@ namespace StansAssets.GoogleDoc
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
             var arrowToggleFoldout = this.Q<Foldout>("arrowToggleFoldout");
-            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel));
+            arrowToggleFoldout.value = spreadsheet.SpreadsheetFoldOutUIState;
+            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel, out spreadsheet.SpreadsheetFoldOutUIState));
             spreadsheetExpandedPanel.style.display = arrowToggleFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             
             var sheetFoldout = this.Q<Foldout>("sheetFoldout");
-            sheetFoldout.RegisterValueChangedCallback(ev => ToggleElementDisplayState(ev.newValue, m_SheetsContainer) );
+            sheetFoldout.value = spreadsheet.SheetFoldOutUIState;
+            sheetFoldout.RegisterValueChangedCallback(ev => ToggleElementDisplayState(ev.newValue, m_SheetsContainer, out spreadsheet.SheetFoldOutUIState));
             m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
             var copyIdButton = this.Q<Button>("CopyIdBtn");
@@ -107,9 +109,10 @@ namespace StansAssets.GoogleDoc
             }
         }
 
-        void ToggleElementDisplayState(bool state, VisualElement element)
+        void ToggleElementDisplayState(bool state, VisualElement element, out bool uiState)
         {
             element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
+            uiState = state;
         }
 
         void StateChange(Spreadsheet spreadsheet)
