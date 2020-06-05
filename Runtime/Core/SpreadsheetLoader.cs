@@ -36,11 +36,11 @@ namespace StansAssets.GoogleDoc
             //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
             try
             {
-                using (var stream = new FileStream("Assets/Settings/credentials.json", FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream($"{GoogleDocConnectorSettings.Instance.SettingsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    string credPath = "Assets/Settings/token.json";
+                    string credPath = $"{GoogleDocConnectorSettings.Instance.SettingsFolderPath}/token.json";
                     credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                     GoogleClientSecrets.Load(stream).Secrets,
                     s_Scopes,
@@ -85,7 +85,7 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
 
             string projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
-            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SettingsFolderPath, m_Spreadsheet.Name);
+            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
             m_Spreadsheet.CleanupSheets();
