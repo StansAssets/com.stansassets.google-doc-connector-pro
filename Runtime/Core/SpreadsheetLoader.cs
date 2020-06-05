@@ -148,18 +148,7 @@ namespace StansAssets.GoogleDoc
                 }
             }
             
-            try
-            {
-                var newFile = JsonConvert.SerializeObject(m_Spreadsheet);
-                FileInfo file = new FileInfo(spreadsheetPath);
-                file.Directory.Create();
-                File.WriteAllText(file.FullName, newFile);
-            }
-            catch (Exception ex)
-            {
-                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
-                return;
-            }
+            File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
         }
 
