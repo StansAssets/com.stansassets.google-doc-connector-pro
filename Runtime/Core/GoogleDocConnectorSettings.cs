@@ -13,7 +13,7 @@ namespace StansAssets.GoogleDoc
     class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
     {
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
-        public override string SettingsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
+        public string СredentialsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
         public string SpreadsheetsFolderPath => $"{SettingsFolderPath}/Spreadsheets";
 
         [SerializeField]
@@ -21,14 +21,7 @@ namespace StansAssets.GoogleDoc
         public IEnumerable<Spreadsheet> Spreadsheets => m_Spreadsheets;
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
-
-        public GoogleDocConnectorSettings()
-        {
-            if (!Directory.Exists(SpreadsheetsFolderPath))
-                Directory.CreateDirectory(SpreadsheetsFolderPath);
-        }
-
-
+        
         public Spreadsheet CreateSpreadsheet(string id)
         {
             if (m_SpreadsheetsMap.ContainsKey(id))

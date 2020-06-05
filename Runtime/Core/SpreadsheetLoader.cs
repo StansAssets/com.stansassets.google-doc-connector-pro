@@ -33,20 +33,21 @@ namespace StansAssets.GoogleDoc
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
+
             //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
             try
             {
-                using (var stream = new FileStream($"{GoogleDocConnectorSettings.Instance.SettingsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream($"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    string credPath = $"{GoogleDocConnectorSettings.Instance.SettingsFolderPath}/token.json";
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/token.json";
                     credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    s_Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        s_Scopes,
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true)).Result;
                 }
             }
             catch (Exception ex)
@@ -89,24 +90,25 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
             m_Spreadsheet.CleanupSheets();
+
             //Set Sheets
             foreach (var sheetData in spreadsheetData.Sheets)
             {
-                int sheetId = sheetData.Properties.SheetId ?? 0;
+                var sheetId = sheetData.Properties.SheetId ?? 0;
                 var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
                 sheet.CleanupRows();
 
                 var gridData = sheetData.Data[0];
-                int rowIndex = 0;
+                var rowIndex = 0;
                 foreach (var rowData in gridData.RowData)
                 {
-                    RowData row = new RowData();
+                    var row = new RowData();
                     if (rowData.Values != null)
                     {
-                        int columnIndex = 0;
+                        var columnIndex = 0;
                         foreach (var cellData in rowData.Values)
                         {
-                            DataCell cell = new DataCell(rowIndex, columnIndex, cellData.FormattedValue);
+                            var cell = new DataCell(rowIndex, columnIndex, cellData.FormattedValue);
                             row.AddCell(cell);
 
                             columnIndex++;
@@ -118,12 +120,13 @@ namespace StansAssets.GoogleDoc
                     rowIndex++;
                 }
             }
+
             //Set NamedRanges
             if (spreadsheetData.NamedRanges != null)
             {
                 foreach (var namedRangeData in spreadsheetData.NamedRanges)
                 {
-                    int sheetId = namedRangeData.Range.SheetId ?? 0;
+                    var sheetId = namedRangeData.Range.SheetId ?? 0;
                     var sheet = m_Spreadsheet.GetSheet(sheetId);
                     var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
                     var range = namedRangeData.Range;
@@ -134,9 +137,9 @@ namespace StansAssets.GoogleDoc
                     Debug.Assert(range.EndColumnIndex != null, "range.EndColumnIndex != null");
 
                     var cells = new List<Cell>();
-                    for (int i = range.StartRowIndex.Value; i < range.EndRowIndex.Value; i++)
+                    for (var i = range.StartRowIndex.Value; i < range.EndRowIndex.Value; i++)
                     {
-                        for (int j = range.StartColumnIndex.Value; j < range.EndColumnIndex.Value; j++)
+                        for (var j = range.StartColumnIndex.Value; j < range.EndColumnIndex.Value; j++)
                         {
                             var cell = new Cell(i, j);
                             cells.Add(cell);
@@ -147,11 +150,14 @@ namespace StansAssets.GoogleDoc
                 }
             }
 
+            if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
+                Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
+
             File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
         }
 
-        private void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
+        void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
         {
             spreadsheet.SetError($"Error: {exceptionMessage}");
             spreadsheet.SetMachineName(SystemInfo.deviceName);
