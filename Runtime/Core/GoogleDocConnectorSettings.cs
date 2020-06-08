@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using StansAssets.Plugins;
 using UnityEngine;
 
@@ -12,14 +13,15 @@ namespace StansAssets.GoogleDoc
     class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
     {
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
+        public string СredentialsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
+        public string SpreadsheetsFolderPath => $"{SettingsFolderPath}/Spreadsheets";
 
         [SerializeField]
         List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
         public IEnumerable<Spreadsheet> Spreadsheets => m_Spreadsheets;
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
-
-
+        
         public Spreadsheet CreateSpreadsheet(string id)
         {
             if (m_SpreadsheetsMap.ContainsKey(id))

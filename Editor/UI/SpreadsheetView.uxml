@@ -2,7 +2,7 @@
     <ui:VisualElement name="spreadsheetRoot" class="root">
         <Style src="SpreadsheetView.uss"/>
         <ui:VisualElement name="spreadsheetTopPanel" class="spreadsheet-top-panel">
-            <ui:Foldout text="" value="false" name="arrowToggleFoldout" class="spreadsheet-arrowToggle"/>
+            <ui:Foldout text="" name="arrowToggleFoldout" class="spreadsheet-arrowToggle"/>
             <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
             <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name"/>
             <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
@@ -29,7 +29,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="sheetFoldoutPanel" class="sheet-foldout-panel">
                 <ui:ScrollView name="sheetFoldoutScrollView" class="sheet-ScrollView">
-                    <ui:Foldout text="Sheets:" value="true" name="sheetFoldout" class="sheet-foldout"/>
+                    <ui:Foldout text="Sheets:" name="sheetFoldout" class="sheet-foldout"/>
                     <ui:VisualElement name="sheetContainer" class="sheet-ScrollView">
                     </ui:VisualElement>
                 </ui:ScrollView>
