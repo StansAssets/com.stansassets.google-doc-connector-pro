@@ -89,6 +89,7 @@ namespace StansAssets.GoogleDoc
             var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath, m_Spreadsheet.Name);
             m_Spreadsheet.SetPath(spreadsheetPath);
             m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
+            m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
             m_Spreadsheet.CleanupSheets();
 
             //Set Sheets

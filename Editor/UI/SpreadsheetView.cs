@@ -60,8 +60,10 @@ namespace StansAssets.GoogleDoc
             sheetFoldout.RegisterValueChangedCallback(ev => ToggleElementDisplayState(ev.newValue, m_SheetsContainer, out spreadsheet.SheetFoldOutUIState));
             m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
 
-            var copyIdButton = this.Q<Button>("CopyIdBtn");
-            copyIdButton.clicked += () => { OnCopyIdClick(spreadsheet); };
+            var copyIdButton = this.Q<Button>("copyIdBtn");
+            copyIdButton.clicked += () => { OnCopyClick(spreadsheet.Id); };
+            var copyUrlButton = this.Q<Button>("copyURLBtn");
+            copyUrlButton.clicked += () => { OnCopyClick(spreadsheet.Url); };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -130,9 +132,9 @@ namespace StansAssets.GoogleDoc
             }
         }
         
-        void OnCopyIdClick(Spreadsheet spreadsheet)
+        void OnCopyClick(string copyObject)
         {
-            GUIUtility.systemCopyBuffer = spreadsheet.Id;
+            GUIUtility.systemCopyBuffer = copyObject;
         }
     }
 }

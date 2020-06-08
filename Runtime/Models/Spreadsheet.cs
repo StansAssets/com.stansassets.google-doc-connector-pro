@@ -42,6 +42,10 @@ namespace StansAssets.GoogleDoc
         [SerializeField]
         string m_Id;
         public string Id => m_Id;
+        
+        [SerializeField]
+        string m_Url;
+        public string Url => m_Url;
 
         [SerializeField]
         string m_Name;
@@ -94,6 +98,11 @@ namespace StansAssets.GoogleDoc
         internal void SetName(string name)
         {
             m_Name = name;
+        }
+        
+        internal void SetUrl(string url)
+        {
+            m_Url = url;
         }
         
         internal void SetError(string error)
