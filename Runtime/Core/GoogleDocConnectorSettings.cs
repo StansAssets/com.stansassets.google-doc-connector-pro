@@ -10,7 +10,7 @@ using UnityEditor;
 
 namespace StansAssets.GoogleDoc
 {
-    public class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
+    class GoogleDocConnectorSettings : PackageScriptableSettingsSingleton<GoogleDocConnectorSettings>, ISerializationCallbackReceiver
     {
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
         public string СredentialsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
@@ -52,7 +52,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetsMap.Remove(spreadsheet.Id);
         }
 
-        public Spreadsheet GetSpreadsheet(string id)
+        internal Spreadsheet GetSpreadsheet(string id)
         {
             if (m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet))
             {
