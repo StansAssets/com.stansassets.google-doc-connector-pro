@@ -1,0 +1,25 @@
+{
+    "name": "StansAssets.GoogleDocConnector.EditorTests",
+    "references": [
+        "StansAssets.GoogleDoc",
+        "StansAssets.GoogleDocConnector",
+        "StansAssets.Foundation.Editor",
+        "StansAssets.Foundation",
+        "StansAssets.Plugins",
+        "StansAssets.Plugins.Editor",
+        "StansAssets.GoogleDocConnector.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
