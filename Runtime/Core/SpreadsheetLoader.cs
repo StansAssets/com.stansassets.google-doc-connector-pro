@@ -15,7 +15,7 @@ using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
 namespace StansAssets.GoogleDoc
 {
-    internal sealed class SpreadsheetLoader
+    sealed class SpreadsheetLoader
     {
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
@@ -109,7 +109,11 @@ namespace StansAssets.GoogleDoc
                         var columnIndex = 0;
                         foreach (var cellData in rowData.Values)
                         {
-                            var cell = new DataCell(rowIndex, columnIndex, cellData.FormattedValue);
+                            var cellValue = new CellValue(
+                                cellData.FormattedValue, 
+                                cellData.EffectiveValue.FormulaValue,
+                                cellData.EffectiveValue.StringValue);
+                            var cell = new Cell(rowIndex, columnIndex, cellValue);
                             row.AddCell(cell);
 
                             columnIndex++;

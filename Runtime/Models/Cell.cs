@@ -1,17 +1,50 @@
 ﻿namespace StansAssets.GoogleDoc
 {
-    public class Cell
+    /// <summary>
+    /// The Spreadsheet Cell.
+    /// </summary>
+    public class Cell : ICellPointer 
     {
-        readonly int m_Row;
-        public int Row => m_Row;
+        /// <summary>
+        /// Cell Row
+        /// </summary>
+        public int Row { get; }
+        
+        /// <summary>
+        /// Cell Column
+        /// </summary>
+        public int Column { get; }
 
-        readonly int m_Column;
-        public int Column => m_Column;
+        /// <summary>
+        /// Cell Name.
+        /// For example "A1" / "B20" 
+        /// </summary>
+        public string Name { get; }
 
-        public Cell(int row, int column)
+        /// <summary>
+        /// Cell Value representation.
+        /// </summary>
+        public CellValue Value { get; }
+        
+        internal Cell(int row, int column)
         {
-            m_Row = row;
-            m_Column = column;
+            Row = row;
+            Column = column;
+        }
+
+        internal Cell(int row, int column, CellValue cellValue):this(row, column)
+        {
+            Value = cellValue;
+        }
+
+        /// <summary>
+        /// See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Converted value.</returns>
+        public T GetValue<T>()
+        {
+            return Value.GetValue<T>();
         }
     }
 }

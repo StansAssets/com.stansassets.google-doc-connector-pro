@@ -1,13 +1,12 @@
 {
-    "name": "StansAssets.GoogleDocConnector.EditorTests",
+    "name": "StansAssets.GoogleDoc.EditorTests",
     "references": [
         "StansAssets.GoogleDoc",
-        "StansAssets.GoogleDocConnector",
+        "StansAssets.GoogleDoc.Editor",
         "StansAssets.Foundation.Editor",
         "StansAssets.Foundation",
         "StansAssets.Plugins",
-        "StansAssets.Plugins.Editor",
-        "StansAssets.GoogleDocConnector.Editor"
+        "StansAssets.Plugins.Editor"
     ],
     "includePlatforms": [
         "Editor"

@@ -30,7 +30,6 @@ namespace StansAssets.GoogleDoc.EditorTests
         [OneTimeTearDown]
         public void Teardown()
         {
-            
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId1);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId2);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId3);

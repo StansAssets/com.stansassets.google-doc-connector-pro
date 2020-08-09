@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class NamedRangeView : VisualElement
+    class NamedRangeView : VisualElement
     {
         readonly Label m_NamedRangeId;
         readonly Label m_NamedRangeName;

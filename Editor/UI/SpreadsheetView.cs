@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class SpreadsheetView : VisualElement
+    class SpreadsheetView : VisualElement
     {
         public event Action<SpreadsheetView, Spreadsheet> OnRemoveClick = delegate { };
         public event Action<Spreadsheet> OnRefreshClick = delegate { };

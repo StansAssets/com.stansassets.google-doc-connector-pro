@@ -1,7 +1,7 @@
 {
-    "name": "StansAssets.GoogleDocConnector.Editor",
+    "name": "StansAssets.GoogleDoc.Editor",
     "references": [
-        "StansAssets.GoogleDocConnector",
+        "StansAssets.GoogleDoc",
         "StansAssets.Foundation.Editor",
         "StansAssets.Foundation",
         "StansAssets.Plugins",

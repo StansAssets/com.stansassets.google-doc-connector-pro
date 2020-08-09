@@ -1,6 +1,6 @@
 ﻿namespace StansAssets.GoogleDoc
 {
-    public static class GoogleDocConnectorEditor
+    static class GoogleDocConnectorEditor
     {
         public static Spreadsheet CreateSpreadsheet(string id)
         {

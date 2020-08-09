@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class SheetView : VisualElement
+    class SheetView : VisualElement
     {
         readonly Label m_SpreadsheetId;
         readonly Label m_SpreadsheetName;

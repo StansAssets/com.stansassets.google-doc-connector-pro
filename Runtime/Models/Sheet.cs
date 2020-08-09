@@ -5,18 +5,33 @@ using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
+    /// <summary>
+    /// A sheet in a spreadsheet.
+    /// </summary>
     [Serializable]
     public class Sheet
     {
         [SerializeField]
         string m_Name;
+        
+        /// <summary>
+        /// The name of the sheet.
+        /// </summary>
         public string Name => m_Name;
 
         [SerializeField]
         int m_Id;
+        
+        /// <summary>
+        /// The ID of the sheet.
+        /// </summary>
         public int Id => m_Id;
 
         List<NamedRange> m_NamedRanges = new List<NamedRange>();
+        
+        /// <summary>
+        /// The named ranges defined in a sheet.
+        /// </summary>
         public IEnumerable<NamedRange> NamedRanges => m_NamedRanges;
 
         List<RowData> m_Rows = new List<RowData>();
@@ -24,7 +39,7 @@ namespace StansAssets.GoogleDoc
         
         internal bool NamedRangeFoldOutUIState = false;
 
-        public Sheet(int id, string name)
+        internal Sheet(int id, string name)
         {
             m_Id = id;
             m_Name = name;
@@ -72,58 +87,117 @@ namespace StansAssets.GoogleDoc
             return namedRange;
         }
 
-        public object GetCell(int row, int column)
+        /// <summary>
+        /// Gets cell from specified row & col.
+        /// </summary>
+        /// <param name="row">Row index. Index starts from 0 //TODO is it starts from 0 or 1 </param>
+        /// <param name="column">Column index. Index starts from 0 //TODO is it starts from 0 or 1 </param>
+        /// <returns>Cell objects or `null` if cell wasn't found.</returns>
+        public Cell GetCell(int row, int column)
         {
             if (row < m_Rows.Count)
             {
                 var r = m_Rows[row];
                 if (column < r.Cells.Count())
-                    return r.Cells.ElementAt(column).Data;
+                    return r.Cells.ElementAt(column);
             }
 
             return null;
         }
-      
-        /// <summary>
-        /// Returns a list of objects of the requested Name Range
-        /// </summary>
-        /// <param name="name">Name of the requested Named Range</param>
-        public List<object> GetRange(string name)
-        {
-            var range = GetNamedRange(name);
-            if (range is null)
-                return new List<object>();
 
-            return range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
+        /// <summary>
+        /// Get sell by name. For example "A1" or "B5"
+        /// </summary>
+        /// <param name="name">The name of the cell.</param>
+        /// <returns>Cell objects or `null` if cell wasn't found.</returns>
+        public Cell GetCell(string name)
+        {
+            throw new NotImplementedException();
         }
 
-        public List<object> GetRow(int row)
+        public T GetCellValue<T>(int row, int column)
         {
-            List<object> rowData = new List<object>();
+            return GetCell(row, column).GetValue<T>();
+        }
+        
+        public T GetCellValue<T>(string name)
+        {
+            return GetCell(name).GetValue<T>();
+        }
+        
+        /// <summary>
+        /// Returns all the cells in the row.
+        /// </summary>
+        /// <param name="row">Row index. Index starts from 0 //TODO is it starts from 0 or 1 </param>
+        /// <returns>Cells List.</returns>
+        public List<Cell> GetRow(int row)
+        {
+            var rowData = new List<Cell>();
             if (row >= 0 && row < m_Rows.Count)
             {
-                foreach (var cell in m_Rows[row].Cells)
-                {
-                    rowData.Add(cell.Data);
-                }
+                rowData.AddRange(m_Rows[row].Cells);
             }
             return rowData;
         }
 
-        public List<object> GetColumn(int column)
+        public List<T> GetRowValues<T>(int row)
         {
-            List<object> rowData = new List<object>();
+            return GetRow(row).Select(cell => cell.GetValue<T>()).ToList();
+        }
+
+        public List<Cell> GetColumn(int column)
+        {
+            var rowData = new List<Cell>();
             foreach (var row in m_Rows)
             {
-                foreach (var cell in row.Cells)
-                {
-                    if (cell.Column == column)
-                    {
-                        rowData.Add(cell.Data);
-                    }
-                }
+                rowData.AddRange(row.Cells.Where(cell => cell.Column == column));
             }
             return rowData;
+        }
+
+        public List<Cell> GetColumn(string name)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public List<T> GetColumnValues<T>(int column)
+        {
+            return GetColumn(column).Select(cell => cell.GetValue<T>()).ToList();
+        }
+        
+        public List<T> GetColumnValues<T>(string name)
+        {
+            return GetColumn(name).Select(cell => cell.GetValue<T>()).ToList();
+        }
+        
+        //TODO GetRange(GridRange range)
+
+        /// <summary>
+        /// example: "A1B2" +  other formulas??
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public List<Cell> GetRange(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Returns a list of <see cref="Cell"/> objects of the requested Named Range.
+        /// </summary>
+        /// <param name="name">Name of the requested Named Range</param>
+        public List<Cell> GetNamedRangeCells(string name)
+        {
+            var range = GetNamedRange(name);
+            return range is null 
+                ? new List<Cell>() 
+                : range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
+        }
+        
+        
+        public List<T> GetNamedRangeValues<T>(string name)
+        {
+            return GetNamedRangeCells(name).Select(cell => cell.GetValue<T>()).ToList();
         }
     }
 }

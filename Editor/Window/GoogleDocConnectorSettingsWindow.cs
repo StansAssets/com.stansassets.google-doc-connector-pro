@@ -7,7 +7,7 @@ using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
 namespace StansAssets.GoogleDoc
 {
-    public class GoogleDocConnectorSettingsWindow : PackageSettingsWindow<GoogleDocConnectorSettingsWindow>
+    class GoogleDocConnectorSettingsWindow : PackageSettingsWindow<GoogleDocConnectorSettingsWindow>
     {
         protected override PackageInfo GetPackageInfo()
             => PackageManagerUtility.GetPackageInfo(GoogleDocConnectorSettings.Instance.PackageName);

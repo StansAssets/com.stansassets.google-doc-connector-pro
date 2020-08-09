@@ -2,24 +2,39 @@
 
 namespace StansAssets.GoogleDoc
 {
+    /// <summary>
+    /// A named range.
+    /// </summary>
     public class NamedRange
     {
-        readonly string m_Id;
-        public string Id => m_Id;
+        /// <summary>
+        /// The Id of the named range.
+        /// </summary>
+        public string Id { get; }
 
-        readonly string m_Name;
-        public string Name => m_Name;
+        /// <summary>
+        /// The name of the named range.
+        /// </summary>
+        public string Name { get; }
 
-        List<Cell> m_Cells = new List<Cell>();
-        public IEnumerable<Cell> Cells => m_Cells;
+        IEnumerable<ICellPointer> m_Cells = new List<ICellPointer>();
+        
+        /// <summary>
+        /// The cells inside the named range.
+        /// </summary>
+        public IEnumerable<ICellPointer> Cells => m_Cells;
+        
+        //TODO add GridRange
+        //https://developers.google.com/resources/api-libraries/documentation/sheets/v4/csharp/latest/classGoogle_1_1Apis_1_1Sheets_1_1v4_1_1Data_1_1GridRange.html
+        // public GridRange Range { get; }
 
-        public NamedRange(string id, string name)
+        internal NamedRange(string id, string name)
         {
-            m_Id = id;
-            m_Name = name;
+            Id = id;
+            Name = name;
         }
 
-        internal void SetCells(List<Cell> cells)
+        internal void SetCells(IEnumerable<ICellPointer> cells)
         {
             m_Cells = cells;
         }

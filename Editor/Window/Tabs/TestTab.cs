@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    public class TestTab : BaseTab
+    class TestTab : BaseTab
     {
         const string k_SpreadsheetIdText = "Paste Spreadsheet Id here...";
 
@@ -61,7 +61,7 @@ namespace StansAssets.GoogleDoc
 
             var sheet = spreadsheet.GetSheet(0);
             Debug.Log(sheet.GetCell(3, 0));
-            List<object> range = sheet.GetRange(k_RangeName);
+            var range = sheet.GetRange(k_RangeName);
             var builder = new StringBuilder($"NamedRange Id:{k_RangeName} Data:");
             foreach (var obj in range)
             {
