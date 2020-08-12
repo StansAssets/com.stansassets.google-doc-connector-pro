@@ -18,7 +18,7 @@ namespace StansAssets.GoogleDoc
         const string k_RangeName = "Bike3";
 
         public TestTab()
-            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab.uxml")
+            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab")
         {
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>

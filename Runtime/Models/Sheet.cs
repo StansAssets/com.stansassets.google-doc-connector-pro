@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc
@@ -13,7 +14,7 @@ namespace StansAssets.GoogleDoc
     {
         [SerializeField]
         string m_Name;
-        
+
         /// <summary>
         /// The name of the sheet.
         /// </summary>
@@ -21,14 +22,14 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         int m_Id;
-        
+
         /// <summary>
         /// The ID of the sheet.
         /// </summary>
         public int Id => m_Id;
 
         List<NamedRange> m_NamedRanges = new List<NamedRange>();
-        
+
         /// <summary>
         /// The named ranges defined in a sheet.
         /// </summary>
@@ -36,7 +37,7 @@ namespace StansAssets.GoogleDoc
 
         List<RowData> m_Rows = new List<RowData>();
         public IEnumerable<RowData> Rows => m_Rows;
-        
+
         internal bool NamedRangeFoldOutUIState = false;
 
         internal Sheet(int id, string name)
@@ -59,7 +60,7 @@ namespace StansAssets.GoogleDoc
         {
             m_Rows = rows;
         }
-        
+
         /// <summary>
         /// Determines whether an element is in the sheet
         /// </summary>
@@ -69,7 +70,7 @@ namespace StansAssets.GoogleDoc
         {
             return m_NamedRanges.Exists(n => name.Equals(n.Name));
         }
-        
+
         /// <summary>
         /// Returns NamedRange with provided name
         /// </summary>
@@ -90,12 +91,14 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Gets cell from specified row & col.
         /// </summary>
-        /// <param name="row">Row index. Index starts from 0 //TODO is it starts from 0 or 1 </param>
-        /// <param name="column">Column index. Index starts from 0 //TODO is it starts from 0 or 1 </param>
+        /// <param name="row">Row index. Index starts from 1 </param>
+        /// <param name="column">Column index. Index starts from 1 </param>
         /// <returns>Cell objects or `null` if cell wasn't found.</returns>
         public Cell GetCell(int row, int column)
         {
-            if (row < m_Rows.Count)
+            row -= 1;
+            column -= 1;
+            if (row >= 0 && row < m_Rows.Count)
             {
                 var r = m_Rows[row];
                 if (column < r.Cells.Count())
@@ -112,31 +115,36 @@ namespace StansAssets.GoogleDoc
         /// <returns>Cell objects or `null` if cell wasn't found.</returns>
         public Cell GetCell(string name)
         {
-            throw new NotImplementedException();
+            var cellNew = new Cell(name);
+            if (cellNew.Row < 0 && cellNew.Row >= m_Rows.Count)
+                return null;
+            return m_Rows[cellNew.Row - 1].Cells.FirstOrDefault(cell => cell.Column == cellNew.Column);
         }
 
         public T GetCellValue<T>(int row, int column)
         {
             return GetCell(row, column).GetValue<T>();
         }
-        
+
         public T GetCellValue<T>(string name)
         {
             return GetCell(name).GetValue<T>();
         }
-        
+
         /// <summary>
         /// Returns all the cells in the row.
         /// </summary>
-        /// <param name="row">Row index. Index starts from 0 //TODO is it starts from 0 or 1 </param>
+        /// <param name="row">Row index. Index starts from 1</param>
         /// <returns>Cells List.</returns>
         public List<Cell> GetRow(int row)
         {
+            row -= 1;
             var rowData = new List<Cell>();
             if (row >= 0 && row < m_Rows.Count)
             {
                 rowData.AddRange(m_Rows[row].Cells);
             }
+
             return rowData;
         }
 
@@ -152,34 +160,71 @@ namespace StansAssets.GoogleDoc
             {
                 rowData.AddRange(row.Cells.Where(cell => cell.Column == column));
             }
+
             return rowData;
         }
 
         public List<Cell> GetColumn(string name)
         {
-            throw new NotImplementedException();
+            if (name.Equals(string.Empty))
+                return new List<Cell>();
+
+            var index = 0;
+            for (var i = name.Length; i > 0; i--)
+            {
+                index += char.ToUpper(name[i - 1]) - 65;
+            }
+
+            return GetColumn(index);
         }
-        
+
         public List<T> GetColumnValues<T>(int column)
         {
             return GetColumn(column).Select(cell => cell.GetValue<T>()).ToList();
         }
-        
+
         public List<T> GetColumnValues<T>(string name)
         {
             return GetColumn(name).Select(cell => cell.GetValue<T>()).ToList();
         }
-        
-        //TODO GetRange(GridRange range)
+
+        public List<Cell> GetRange(GridRange range)
+        {
+            var rowData = new List<Cell>();
+            if (range.StartRowIndex == 0 && range.EndRowIndex == 0)
+            {
+                for (var i = 0; i > m_Rows.Count; i++)
+                {
+                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex-1 && cell.Column < range.EndColumnIndex));
+                }
+            }
+            else if (range.StartColumnIndex == 0 && range.EndColumnIndex == 0)
+            {
+                for (var i = range.StartRowIndex-1; i > range.EndRowIndex; i++)
+                {
+                    rowData.AddRange(m_Rows[i].Cells);
+                }
+            }
+            else
+            {
+                for (var i = range.StartRowIndex-1; i > range.EndRowIndex; i++)
+                {
+                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex-1 && cell.Column < range.EndColumnIndex));
+                }
+            }
+
+            return rowData;
+        }
 
         /// <summary>
-        /// example: "A1B2" +  other formulas??
+        /// example: "A1:B2"
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public List<Cell> GetRange(string name)
         {
-            throw new NotImplementedException();
+            var range = new GridRange(name);
+            return GetRange(range);
         }
 
         /// <summary>
@@ -189,12 +234,11 @@ namespace StansAssets.GoogleDoc
         public List<Cell> GetNamedRangeCells(string name)
         {
             var range = GetNamedRange(name);
-            return range is null 
-                ? new List<Cell>() 
+            return range is null
+                ? new List<Cell>()
                 : range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
         }
-        
-        
+
         public List<T> GetNamedRangeValues<T>(string name)
         {
             return GetNamedRangeCells(name).Select(cell => cell.GetValue<T>()).ToList();

@@ -109,6 +109,10 @@ namespace StansAssets.GoogleDoc
                         var columnIndex = 0;
                         foreach (var cellData in rowData.Values)
                         {
+                            if (cellData.FormattedValue == null)
+                            {
+                                continue;
+                            }
                             var cellValue = new CellValue(
                                 cellData.FormattedValue, 
                                 cellData.EffectiveValue.FormulaValue,

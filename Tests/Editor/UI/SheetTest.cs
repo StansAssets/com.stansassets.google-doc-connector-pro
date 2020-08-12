@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 
 namespace StansAssets.GoogleDoc.EditorTests
 {
@@ -42,8 +43,8 @@ namespace StansAssets.GoogleDoc.EditorTests
         {
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
-            var rangeName = sheet.GetRange(k_RangeName);
-            Assert.True(rangeName.Count > 0, "Expected rangeName spreadsheet Count > 0 but it was not");
+            var rangeName = sheet.GetNamedRange(k_RangeName);
+            Assert.True(rangeName.Cells.Count() > 1, "Expected rangeName spreadsheet Count > 1 but it was not");
         }
         
         [Test]
@@ -52,8 +53,8 @@ namespace StansAssets.GoogleDoc.EditorTests
         {
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
-            var rangeName = sheet.GetRange(k_RangeName);
-            Assert.False(rangeName.Count > 0, "Expected rangeName spreadsheet Count > 0 but it was not");
+            var rangeName = sheet.GetNamedRange(k_RangeName);
+            Assert.False(rangeName.Cells.Count() > 1, "Expected rangeName spreadsheet Count < 1 but it was not");
         }
         
         [Test]

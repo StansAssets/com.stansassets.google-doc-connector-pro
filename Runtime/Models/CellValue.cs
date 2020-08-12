@@ -37,6 +37,7 @@ namespace StansAssets.GoogleDoc
         /// <returns>Converted value.</returns>
         public T GetValue<T>()
         {
+            
             //TODO implement
             return default;
         }
