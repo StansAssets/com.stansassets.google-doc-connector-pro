@@ -130,8 +130,8 @@ namespace StansAssets.GoogleDoc.EditorTests
         {
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
-            var cell = sheet.GetCell("c12");
-            Assert.True(!string.IsNullOrEmpty(cell.ToString()) && cell.Row == 11 && cell.Column == 2, "Expected get first cell from spreadsheet but it was not");
+            var cell = sheet.GetCell("a12");
+            Assert.True(!string.IsNullOrEmpty(cell.ToString()) && cell.Row == 11 && cell.Column == 0, "Expected get first cell from spreadsheet but it was not");
         }
         
         [Test]
@@ -141,8 +141,8 @@ namespace StansAssets.GoogleDoc.EditorTests
         {
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
-            var cell = sheet.GetColumn("c");
-            Assert.True(cell.Count > 0 && cell.First(s => s.Row == 11 && s.Column == 2).Value.StringValue== "qwe", "Expected get first cell from spreadsheet but it was not");
+            var cell = sheet.GetColumn("a");
+            Assert.True(cell.Count > 0 && cell.First(s => s.Row == 11 && s.Column == 0).Value.StringValue== "qwe", "Expected get first cell from spreadsheet but it was not");
         }
         
         [Test]
@@ -163,7 +163,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         {
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
-            var cell = sheet.GetCell(0, 1).GetValue<int>();
+            var cell = sheet.GetCell(0, 1).Value.GetValue<int>();
             Assert.True(cell == 1.25, "Expected get first cell from spreadsheet but it was not");
         }
     }
