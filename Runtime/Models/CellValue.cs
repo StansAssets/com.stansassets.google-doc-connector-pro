@@ -1,3 +1,7 @@
+using System;
+using System.ComponentModel;
+using UnityEngine;
+
 namespace StansAssets.GoogleDoc
 {
     /// <summary>
@@ -37,9 +41,19 @@ namespace StansAssets.GoogleDoc
         /// <returns>Converted value.</returns>
         public T GetValue<T>()
         {
-            
-            //TODO implement
-            return default;
+            try
+            {
+                var parser = TypeDescriptor.GetConverter(typeof(T));
+                if (parser != null)
+                {
+                    return (T)parser.ConvertFromString(StringValue);
+                }
+                return JsonUtility.FromJson<T>(StringValue);
+            }
+            catch
+            {
+               return JsonUtility.FromJson<T>(StringValue);
+            }
         }
     }
 }

@@ -1,36 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace StansAssets.GoogleDoc
 {
     public class GridRange
     {
         /// <summary>
-        /// The end column (exclusive) of the range, or not set if unbounded.
+        /// The end column of the range, or -1 if unbounded.
         /// </summary>
-        public int EndColumnIndex { get; } = 0;
+        public int EndColumnIndex { get; } = -1;
         /// <summary>
-        /// The end row (exclusive) of the range, or not set if unbounded.
+        /// The end row of the range, or -1 if unbounded.
         /// </summary>
-        public int EndRowIndex { get; } = 0;
+        public int EndRowIndex { get; } = -1;
         /// <summary>
-        /// The start column (inclusive) of the range, or not set if unbounded.
+        /// The start column of the range, or -1 if unbounded.
         /// </summary>
-        public int StartColumnIndex { get; } = 0;
+        public int StartColumnIndex { get; } = -1;
         /// <summary>
-        /// The start row (inclusive) of the range, or not set if unbounded.
+        /// The start row of the range, or -1 if unbounded.
         /// </summary>
-        public int StartRowIndex { get; } = 0;
+        public int StartRowIndex { get; } = -1;
 
-        public GridRange()
-        {
-            
-        }
+        public GridRange() { }
 
         /// <summary>
-        /// example: "A1:B2"
+        /// <list type="bullet">
+        ///<listheader>
+        /// <term>Example</term>
+        /// </listheader>
+        /// <item><term>A1:B2</term></item>
+        /// <item><term>A:B</term></item>
+        /// <item><term>1:2</term></item>
+        ///</list>
         /// </summary>
+        /// <param name="name">The name of the range</param>
+        /// <exception cref="ArgumentException">Range name must consist of 2 point</exception>
         public GridRange(string name)
         {
             var cells = name.Split(':');
@@ -39,8 +43,8 @@ namespace StansAssets.GoogleDoc
                 throw new ArgumentException($"Range name '{name}' should be like this 'A1:B2' 'A:B' '1:2'");
             }
 
-            var startCell = new Cell (cells[0]);
-            var endCell = new Cell (cells[1]);
+            var startCell = new Cell(cells[0]);
+            var endCell = new Cell(cells[1]);
             if (startCell.Row > endCell.Row)
             {
                 EndRowIndex = endCell.Row;
@@ -64,6 +68,13 @@ namespace StansAssets.GoogleDoc
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startRowIndex">number of first row</param>
+        /// <param name="startColumnIndex">number of first column</param>
+        /// <param name="endRowIndex">number of last row</param>
+        /// <param name="endColumnIndex">number of column column</param>
         public GridRange(int startRowIndex, int startColumnIndex, int endRowIndex, int endColumnIndex)
         {
             EndColumnIndex = endColumnIndex;
@@ -75,10 +86,10 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="direction"></param>
-        public GridRange(int start, int end, int direction)
+        /// <param name="start">start of range </param>
+        /// <param name="end">end of range </param>
+        /// <param name="direction">the direction is 0 - rows, otherwise 1 - columns; default is 0</param>
+        public GridRange(int start, int end, int direction = 0)
         {
             if (direction == 0)
             {

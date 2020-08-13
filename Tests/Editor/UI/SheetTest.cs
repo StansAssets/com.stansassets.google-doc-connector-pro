@@ -122,5 +122,49 @@ namespace StansAssets.GoogleDoc.EditorTests
             var row = sheet.GetRow(-1);
             Assert.False(row.Count > 0, "Unexpected get first row from sheet but it was");
         }
+        
+        [Test]
+        [TestCase(k_SpreadsheetId1)]
+        [TestCase(k_SpreadsheetId2)]
+        public void GetCellByName(string spreadsheetId)
+        {
+            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var sheet = spreadsheet.GetSheet(0);
+            var cell = sheet.GetCell("c12");
+            Assert.True(!string.IsNullOrEmpty(cell.ToString()) && cell.Row == 11 && cell.Column == 2, "Expected get first cell from spreadsheet but it was not");
+        }
+        
+        [Test]
+        [TestCase(k_SpreadsheetId1)]
+        [TestCase(k_SpreadsheetId2)]
+        public void GetColumnByName(string spreadsheetId)
+        {
+            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var sheet = spreadsheet.GetSheet(0);
+            var cell = sheet.GetColumn("c");
+            Assert.True(cell.Count > 0 && cell.First(s => s.Row == 11 && s.Column == 2).Value.StringValue== "qwe", "Expected get first cell from spreadsheet but it was not");
+        }
+        
+        [Test]
+        [TestCase(k_SpreadsheetId1)]
+        [TestCase(k_SpreadsheetId2)]
+        public void GetRangeByName(string spreadsheetId)
+        {
+            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var sheet = spreadsheet.GetSheet(0);
+            var cell = sheet.GetRange("A1:C3");
+            Assert.True(cell.Count() == 9 && string.IsNullOrEmpty(cell[0].Value.StringValue), "Expected get first cell from spreadsheet but it was not");
+        }
+        
+        [Test]
+        [TestCase(k_SpreadsheetId1)]
+        [TestCase(k_SpreadsheetId2)]
+        public void GetValueT(string spreadsheetId)
+        {
+            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var sheet = spreadsheet.GetSheet(0);
+            var cell = sheet.GetCell(0, 1).GetValue<int>();
+            Assert.True(cell == 1.25, "Expected get first cell from spreadsheet but it was not");
+        }
     }
 }
