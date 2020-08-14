@@ -116,7 +116,10 @@ namespace StansAssets.GoogleDoc
                             var cellValue = new CellValue(
                                 cellData.FormattedValue, 
                                 cellData.EffectiveValue.FormulaValue,
-                                cellData.EffectiveValue.StringValue);
+                                cellData.EffectiveValue.StringValue,
+                                cellData.EffectiveValue.NumberValue,
+                                cellData.EffectiveValue.BoolValue);
+
                             var cell = new Cell(rowIndex, columnIndex, cellValue);
                             row.AddCell(cell);
 

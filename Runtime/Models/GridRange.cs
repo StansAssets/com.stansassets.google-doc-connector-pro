@@ -5,25 +5,27 @@ namespace StansAssets.GoogleDoc
     public class GridRange
     {
         /// <summary>
-        /// The end column of the range, or -1 if unbounded.
+        /// The end column of the range, property are zero-based or null if unbounded.
         /// </summary>
-        public int EndColumnIndex { get; } = -1;
+        public int? EndColumnIndex { get; }
         /// <summary>
-        /// The end row of the range, or -1 if unbounded.
+        /// The end row of the range, property are zero-based or null if unbounded.
         /// </summary>
-        public int EndRowIndex { get; } = -1;
+        public int? EndRowIndex { get; }
         /// <summary>
-        /// The start column of the range, or -1 if unbounded.
+        /// The start column of the range, property are zero-based or null if unbounded.
         /// </summary>
-        public int StartColumnIndex { get; } = -1;
+        public int? StartColumnIndex { get; }
         /// <summary>
-        /// The start row of the range, or -1 if unbounded.
+        /// The start row of the range, property are zero-based or null if unbounded.
         /// </summary>
-        public int StartRowIndex { get; } = -1;
+        public int? StartRowIndex { get; }
 
         public GridRange() { }
 
         /// <summary>
+        /// Attention: When transferring information, the site api ignores empty cells (but the lines remain unchanged, even if all its cells are empty).
+        /// Therefore, the reference to the cell name will differ from the name on the site (for the cell name to match the name on the site, the table must be filled with data without blank cells)
         /// <list type="bullet">
         ///<listheader>
         /// <term>Example</term>
@@ -43,28 +45,36 @@ namespace StansAssets.GoogleDoc
                 throw new ArgumentException($"Range name '{name}' should be like this 'A1:B2' 'A:B' '1:2'");
             }
 
-            var startCell = new Cell(cells[0]);
-            var endCell = new Cell(cells[1]);
-            if (startCell.Row > endCell.Row)
+            CellNameConvert.ConvertCellNameToNumbers(cells[0], out var row1, out int? column1);
+            CellNameConvert.ConvertCellNameToNumbers(cells[1], out var row2, out int? column2);
+            if ((row1 == null && row2 == null) || row1 < row2)
             {
-                EndRowIndex = endCell.Row;
-                StartRowIndex = startCell.Row;
+                EndRowIndex = row2;
+                StartRowIndex = row1;
             }
             else
             {
-                StartRowIndex = endCell.Row;
-                EndRowIndex = startCell.Row;
+                if (row1 == null || row2 == null)
+                {
+                    throw new ArgumentException($"Range name '{name}' should be like this 'A1:B2' 'A:B' '1:2'");
+                }
+                StartRowIndex = row2;
+                EndRowIndex = row1;
             }
 
-            if (startCell.Column > endCell.Column)
+            if ((column1 == null && column2 == null) || column1 < column2)
             {
-                StartColumnIndex = startCell.Column;
-                EndColumnIndex = endCell.Column;
+                StartColumnIndex = column1;
+                EndColumnIndex = column2;
             }
             else
             {
-                EndColumnIndex = startCell.Column;
-                StartColumnIndex = endCell.Column;
+                if (column1 == null || column2 == null)
+                {
+                    throw new ArgumentException($"Range name '{name}' should be like this 'A1:B2' 'A:B' '1:2'");
+                }
+                EndColumnIndex = column1;
+                StartColumnIndex = column2;
             }
         }
 

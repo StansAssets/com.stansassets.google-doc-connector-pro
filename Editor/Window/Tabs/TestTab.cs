@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
@@ -60,16 +61,39 @@ namespace StansAssets.GoogleDoc
             }
 
             var sheet = spreadsheet.GetSheet(0);
+            /*var range = sheet.GetNamedRangeCells(k_RangeName);
             Debug.Log(sheet.GetCell(3, 0));
-            var range = sheet.GetRange(k_RangeName);
             var builder = new StringBuilder($"NamedRange Id:{k_RangeName} Data:");
             foreach (var obj in range)
             {
-                builder.Append(obj);
+                builder.Append(obj.Value.FormattedValue);
                 builder.Append(",");
             }
 
             Debug.Log(builder);
+
+           var cell = sheet.GetCell("A1");
+            var cell1 = sheet.GetCell("b1");
+            Debug.Log(cell.Value.FormattedValue);
+            Debug.Log(cell.Value.GetValue<int>());
+            Debug.Log(cell.Value.GetValue<double>());
+            Debug.Log(cell.Value.GetValue<string>());
+            Debug.Log(cell1.Value.FormattedValue);
+            //Debug.Log(cell1.Value.GetValue<int>());
+            Debug.Log(cell1.Value.GetValue<double>());
+            Debug.Log(cell1.Value.GetValue<string>());
+            var column = sheet.GetColumn("A");
+            var column1 = sheet.GetColumn("B");
+            Debug.Log(column.Count);
+            Debug.Log(column1.Count);
+            var list = sheet.GetRange("A1:B2");
+            Debug.Log(list.Count);
+            var list1 = sheet.GetRange("A:B");
+            Debug.Log(list1.Count);
+            var list2 = sheet.GetRange("1:2");
+            Debug.Log(list2.Count);
+            var list3 = sheet.GetRange("0:B2");
+            Debug.Log(list3.Count);*/
         }
 
         void PopulateListView()
@@ -94,6 +118,7 @@ namespace StansAssets.GoogleDoc
             {
                 GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
                 m_SpreadsheetsListView.Remove(sender);
+                PopulateListView();
             }
         }
 

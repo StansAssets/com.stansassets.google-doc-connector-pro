@@ -13,23 +13,34 @@ namespace StansAssets.GoogleDoc
         /// The formatted value of the cell. This is the value as it's shown to the user.
         /// </summary>
         public string FormattedValue { get; }
-        
+
         /// <summary>
         /// Represents a formula. 
         /// </summary>
         public string FormulaValue { get; }
-        
+
         /// <summary>
         /// Represents a formula. 
         /// </summary>
         public string StringValue { get; }
-        
 
-        internal CellValue(string formattedValue, string formulaValue, string stringValue)
+        /// <summary>
+        /// Represents a formula. 
+        /// </summary>
+        public float? NumberValue { get; }
+
+        /// <summary>
+        /// Represents a formula. 
+        /// </summary>
+        public bool? BoolValue { get; }
+
+        internal CellValue(string formattedValue, string formulaValue, string stringValue, double? numberValue, bool? boolValue)
         {
             FormattedValue = formattedValue;
             FormulaValue = formulaValue;
             StringValue = stringValue;
+            if (numberValue != null) NumberValue = (float)numberValue;
+            BoolValue = boolValue;
         }
 
         /// <summary>
@@ -41,18 +52,34 @@ namespace StansAssets.GoogleDoc
         /// <returns>Converted value.</returns>
         public T GetValue<T>()
         {
+            if (BoolValue != null)
+            {
+                return ConvertValue<T>(BoolValue.ToString());
+            }
+
+            if (NumberValue != null)
+            {
+                return ConvertValue<T>(NumberValue.ToString());
+            }
+            
+            return ConvertValue<T>(StringValue);
+        }
+
+        T ConvertValue<T>(string s)
+        {
             try
             {
                 var parser = TypeDescriptor.GetConverter(typeof(T));
                 if (parser != null)
                 {
-                    return (T)parser.ConvertFromString(StringValue);
+                    return (T)parser.ConvertFromString(s);
                 }
-                return JsonUtility.FromJson<T>(StringValue);
+
+                return JsonUtility.FromJson<T>(s);
             }
             catch
             {
-               return JsonUtility.FromJson<T>(StringValue);
+                return JsonUtility.FromJson<T>(s);
             }
         }
     }

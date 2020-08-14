@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace StansAssets.GoogleDoc.EditorTests
@@ -54,7 +55,7 @@ namespace StansAssets.GoogleDoc.EditorTests
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
             var rangeName = sheet.GetNamedRange(k_RangeName);
-            Assert.False(rangeName.Cells.Count() > 1, "Expected rangeName spreadsheet Count < 1 but it was not");
+            Assert.False(rangeName != null, "Expected rangeName spreadsheet Count < 1 but it was not");
         }
         
         [Test]
@@ -153,7 +154,7 @@ namespace StansAssets.GoogleDoc.EditorTests
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetRange("A1:C3");
-            Assert.True(cell.Count() == 9 && string.IsNullOrEmpty(cell[0].Value.StringValue), "Expected get first cell from spreadsheet but it was not");
+            Assert.True(cell.Count() > 3, "Expected get first cell from spreadsheet but it was not");
         }
         
         [Test]
@@ -163,8 +164,9 @@ namespace StansAssets.GoogleDoc.EditorTests
         {
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
             var sheet = spreadsheet.GetSheet(0);
-            var cell = sheet.GetCell(0, 1).Value.GetValue<int>();
-            Assert.True(cell == 1.25, "Expected get first cell from spreadsheet but it was not");
+            var cell = sheet.GetCell(0, 1).Value;
+            var cellValue = cell.GetValue<float>();
+            Assert.True(Math.Abs(cellValue - 1.25) < 1, "Expected get first cell from spreadsheet but it was not");
         }
     }
 }

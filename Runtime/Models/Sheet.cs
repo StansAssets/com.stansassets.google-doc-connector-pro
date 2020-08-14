@@ -110,6 +110,8 @@ namespace StansAssets.GoogleDoc
 
         /// <summary>
         /// Get sell by name. For example "A1" or "B5"
+        /// Attention: When transferring information, the site api ignores empty cells (but the lines remain unchanged, even if all its cells are empty).
+        /// Therefore, the reference to the cell name will differ from the name on the site (for the cell name to match the name on the site, the table must be filled with data without blank cells)
         /// </summary>
         /// <param name="name">The name of the cell.</param>
         /// <returns>Cell objects or `null` if cell wasn't found.</returns>
@@ -178,13 +180,9 @@ namespace StansAssets.GoogleDoc
             if (name.Equals(string.Empty))
                 return new List<Cell>();
 
-            var index = 0;
-            for (var i = name.Length; i > 0; i--)
-            {
-                index += char.ToUpper(name[i - 1]) - 65;
-            }
+            CellNameConvert.ConvertCellNameToNumbers(name, out int? row, out var column);
 
-            return GetColumn(index);
+            return GetColumn(column ?? default);
         }
 
         public List<T> GetColumnValues<T>(int column)
@@ -200,35 +198,46 @@ namespace StansAssets.GoogleDoc
         /// Returns all the cells in the range.
         /// </summary>
         /// <param name="range">range consist of 2 point(start of range and end of range)</param>
-        /// <returns></returns>
+        /// <returns>Cells List.</returns>
         /// <exception cref="ArgumentException">Range row indices out of range of sheet rows</exception>
         public List<Cell> GetRange(GridRange range)
         {
             var rowData = new List<Cell>();
-            if (range.StartRowIndex < -1 || range.EndRowIndex >= m_Rows.Count)
-            {
-                throw new ArgumentException("Range row indices out of range of sheet rows");
-            }
 
-            if (range.StartRowIndex == -1 && range.EndRowIndex == -1)
+
+            if (range.StartRowIndex == null && range.EndRowIndex == null)
             {
                 for (var i = 0; i > m_Rows.Count; i++)
                 {
-                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex - 1 && cell.Column <= range.EndColumnIndex));
+                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex && cell.Column <= range.EndColumnIndex));
                 }
             }
-            else if (range.StartColumnIndex == -1 && range.EndColumnIndex == -1)
+            else if (range.StartColumnIndex == null && range.EndColumnIndex == null)
             {
-                for (var i = range.StartRowIndex; i >= range.EndRowIndex; i++)
+                if (range.StartRowIndex == null || range.EndRowIndex == null)
+                {
+                    throw new ArgumentException("Range row indices out of range of sheet rows");
+                }
+
+                for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
                 {
                     rowData.AddRange(m_Rows[i].Cells);
                 }
             }
             else
             {
-                for (var i = range.StartRowIndex; i >= range.EndRowIndex; i++)
+                if (range.StartRowIndex == null || range.EndRowIndex == null)
                 {
-                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex - 1 && cell.Column <= range.EndColumnIndex));
+                    throw new ArgumentException("Range row indices out of range of sheet rows");
+                }
+                if (range.StartColumnIndex == null || range.EndColumnIndex == null)
+                {
+                    throw new ArgumentException("Range row indices out of range of sheet rows");
+                }
+                
+                for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
+                {
+                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex && cell.Column <= range.EndColumnIndex));
                 }
             }
 
@@ -251,7 +260,6 @@ namespace StansAssets.GoogleDoc
         public List<Cell> GetRange(string name)
         {
             var range = new GridRange(name);
-            GetRange(name);
             return GetRange(range);
         }
 
