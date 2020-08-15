@@ -117,10 +117,19 @@ namespace StansAssets.GoogleDoc
         /// <returns>Cell objects or `null` if cell wasn't found.</returns>
         public Cell GetCell(string name)
         {
-            var cellNew = new Cell(name);
-            if (cellNew.Row < 0 || cellNew.Row > m_Rows.Count)
-                return null;
-            return m_Rows[cellNew.Row].Cells.FirstOrDefault(cell => cell.Column == cellNew.Column);
+            try
+            {
+                var cellNew = new Cell(name);
+                if (cellNew.Row < 0 || cellNew.Row > m_Rows.Count)
+                    return null;
+                return m_Rows[cellNew.Row].Cells.FirstOrDefault(cell => cell.Column == cellNew.Column);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e);
+                throw;
+            }
+            
         }
 
         public T GetCellValue<T>(int row, int column)
@@ -204,10 +213,14 @@ namespace StansAssets.GoogleDoc
         {
             var rowData = new List<Cell>();
 
-
             if (range.StartRowIndex == null && range.EndRowIndex == null)
             {
-                for (var i = 0; i > m_Rows.Count; i++)
+                if (range.StartColumnIndex == null || range.EndColumnIndex == null)
+                {
+                    throw new ArgumentException("Range column indices out of range of sheet rows");
+                }
+                
+                for (var i = 0; i < m_Rows.Count; i++)
                 {
                     rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex && cell.Column <= range.EndColumnIndex));
                 }
@@ -232,7 +245,7 @@ namespace StansAssets.GoogleDoc
                 }
                 if (range.StartColumnIndex == null || range.EndColumnIndex == null)
                 {
-                    throw new ArgumentException("Range row indices out of range of sheet rows");
+                    throw new ArgumentException("Range column indices out of range of sheet rows");
                 }
                 
                 for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
@@ -259,8 +272,16 @@ namespace StansAssets.GoogleDoc
         /// <returns>Cells List.</returns>
         public List<Cell> GetRange(string name)
         {
-            var range = new GridRange(name);
-            return GetRange(range);
+            try
+            {
+                var range = new GridRange(name);
+                return GetRange(range);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                throw;
+            }
         }
 
         /// <summary>

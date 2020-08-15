@@ -59,23 +59,22 @@ namespace StansAssets.GoogleDoc
 
             if (NumberValue != null)
             {
+                if (typeof(T) == typeof(int))
+                {
+                    var number = (int)NumberValue;
+                    return ConvertValue<T>(number.ToString());
+                }
                 return ConvertValue<T>(NumberValue.ToString());
             }
-            
-            return ConvertValue<T>(StringValue);
+
+            return ConvertValue<T>(StringValue ?? FormattedValue);
         }
 
         T ConvertValue<T>(string s)
         {
             try
             {
-                var parser = TypeDescriptor.GetConverter(typeof(T));
-                if (parser != null)
-                {
-                    return (T)parser.ConvertFromString(s);
-                }
-
-                return JsonUtility.FromJson<T>(s);
+                return (T)Convert.ChangeType(s, typeof(T));
             }
             catch
             {
