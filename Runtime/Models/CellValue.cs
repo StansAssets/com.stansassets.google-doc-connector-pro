@@ -27,7 +27,7 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Represents a formula. 
         /// </summary>
-        public float? NumberValue { get; }
+        public double? NumberValue { get; }
 
         /// <summary>
         /// Represents a formula. 
@@ -39,7 +39,7 @@ namespace StansAssets.GoogleDoc
             FormattedValue = formattedValue;
             FormulaValue = formulaValue;
             StringValue = stringValue;
-            if (numberValue != null) NumberValue = (float)numberValue;
+            NumberValue = numberValue;
             BoolValue = boolValue;
         }
 

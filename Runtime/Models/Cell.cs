@@ -11,12 +11,12 @@ namespace StansAssets.GoogleDoc
     public class Cell : ICellPointer
     {
         /// <summary>
-        /// Cell Row are zero-based
+        /// Cell Row. Index starts from `0`.
         /// </summary>
         public int Row { get; }
 
         /// <summary>
-        /// Cell Column are zero-based
+        /// Cell Column Index starts from `0`.
         /// </summary>
         public int Column { get; }
 
@@ -35,8 +35,7 @@ namespace StansAssets.GoogleDoc
         {
             Row = row;
             Column = column;
-            CellNameConvert.ConvertCellNumbersToName(row, column, out var name);
-            Name = name;
+            Name = CellNameUtility.GetCellName(row, column);
         }
 
         internal Cell(int row, int column, CellValue cellValue)
@@ -46,12 +45,12 @@ namespace StansAssets.GoogleDoc
         }
 
         /// <exception cref="ArgumentException">The method returns an error if the column name is empty</exception>
-        internal Cell(string cell)
+        internal Cell(string name)
         {
-            CellNameConvert.ConvertCellNameToNumbers(cell, out var row, out int column);
-            Row = row;
-            Column = column;
-            Name = cell;
+           var cell =  CellNameUtility.GetCellPointer(name);
+            Row = cell.Row;
+            Column = cell.Column;
+            Name = name;
         }
 
         internal Cell(string cell, CellValue cellValue)

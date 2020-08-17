@@ -24,6 +24,7 @@ namespace StansAssets.GoogleDoc
         public GridRange() { }
 
         /// <summary>
+        /// A range on a sheet. All indexes are zero-based. Start and end index is inclusive.
         /// Attention: When transferring information, the site api ignores empty cells (but the lines remain unchanged, even if all its cells are empty).
         /// Therefore, the reference to the cell name will differ from the name on the site (for the cell name to match the name on the site, the table must be filled with data without blank cells)
         /// <list type="bullet">
@@ -45,8 +46,8 @@ namespace StansAssets.GoogleDoc
                 throw new ArgumentException($"Range name '{name}' should be like this 'A1:B2' 'A:B' '1:2'");
             }
 
-            CellNameConvert.ConvertCellNameToNumbers(cells[0], out var row1, out int? column1);
-            CellNameConvert.ConvertCellNameToNumbers(cells[1], out var row2, out int? column2);
+            CellNameUtility.ConvertCellNameToPositions(cells[0], out var row1, out var column1);
+            CellNameUtility.ConvertCellNameToPositions(cells[1], out var row2, out var column2);
             if ((row1 == null && row2 == null) || row1 < row2)
             {
                 EndRowIndex = row2;
@@ -79,7 +80,7 @@ namespace StansAssets.GoogleDoc
         }
 
         /// <summary>
-        /// 
+        /// A range on a sheet. All indexes are zero-based. Start and end index is inclusive.
         /// </summary>
         /// <param name="startRowIndex">number of first row</param>
         /// <param name="startColumnIndex">number of first column</param>
@@ -94,7 +95,7 @@ namespace StansAssets.GoogleDoc
         }
 
         /// <summary>
-        /// 
+        /// A range on a sheet. All indexes are zero-based. Start and end index is inclusive.
         /// </summary>
         /// <param name="start">start of range </param>
         /// <param name="end">end of range </param>

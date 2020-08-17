@@ -3,43 +3,42 @@ using System.Linq;
 
 namespace StansAssets.GoogleDoc
 {
-    static class CellNameConvert
+    static class CellNameUtility
     {
         /// <exception cref="ArgumentException">The method returns an error if the column name is empty</exception>
-        internal static void ConvertCellNameToNumbers(string name, out int row, out int column)
+        internal static ICellPointer GetCellPointer(string name)
         {
-            name = String.Concat(name.Where(c => !Char.IsWhiteSpace(c) || !Char.IsPunctuation(c) || !Char.IsSeparator(c) || !Char.IsSymbol(c)));
-
-            row = default;
-            column = default;
+            name = string.Concat(name.Where(c => !char.IsWhiteSpace(c) || !char.IsPunctuation(c) || !char.IsSeparator(c) || !char.IsSymbol(c)));
+            
+           var column = 0;
 
             //Split row number and column number
-            var strRow = String.Concat(name.Where(Char.IsDigit));
-            var strColumn = String.Concat(name.Where(Char.IsLetter));
-            if (String.IsNullOrEmpty(strRow))
+            var strRow = string.Concat(name.Where(char.IsDigit));
+            var strColumn = string.Concat(name.Where(char.IsLetter));
+            if (string.IsNullOrEmpty(strRow))
             {
                 throw new ArgumentException($"The column name is blank. Cell name should be like this 'A1' 'B2'");
             }
-            else if (String.IsNullOrEmpty(strColumn))
+            else if (string.IsNullOrEmpty(strColumn))
             {
                 throw new ArgumentException($"The row name is blank. Cell name should be like this 'A1' 'B2'");
             }
 
             //Convert name to row number
-            if (Int32.TryParse(strRow, out row))
+            if (int.TryParse(strRow, out var row))
             {
-                row -= 1; //Cell Row are zero-based
+                row -= 1; //Cell Row index must starts from `0`
             }
 
             //Convert name to column number
             column = ColumnNameToNumber(strColumn);
 
-            column -= 1; //Cell Column are zero-based
+            column -= 1; //Cell Column index must starts from `0`
+            return new Cell(row, column);
         }
 
-        internal static void ConvertCellNumbersToName(int row, int column, out string name)
+        internal static string GetCellName(int row, int column)
         {
-            name = default;
             row += 1;
             column += 1;
 
@@ -47,39 +46,38 @@ namespace StansAssets.GoogleDoc
             var strColumn = ColumnNumberToName(column);
 
             //Return
-            name = strColumn + row;
+            return strColumn + row;
         }
 
-        internal static void ConvertCellNameToNumbers(string name, out int? row, out int? column)
+        internal static void ConvertCellNameToPositions(string name, out int? row, out int? column)
         {
-            name = String.Concat(name.Where(c => !Char.IsWhiteSpace(c) || !Char.IsPunctuation(c) || !Char.IsSeparator(c) || !Char.IsSymbol(c)));
+            name = string.Concat(name.Where(c => !char.IsWhiteSpace(c) || !char.IsPunctuation(c) || !char.IsSeparator(c) || !char.IsSymbol(c)));
 
             row = null;
             column = null;
 
             //Split row number and column number
-            var strRow = String.Concat(name.Where(Char.IsDigit));
-            var strColumn = String.Concat(name.Where(Char.IsLetter));
+            var strRow = string.Concat(name.Where(char.IsDigit));
+            var strColumn = string.Concat(name.Where(char.IsLetter));
 
             //Convert name to row number
-            if (!String.IsNullOrEmpty(strRow) && Int32.TryParse(strRow, out var rrow))
+            if (!string.IsNullOrEmpty(strRow) && int.TryParse(strRow, out var rowParse))
             {
-                row = rrow - 1; //Cell Row are zero-based
+                row = rowParse - 1; //Cell Row index must starts from `0`.
             }
 
             //Convert name to column number
-            if (!String.IsNullOrEmpty(strColumn))
+            if (!string.IsNullOrEmpty(strColumn))
             {
                 column = ColumnNameToNumber(strColumn);
-                column -= 1; //Cell Column are zero-based
+                column -= 1; //Cell Column index must starts from `0`.
             }
         }
 
-        internal static void ConvertCellNumbersToName(int? row, int? column, out string name)
+        internal static string ConvertCellPositionsToName(int? row, int? column)
         {
-            name = default;
-            var strColumn = String.Empty;
-            var strRow = String.Empty;
+            var strColumn = string.Empty;
+            var strRow = string.Empty;
 
             //Convert column number to name
             if (row != null)
@@ -96,7 +94,7 @@ namespace StansAssets.GoogleDoc
             }
 
             //Return
-            name = strColumn + strRow;
+            return strColumn + strRow;
         }
 
         static int ColumnNameToNumber(string strColumn)
@@ -104,7 +102,7 @@ namespace StansAssets.GoogleDoc
             var column = 0;
             strColumn = strColumn.ToUpper();
             var pow = 1;
-            for (int i = strColumn.Length - 1; i >= 0; i--)
+            for (var i = strColumn.Length - 1; i >= 0; i--)
             {
                 column += (strColumn[i] - 'A' + 1) * pow;
                 pow *= 26;
@@ -115,7 +113,7 @@ namespace StansAssets.GoogleDoc
 
         static string ColumnNumberToName(int column)
         {
-            var strColumn = String.Empty;
+            var strColumn = string.Empty;
             while (column > 0)
             {
                 var mod = (column - 1) % 26;
