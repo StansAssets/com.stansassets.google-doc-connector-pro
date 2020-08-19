@@ -8,6 +8,7 @@ namespace StansAssets.GoogleDoc
     /// <summary>
     /// The Spreadsheet Cell.
     /// </summary>
+    [Serializable]
     public class Cell : ICellPointer
     {
         /// <summary>
