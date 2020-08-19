@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Text;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
@@ -18,7 +18,7 @@ namespace StansAssets.GoogleDoc
         const string k_RangeName = "Bike3";
 
         public TestTab()
-            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab.uxml")
+            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab")
         {
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>
@@ -60,12 +60,12 @@ namespace StansAssets.GoogleDoc
             }
 
             var sheet = spreadsheet.GetSheet(0);
-            Debug.Log(sheet.GetCell(3, 0));
-            var range = sheet.GetRange(k_RangeName);
+            var range = sheet.GetNamedRangeCells(k_RangeName);
+            Debug.Log(sheet.GetCell(3, 0).Value.FormattedValue);
             var builder = new StringBuilder($"NamedRange Id:{k_RangeName} Data:");
             foreach (var obj in range)
             {
-                builder.Append(obj);
+                builder.Append(obj.Value.FormattedValue ?? String.Empty);
                 builder.Append(",");
             }
 
@@ -94,6 +94,7 @@ namespace StansAssets.GoogleDoc
             {
                 GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
                 m_SpreadsheetsListView.Remove(sender);
+                PopulateListView();
             }
         }
 

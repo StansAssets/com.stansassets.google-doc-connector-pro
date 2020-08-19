@@ -109,10 +109,17 @@ namespace StansAssets.GoogleDoc
                         var columnIndex = 0;
                         foreach (var cellData in rowData.Values)
                         {
+                            if (cellData.FormattedValue == null)
+                            {
+                                continue;
+                            }
                             var cellValue = new CellValue(
                                 cellData.FormattedValue, 
                                 cellData.EffectiveValue.FormulaValue,
-                                cellData.EffectiveValue.StringValue);
+                                cellData.EffectiveValue.StringValue,
+                                cellData.EffectiveValue.NumberValue,
+                                cellData.EffectiveValue.BoolValue);
+
                             var cell = new Cell(rowIndex, columnIndex, cellValue);
                             row.AddCell(cell);
 

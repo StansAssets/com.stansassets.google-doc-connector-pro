@@ -43,13 +43,15 @@ namespace StansAssets.GoogleDoc
         {
             m_SpreadsheetId.text = $"Id: {sheet.Id.ToString()}";
             m_SpreadsheetName.text = $"Name: {sheet.Name}";
-            var emptyNamedRangesList = !sheet.NamedRanges.Any();
+            var emptyNamedRangesList = sheet.NamedRanges != null && !sheet.NamedRanges.Any();
             m_NamedRangeFoldoutLabelPanel.style.display = emptyNamedRangesList ? DisplayStyle.Flex : DisplayStyle.None;
             m_NamedRangFoldout.style.display = emptyNamedRangesList ? DisplayStyle.None : DisplayStyle.Flex;
-            
-            foreach (var namedRange in sheet.NamedRanges)
+            if (sheet.NamedRanges != null)
             {
-                m_NamedRangeContainer.Add(new NamedRangeView(namedRange));
+                foreach (var namedRange in sheet.NamedRanges)
+                {
+                    m_NamedRangeContainer.Add(new NamedRangeView(namedRange));
+                }
             }
         }
     }

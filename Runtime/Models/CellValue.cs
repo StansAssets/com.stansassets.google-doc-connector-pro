@@ -1,3 +1,7 @@
+using System;
+using System.ComponentModel;
+using UnityEngine;
+
 namespace StansAssets.GoogleDoc
 {
     /// <summary>
@@ -9,23 +13,34 @@ namespace StansAssets.GoogleDoc
         /// The formatted value of the cell. This is the value as it's shown to the user.
         /// </summary>
         public string FormattedValue { get; }
-        
+
         /// <summary>
         /// Represents a formula. 
         /// </summary>
         public string FormulaValue { get; }
-        
+
         /// <summary>
         /// Represents a formula. 
         /// </summary>
         public string StringValue { get; }
-        
 
-        internal CellValue(string formattedValue, string formulaValue, string stringValue)
+        /// <summary>
+        /// Represents a formula. 
+        /// </summary>
+        public double? NumberValue { get; }
+
+        /// <summary>
+        /// Represents a formula. 
+        /// </summary>
+        public bool? BoolValue { get; }
+
+        internal CellValue(string formattedValue, string formulaValue, string stringValue, double? numberValue, bool? boolValue)
         {
             FormattedValue = formattedValue;
             FormulaValue = formulaValue;
             StringValue = stringValue;
+            NumberValue = numberValue;
+            BoolValue = boolValue;
         }
 
         /// <summary>
@@ -37,8 +52,34 @@ namespace StansAssets.GoogleDoc
         /// <returns>Converted value.</returns>
         public T GetValue<T>()
         {
-            //TODO implement
-            return default;
+            if (BoolValue != null)
+            {
+                return ConvertValue<T>(BoolValue.ToString());
+            }
+
+            if (NumberValue != null)
+            {
+                if (typeof(T) == typeof(int))
+                {
+                    var number = (int)NumberValue;
+                    return ConvertValue<T>(number.ToString());
+                }
+                return ConvertValue<T>(NumberValue.ToString());
+            }
+
+            return ConvertValue<T>(StringValue ?? FormattedValue);
+        }
+
+        T ConvertValue<T>(string s)
+        {
+            try
+            {
+                return (T)Convert.ChangeType(s, typeof(T));
+            }
+            catch
+            {
+                return JsonUtility.FromJson<T>(s);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace StansAssets.GoogleDoc
 {
@@ -18,15 +19,16 @@ namespace StansAssets.GoogleDoc
         public string Name { get; }
 
         IEnumerable<ICellPointer> m_Cells = new List<ICellPointer>();
-        
+
         /// <summary>
         /// The cells inside the named range.
         /// </summary>
         public IEnumerable<ICellPointer> Cells => m_Cells;
-        
-        //TODO add GridRange
-        //https://developers.google.com/resources/api-libraries/documentation/sheets/v4/csharp/latest/classGoogle_1_1Apis_1_1Sheets_1_1v4_1_1Data_1_1GridRange.html
-        // public GridRange Range { get; }
+
+        /// <summary>
+        /// First and last points of the range
+        /// </summary>
+        public GridRange Range { get; private set; } = new GridRange();
 
         internal NamedRange(string id, string name)
         {
@@ -37,6 +39,7 @@ namespace StansAssets.GoogleDoc
         internal void SetCells(IEnumerable<ICellPointer> cells)
         {
             m_Cells = cells;
+            Range = new GridRange(cells.First().Row, cells.First().Column, cells.Last().Row, cells.Last().Column);
         }
     }
 }
