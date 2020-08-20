@@ -3,7 +3,8 @@
     "references": [
         "StansAssets.Foundation",
         "StansAssets.Foundation.Editor",
-        "StansAssets.Plugins"
+        "StansAssets.Plugins",
+        "StansAssets.GoogleDoc.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

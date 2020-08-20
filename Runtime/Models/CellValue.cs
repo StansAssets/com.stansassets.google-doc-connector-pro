@@ -7,6 +7,7 @@ namespace StansAssets.GoogleDoc
     /// <summary>
     /// The kinds of value that a cell in a spreadsheet can have.
     /// </summary>
+    [Serializable]
     public class CellValue
     {
         /// <summary>
@@ -20,27 +21,15 @@ namespace StansAssets.GoogleDoc
         public string FormulaValue { get; }
 
         /// <summary>
-        /// Represents a formula. 
+        /// Represents a value in string format. 
         /// </summary>
         public string StringValue { get; }
 
-        /// <summary>
-        /// Represents a formula. 
-        /// </summary>
-        public double? NumberValue { get; }
-
-        /// <summary>
-        /// Represents a formula. 
-        /// </summary>
-        public bool? BoolValue { get; }
-
-        internal CellValue(string formattedValue, string formulaValue, string stringValue, double? numberValue, bool? boolValue)
+        internal CellValue(string formattedValue, string formulaValue, string stringValue)
         {
             FormattedValue = formattedValue;
             FormulaValue = formulaValue;
             StringValue = stringValue;
-            NumberValue = numberValue;
-            BoolValue = boolValue;
         }
 
         /// <summary>
@@ -52,34 +41,72 @@ namespace StansAssets.GoogleDoc
         /// <returns>Converted value.</returns>
         public T GetValue<T>()
         {
-            if (BoolValue != null)
+            if (typeof(T) == typeof(string))
             {
-                return ConvertValue<T>(BoolValue.ToString());
+                return (T)(object)StringValue;
             }
 
-            if (NumberValue != null)
+            if (typeof(T) == typeof(sbyte) || typeof(T) == typeof(byte))
             {
-                if (typeof(T) == typeof(int))
-                {
-                    var number = (int)NumberValue;
-                    return ConvertValue<T>(number.ToString());
-                }
-                return ConvertValue<T>(NumberValue.ToString());
+                return (T)(object)Convert.ToByte(StringValue);
             }
 
-            return ConvertValue<T>(StringValue ?? FormattedValue);
-        }
+            if (typeof(T) == typeof(int))
+            {
+                return (T)(object)Convert.ToInt32(StringValue);
+            }
 
-        T ConvertValue<T>(string s)
-        {
-            try
+            if (typeof(T) == typeof(long))
             {
-                return (T)Convert.ChangeType(s, typeof(T));
+                return (T)(object)Convert.ToInt64(StringValue);
             }
-            catch
+
+            if (typeof(T) == typeof(short))
             {
-                return JsonUtility.FromJson<T>(s);
+                return (T)(object)Convert.ToInt16(StringValue);
             }
+
+            if (typeof(T) == typeof(uint))
+            {
+                return (T)(object)Convert.ToUInt32(StringValue);
+            }
+
+            if (typeof(T) == typeof(ulong))
+            {
+                return (T)(object)Convert.ToUInt64(StringValue);
+            }
+
+            if (typeof(T) == typeof(ushort))
+            {
+                return (T)(object)Convert.ToUInt16(StringValue);
+            }
+
+            if (typeof(T) == typeof(bool))
+            {
+                return (T)(object)Convert.ToBoolean(StringValue);
+            }
+
+            if (typeof(T) == typeof(char))
+            {
+                return (T)(object)Convert.ToChar(StringValue);
+            }
+
+            if (typeof(T) == typeof(double) || typeof(T) == typeof(float))
+            {
+                return (T)(object)Convert.ToDouble(StringValue);
+            }
+
+            if (typeof(T) == typeof(decimal))
+            {
+                return (T)(object)Convert.ToDecimal(StringValue);
+            }
+            
+            if (typeof(T) == typeof(DateTime))
+            {
+                return (T)(object)Convert.ToDateTime(StringValue);
+            }
+
+            return JsonUtility.FromJson<T>(StringValue);
         }
     }
 }
