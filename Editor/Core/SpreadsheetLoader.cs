@@ -15,7 +15,7 @@ using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
 namespace StansAssets.GoogleDoc
 {
-    public sealed class SpreadsheetLoader
+    sealed class SpreadsheetLoader
     {
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
