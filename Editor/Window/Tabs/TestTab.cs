@@ -24,12 +24,12 @@ namespace StansAssets.GoogleDoc
             connectBtn.clicked += () =>
             {
                 var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
-                spreadsheet1 = spreadsheet1 ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
+                spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
                 spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
                 spreadsheet1.Load();
 
                 var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
-                spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
+                spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
                 spreadsheet.Load();
 
                 PopulateListView();
