@@ -3,10 +3,8 @@
     max-height: initial;
 }
 
-.footer-container {
+.import-container > #content{
     flex-direction: row;
-    margin: 5px 0 5px 0;
-    flex-shrink: 0;
 }
 
 .add-new-spreadsheet {

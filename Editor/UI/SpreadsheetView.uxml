@@ -4,10 +4,12 @@
         <ui:VisualElement name="spreadsheetTopPanel" class="spreadsheet-top-panel">
             <ui:Foldout text="" name="arrowToggleFoldout" class="spreadsheet-arrowToggle"/>
             <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
-            <ui:Label text="Spreadsheet Name" name="spreadsheetName" class="spreadsheet-name"/>
+            <ui:VisualElement class="flexible-space"/>
             <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
-                <ui:Button name="refreshBtn" class="btn-refresh btn-left"/>
-                <ui:Button name="removeBtn" class="btn-remove btn-right"/>
+                <ui:Button name="openBtn" class="spreadsheet-url-copy btn-right" tooltip="Open spreadsheet in browser."/>
+                <ui:Button name="refreshBtn" class="btn-refresh btn-left" tooltip="Refresh spreadsheet."/>
+                <ui:Button name="removeBtn" class="btn-remove btn-right" tooltip="Delete spreadsheet."/>
+                
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="spreadsheetBottomPanel" class="spreadsheet-bottom-panel">
@@ -23,8 +25,6 @@
                 <ui:VisualElement name="spreadsheetButtonPanelID" class="spreadsheet-button-panel spreadsheet-button-id">
                     <ui:Button name="copyIdBtn" tooltip="Copy spreadsheet Id to Clipboard"
                                class="spreadsheet-id-copy btn-left"/>
-                    <ui:Button name="copyURLBtn" tooltip="Copy spreadsheet URL to Clipboard"
-                               class="spreadsheet-url-copy btn-right"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="sheetFoldoutPanel" class="sheet-foldout-panel">

@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+    
+    <sa:SettingsBlock label="Spreadsheets">
+        <sa:HelpBox type="Info" name="no-spreadsheets-note" text="You haven't added any Spreadsheets yet."/>
+        <ui:VisualElement focusable="True" name="spreadsheets-container" class="tab-spreadsheets-container"/>
+    </sa:SettingsBlock>
+
+    <sa:SettingsBlock label="Import New Document" class="import-container">
+        <ui:TextField picking-mode="Ignore" name="spreadsheetIdText" class="add-new-spreadsheet"/>
+        <ui:Button text="Import" name="addSpreadsheetBtn"/>
+    </sa:SettingsBlock>
+    
+
+    <ui:VisualElement name="d1">
+        <ui:VisualElement name="d2">
+            <ui:Foldout view-data-key="deep-no-view-new2" text="From cloned tree2"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    
+    <ui:Button text="Load Example" name="loadExampleConfigBtn"/>
+    
+</ui:UXML>

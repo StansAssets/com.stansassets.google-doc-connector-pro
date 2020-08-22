@@ -17,7 +17,7 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
-        public IEnumerable<Spreadsheet> Spreadsheets => m_Spreadsheets;
+        public List<Spreadsheet> Spreadsheets => m_Spreadsheets;
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
         

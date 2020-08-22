@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
@@ -7,19 +8,22 @@ using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
-    class TestTab : BaseTab
+    class SpreadsheetsTab : BaseTab
     {
-        const string k_SpreadsheetIdText = "Paste Spreadsheet Id here...";
+        const string k_SpreadsheetIdTextPlaceholder = "Paste Spreadsheet Id here...";
 
-        readonly ListView m_SpreadsheetsListView;
+        readonly VisualElement m_SpreadsheetsContainer;
+        VisualElement m_NoSpreadsheetsNote;
 
         const string k_SpreadsheetId = "19Bs5Ts6OBXh7SFNdI3W0ZK-BrNiCHVt10keUBwHX2fc";
         const string k_SpreadsheetId2 = "1QuJ0M7s25KxX_E0mRtmJiZQciKjvVt77yKMlUkvOWrc";
         const string k_RangeName = "Bike3";
 
-        public TestTab()
-            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/TestTab")
+        public SpreadsheetsTab()
+            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/SpreadsheetsTab")
         {
+            Debug.Log(this.Q<Foldout>().viewDataKey);
+            
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>
             {
@@ -32,25 +36,28 @@ namespace StansAssets.GoogleDoc
                 spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
                 spreadsheet.Load();
 
-                PopulateListView();
+                RecreateSpreadsheetsView();
             };
+          //  connectBtn.style.display = DisplayStyle.None;
 
+            m_NoSpreadsheetsNote = this.Q("no-spreadsheets-note");
             var spreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
-            spreadsheetIdField.value = k_SpreadsheetIdText;
+            spreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
+            spreadsheetIdField.tooltip = k_SpreadsheetIdTextPlaceholder;
 
             var addSpreadsheetBtn = this.Q<Button>("addSpreadsheetBtn");
             addSpreadsheetBtn.clicked += () =>
             {
                 var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheetIdField.text);
                 spreadsheet.Load();
-                spreadsheetIdField.value = k_SpreadsheetIdText;
-                PopulateListView();
+                spreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
+                RecreateSpreadsheetsView();
             };
-
-            m_SpreadsheetsListView = this.Q<ListView>("spreadsheetsContainer");
-
-            PopulateListView();
+            
+            m_SpreadsheetsContainer = this.Q<VisualElement>("spreadsheets-container");
+            RecreateSpreadsheetsView();
         }
+        
 
         static void OnSheetStateChanged(Spreadsheet spreadsheet)
         {
@@ -72,15 +79,19 @@ namespace StansAssets.GoogleDoc
             Debug.Log(builder);
         }
 
-        void PopulateListView()
+        void RecreateSpreadsheetsView()
         {
-            m_SpreadsheetsListView.hierarchy.Clear();
+            m_NoSpreadsheetsNote.style.display = GoogleDocConnectorSettings.Instance.Spreadsheets.Any() 
+                ? DisplayStyle.None 
+                : DisplayStyle.Flex;
+            
+            m_SpreadsheetsContainer.Clear();
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
             {
                 var item = new SpreadsheetView(spreadsheet);
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;
-                m_SpreadsheetsListView.hierarchy.Add(item);
+                m_SpreadsheetsContainer.Add(item);
             }
         }
 
@@ -93,8 +104,8 @@ namespace StansAssets.GoogleDoc
             if (dialog)
             {
                 GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
-                m_SpreadsheetsListView.Remove(sender);
-                PopulateListView();
+                m_SpreadsheetsContainer.Remove(sender);
+                RecreateSpreadsheetsView();
             }
         }
 

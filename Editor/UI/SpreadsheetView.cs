@@ -14,11 +14,12 @@ namespace StansAssets.GoogleDoc
         public event Action<Spreadsheet> OnRefreshClick = delegate { };
 
         readonly Label m_SpreadsheetId;
-        readonly Label m_SpreadsheetName;
         readonly Label m_SpreadsheetErrorMessage;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
         readonly Label m_SpreadsheetStatusIcon;
+
+        readonly Foldout m_SpreadsheetFoldout;
 
         readonly VisualElement m_Spinner;
         readonly VisualElement m_SheetFoldoutLabelPanel;
@@ -34,7 +35,6 @@ namespace StansAssets.GoogleDoc
             style.flexGrow = 1.0f;
 
             m_SpreadsheetId = this.Q<Label>("spreadsheetId");
-            m_SpreadsheetName = this.Q<Label>("spreadsheetName");
             m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
@@ -50,10 +50,12 @@ namespace StansAssets.GoogleDoc
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
-            var arrowToggleFoldout = this.Q<Foldout>("arrowToggleFoldout");
-            arrowToggleFoldout.value = spreadsheet.SpreadsheetFoldOutUIState;
-            arrowToggleFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel, out spreadsheet.SpreadsheetFoldOutUIState));
-            spreadsheetExpandedPanel.style.display = arrowToggleFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+            m_SpreadsheetFoldout = this.Q<Foldout>("arrowToggleFoldout");
+            m_SpreadsheetFoldout.value = spreadsheet.SpreadsheetFoldOutUIState;
+            m_SpreadsheetFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel, out spreadsheet.SpreadsheetFoldOutUIState));
+            m_SpreadsheetFoldout.viewDataKey = $"spreadsheet_toggle_{spreadsheet.Id}";
+            
+            spreadsheetExpandedPanel.style.display = m_SpreadsheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             
             var sheetFoldout = this.Q<Foldout>("sheetFoldout");
             sheetFoldout.value = spreadsheet.SheetFoldOutUIState;
@@ -62,14 +64,15 @@ namespace StansAssets.GoogleDoc
 
             var copyIdButton = this.Q<Button>("copyIdBtn");
             copyIdButton.clicked += () => { OnCopyClick(spreadsheet.Id); };
-            var copyUrlButton = this.Q<Button>("copyURLBtn");
-            copyUrlButton.clicked += () => { OnCopyClick(spreadsheet.Url); };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
 
             var refreshButton = this.Q<Button>("refreshBtn");
             refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
+            
+            var openBtn = this.Q<Button>("openBtn");
+            openBtn.clicked += () => { Application.OpenURL(GoogleDocConnector.GetSpreadsheetWebUrl(spreadsheet.Id)); };
             
             spreadsheet.OnSyncStateChange += StateChange;
 
@@ -79,7 +82,7 @@ namespace StansAssets.GoogleDoc
         void InitWithData(Spreadsheet spreadsheet)
         {
             m_SpreadsheetId.text = spreadsheet.Id;
-            m_SpreadsheetName.text = spreadsheet.Name;
+            m_SpreadsheetFoldout.text = spreadsheet.Name;
             m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
 

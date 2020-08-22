@@ -10,6 +10,7 @@
     border-bottom-color: rgb(0, 0, 0);
     padding-top: 1px;
     background-color: #4d4d4d;
+    margin-bottom: 6px;
 }
 
 .spreadsheet-top-panel {
@@ -18,14 +19,12 @@
     min-height: 17px;
 }
 
-.row-panel {
-    flex-direction: row;
+.flexible-space {
+    flex-grow: 1;
 }
 
-.spreadsheet-name {
-    -unity-font-style: bold;
-    flex-grow: 1;
-    -unity-text-align: middle-left;
+.row-panel {
+    flex-direction: row;
 }
 
 .spreadsheet-loading {
@@ -152,7 +151,7 @@
 .spreadsheet-arrowToggle {
     margin: -1px;
     padding: -1px;
-    width: 18px;
+    -unity-font-style: bold;
 }
 
 .spreadsheet-bottom-panel {
@@ -176,7 +175,6 @@
 
 .sheet-foldout-panel {
     margin-top: 2px;
-    background-color: #383838;
     max-height: 150px;
     overflow: hidden;
     padding-bottom: 2px;
