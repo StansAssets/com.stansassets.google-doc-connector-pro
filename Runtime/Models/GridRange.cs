@@ -21,6 +21,12 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public int? StartRowIndex { get; }
 
+        // TODO implement
+        /// <summary>
+        /// Name of the range. For example A1:B2, A:B, 1:2, etc.
+        /// </summary>
+        public string Name => "A1:B2";
+
         public GridRange() { }
 
         /// <summary>

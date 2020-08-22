@@ -5,6 +5,7 @@ using StansAssets.Foundation.UIElements;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
 namespace StansAssets.GoogleDoc
 {
@@ -14,7 +15,7 @@ namespace StansAssets.GoogleDoc
         public event Action<Spreadsheet> OnRefreshClick = delegate { };
 
         readonly Label m_SpreadsheetId;
-        readonly Label m_SpreadsheetErrorMessage;
+        readonly HelpBox m_SpreadsheetErrorMessage;
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
         readonly Label m_SpreadsheetStatusIcon;
@@ -26,6 +27,7 @@ namespace StansAssets.GoogleDoc
         readonly ScrollView m_SheetFoldoutScrollView;
 
         readonly VisualElement m_SheetsContainer;
+        readonly VisualElement m_RangesContainer;
 
         public SpreadsheetView(Spreadsheet spreadsheet)
         {
@@ -34,8 +36,8 @@ namespace StansAssets.GoogleDoc
             visualTree.CloneTree(this);
             style.flexGrow = 1.0f;
 
-            m_SpreadsheetId = this.Q<Label>("spreadsheetId");
-            m_SpreadsheetErrorMessage = this.Q<Label>("spreadsheetError");
+            m_SpreadsheetId = this.Q<SelectableLabel>("spreadsheet-id");
+            m_SpreadsheetErrorMessage = this.Q<HelpBox>("spreadsheet-error");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
@@ -45,25 +47,21 @@ namespace StansAssets.GoogleDoc
             
             var spreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
 
-            m_SheetsContainer = this.Q<VisualElement>("sheetContainer");
+            m_SheetsContainer = this.Q<VisualElement>("sheets-container");
+            m_RangesContainer = this.Q<VisualElement>("ranges-container");
+           
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             
             m_SpreadsheetFoldout = this.Q<Foldout>("arrowToggleFoldout");
-            m_SpreadsheetFoldout.value = spreadsheet.SpreadsheetFoldOutUIState;
-            m_SpreadsheetFoldout.RegisterValueChangedCallback( ev =>  ToggleElementDisplayState(ev.newValue, spreadsheetExpandedPanel, out spreadsheet.SpreadsheetFoldOutUIState));
             m_SpreadsheetFoldout.viewDataKey = $"spreadsheet_toggle_{spreadsheet.Id}";
             
+            m_SpreadsheetFoldout.RegisterValueChangedCallback(e =>
+            {
+                spreadsheetExpandedPanel.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
+            });
             spreadsheetExpandedPanel.style.display = m_SpreadsheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-            
-            var sheetFoldout = this.Q<Foldout>("sheetFoldout");
-            sheetFoldout.value = spreadsheet.SheetFoldOutUIState;
-            sheetFoldout.RegisterValueChangedCallback(ev => ToggleElementDisplayState(ev.newValue, m_SheetsContainer, out spreadsheet.SheetFoldOutUIState));
-            m_SheetsContainer.style.display = sheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-
-            var copyIdButton = this.Q<Button>("copyIdBtn");
-            copyIdButton.clicked += () => { OnCopyClick(spreadsheet.Id); };
 
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
@@ -76,10 +74,10 @@ namespace StansAssets.GoogleDoc
             
             spreadsheet.OnSyncStateChange += StateChange;
 
-            InitWithData(spreadsheet);
+            Bind(spreadsheet);
         }
       
-        void InitWithData(Spreadsheet spreadsheet)
+        void Bind(Spreadsheet spreadsheet)
         {
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetFoldout.text = spreadsheet.Name;
@@ -87,7 +85,7 @@ namespace StansAssets.GoogleDoc
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
 
             //Synced With Error
-            m_SpreadsheetErrorMessage.text = spreadsheet.SyncErrorMassage;
+            m_SpreadsheetErrorMessage.Text = spreadsheet.SyncErrorMassage;
             m_SpreadsheetErrorMessage.style.display = spreadsheet.SyncedWithError ? DisplayStyle.Flex : DisplayStyle.None;
             if (spreadsheet.SyncedWithError)
             {
@@ -102,22 +100,25 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
             }
             
-            var emptySheetList =  !spreadsheet.Sheets.Any();
-            m_SheetFoldoutLabelPanel.style.display = emptySheetList ? DisplayStyle.Flex : DisplayStyle.None;
-            m_SheetFoldoutScrollView.style.display = emptySheetList ? DisplayStyle.None : DisplayStyle.Flex;
 
             m_SheetsContainer.Clear();
-            
+            m_RangesContainer.Clear();
             foreach (var sheet in spreadsheet.Sheets)
             {
-                m_SheetsContainer.Add(new SheetView(sheet));
-            }
-        }
+                var sheetLabel = new SelectableLabel();
+                sheetLabel.text = $"{sheet.Name} ({sheet.Id})";
+                m_SheetsContainer.Add(sheetLabel);
 
-        void ToggleElementDisplayState(bool state, VisualElement element, out bool uiState)
-        {
-            element.style.display = (state) ? DisplayStyle.Flex : DisplayStyle.None;
-            uiState = state;
+                if(sheet.NamedRanges == null)
+                    continue;
+                
+                foreach (var namedRange in sheet.NamedRanges)
+                {
+                    var rangeLabel = new SelectableLabel();
+                    rangeLabel.text = $"{namedRange.Name} ({namedRange.Range.Name})";
+                    m_RangesContainer.Add(rangeLabel);
+                }
+            }
         }
 
         void StateChange(Spreadsheet spreadsheet)
@@ -125,7 +126,7 @@ namespace StansAssets.GoogleDoc
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             if (spreadsheet.Synced || spreadsheet.SyncedWithError)
             {
-                InitWithData(spreadsheet);
+                Bind(spreadsheet);
             }
             else
             {
@@ -133,11 +134,6 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-yellow");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.NotSyncedStringStatus;
             }
-        }
-        
-        void OnCopyClick(string copyObject)
-        {
-            GUIUtility.systemCopyBuffer = copyObject;
         }
     }
 }

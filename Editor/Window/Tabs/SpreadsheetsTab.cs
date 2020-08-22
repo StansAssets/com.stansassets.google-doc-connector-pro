@@ -22,11 +22,10 @@ namespace StansAssets.GoogleDoc
         public SpreadsheetsTab()
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/SpreadsheetsTab")
         {
-            Debug.Log(this.Q<Foldout>().viewDataKey);
-            
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>
             {
+                /*
                 var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
                 spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
                 spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
@@ -34,7 +33,7 @@ namespace StansAssets.GoogleDoc
 
                 var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
                 spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
-                spreadsheet.Load();
+                spreadsheet.Load();*/
 
                 RecreateSpreadsheetsView();
             };

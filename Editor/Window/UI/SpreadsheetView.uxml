@@ -1,9 +1,10 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">>
     <ui:VisualElement name="spreadsheetRoot" class="root">
         <Style src="SpreadsheetView.uss"/>
         <ui:VisualElement name="spreadsheetTopPanel" class="spreadsheet-top-panel">
             <ui:Foldout text="" name="arrowToggleFoldout" class="spreadsheet-arrowToggle"/>
-            <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
+            <sa:LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
             <ui:VisualElement class="flexible-space"/>
             <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
                 <ui:Button name="openBtn" class="spreadsheet-url-copy btn-right" tooltip="Open spreadsheet in browser."/>
@@ -17,26 +18,32 @@
             <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date"/>
             <ui:Label text="" name="lastSyncMachineName" class="spreadsheet-date"/>
         </ui:VisualElement>
-        <ui:Label name="spreadsheetError" class="spreadsheet-error"/>
+        <sa:HelpBox type="Error" name="spreadsheet-error" class="spreadsheet-error"/>
         <ui:VisualElement name="spreadsheetExpandedPanel" class="spreadsheet-expanded-panel">
-            <ui:VisualElement name="spreadsheetIdPanel" class="spreadsheet-id-panel row-panel">
+            <ui:VisualElement name="spreadsheetIdPanel" class="spreadsheet-data-indent row-panel">
                 <ui:Label text="Id:" name="spreadsheetIdTitle" class="spreadsheet-id-bold"/>
-                <ui:Label text="Spreadsheet Id" name="spreadsheetId" class="spreadsheet-id"/>
-                <ui:VisualElement name="spreadsheetButtonPanelID" class="spreadsheet-button-panel spreadsheet-button-id">
-                    <ui:Button name="copyIdBtn" tooltip="Copy spreadsheet Id to Clipboard"
-                               class="spreadsheet-id-copy btn-left"/>
-                </ui:VisualElement>
+                <sa:SelectableLabel text="Spreadsheet Id" name="spreadsheet-id" class="spreadsheet-id"/>
             </ui:VisualElement>
+
+            <ui:Label text="Sheets:" class="bold-label spreadsheet-data-indent"/>
+            <ui:VisualElement name="sheets-container" class="spreadsheet-container-indent"/>
+
+            <ui:Label text="Named Ranges:" class="bold-label spreadsheet-data-indent"/>
+            <ui:VisualElement name="ranges-container" class="spreadsheet-container-indent"/>
+            
+            
+            <!--
             <ui:VisualElement name="sheetFoldoutPanel" class="sheet-foldout-panel">
                 <ui:ScrollView name="sheetFoldoutScrollView" class="sheet-ScrollView">
                     <ui:Foldout text="Sheets:" name="sheetFoldout" class="sheet-foldout"/>
-                    <ui:VisualElement name="sheetContainer" class="sheet-ScrollView">
+                    <ui:VisualElement name="sheets-container" class="sheet-ScrollView">
                     </ui:VisualElement>
                 </ui:ScrollView>
                 <ui:VisualElement name="sheetFoldoutLabelPanel" class="row-panel">
                     <ui:Label text="No sheets" name="sheetFoldoutLabelItalic" class="sheet-foldout-label-italic"/>
                 </ui:VisualElement>
             </ui:VisualElement>
+            -->
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

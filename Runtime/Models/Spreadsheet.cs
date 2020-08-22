@@ -45,9 +45,6 @@ namespace StansAssets.GoogleDoc
 
         const string k_DefaultName = "<Spreadsheet>";
 
-        internal bool SpreadsheetFoldOutUIState = true;
-        internal bool SheetFoldOutUIState = true;
-
         /// <summary>
         /// An event to track spreadsheet sync state.
         /// </summary>
@@ -155,6 +152,8 @@ namespace StansAssets.GoogleDoc
             }
             set => m_DateTimeStr = value.ToString();
         }
+
+        internal Spreadsheet() { }
 
         internal Spreadsheet(string id)
         {

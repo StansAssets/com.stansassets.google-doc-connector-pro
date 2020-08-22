@@ -38,8 +38,8 @@ namespace StansAssets.GoogleDoc
 
         internal void SetCells(IEnumerable<ICellPointer> cells)
         {
-            m_Cells = cells;
-            Range = new GridRange(cells.First().Row, cells.First().Column, cells.Last().Row, cells.Last().Column);
+            m_Cells = cells.ToList();
+            Range = new GridRange(m_Cells.First().Row, m_Cells.First().Column, m_Cells.Last().Row, m_Cells.Last().Column);
         }
     }
 }
