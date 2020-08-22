@@ -34,7 +34,6 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
 
-            //TODO: There is an option to NOT load Google client secrets every request. Gonna fix this soon
             try
             {
                 using (var stream = new FileStream($"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
@@ -113,12 +112,24 @@ namespace StansAssets.GoogleDoc
                             {
                                 continue;
                             }
+
+                            string stringValue;
+                            if (cellData.EffectiveValue.BoolValue != null)
+                            {
+                                stringValue = cellData.EffectiveValue.BoolValue.ToString();
+                            } else if (cellData.EffectiveValue.NumberValue != null)
+                            {
+                                stringValue = cellData.EffectiveValue.NumberValue.ToString();
+                            }
+                            else
+                            {
+                                stringValue = cellData.EffectiveValue.StringValue;
+                            }
+                            
                             var cellValue = new CellValue(
-                                cellData.FormattedValue, 
+                                cellData.FormattedValue,
                                 cellData.EffectiveValue.FormulaValue,
-                                cellData.EffectiveValue.StringValue,
-                                cellData.EffectiveValue.NumberValue,
-                                cellData.EffectiveValue.BoolValue);
+                                stringValue);
 
                             var cell = new Cell(rowIndex, columnIndex, cellValue);
                             row.AddCell(cell);

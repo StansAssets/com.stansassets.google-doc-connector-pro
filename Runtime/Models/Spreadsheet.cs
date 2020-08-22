@@ -22,32 +22,32 @@ namespace StansAssets.GoogleDoc
             /// The spreadsheet is fully synced
             /// </summary>
             Synced,
-            
+
             /// <summary>
             /// The spreadsheet is not yet synced
             /// </summary>
             NotSynced,
-            
+
             /// <summary>
             /// Last spreadsheet sync attempt was finished with an error.
             /// </summary>
             SyncedWithError,
-            
+
             /// <summary>
             /// The spreadsheet sync is currently in progress.
             /// </summary>
             InProgress
         }
-        
-        internal const string SyncedStringStatus ="Synced";
-        internal const string NotSyncedStringStatus ="Not Synced";
-        internal const string SyncedWithErrorStringStatus ="Synced With Error";
-        
+
+        internal const string SyncedStringStatus = "Synced";
+        internal const string NotSyncedStringStatus = "Not Synced";
+        internal const string SyncedWithErrorStringStatus = "Synced With Error";
+
         const string k_DefaultName = "<Spreadsheet>";
-        
+
         internal bool SpreadsheetFoldOutUIState = true;
-        internal bool SheetFoldOutUIState  = true;
-        
+        internal bool SheetFoldOutUIState = true;
+
         /// <summary>
         /// An event to track spreadsheet sync state.
         /// </summary>
@@ -55,25 +55,25 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         SyncState m_State;
-        
+
         /// <summary>
         /// The spreadsheet sync state. 
         /// </summary>
         public SyncState State => m_State;
-        
+
         [SerializeField]
         string m_SyncErrorMassage;
-        
+
         /// <summary>
         /// If last spreadsheet sync attempt was finished with an error,
         /// this property will contains a string with error details.
         /// The default value is `null`.
         /// </summary>
         public string SyncErrorMassage => m_SyncErrorMassage;
-        
+
         [SerializeField]
         List<Sheet> m_Sheets = new List<Sheet>();
-        
+
         /// <summary>
         /// The spreadsheet sheets list.
         /// </summary>
@@ -81,15 +81,15 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_Id;
-        
+
         /// <summary>
         /// The ID of the spreadsheet.
         /// </summary>
         public string Id => m_Id;
-        
+
         [SerializeField]
         string m_Url;
-        
+
         /// <summary>
         /// The spreadsheet absolute web URL.
         /// </summary>
@@ -97,7 +97,7 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_Name;
-        
+
         /// <summary>
         /// The name of the spreadsheet.
         /// </summary>
@@ -105,12 +105,12 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_Path;
-        
+
         internal string Path => m_Path;
-        
+
         [SerializeField]
         string m_LastSyncMachineName;
-        
+
         /// <summary>
         /// The name of the Machine where last sync was performed. 
         /// </summary>
@@ -118,22 +118,22 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_DateTimeStr;
-        
+
         /// <summary>
         /// Property is `true` if <see cref="State"/> is equals to <see cref="SyncState.Synced"/>, otherwise 'false'
         /// </summary>
         public bool Synced => m_State == SyncState.Synced;
-        
+
         /// <summary>
         /// Property is `true` if <see cref="State"/> is equals to <see cref="SyncState.InProgress"/>, otherwise 'false'
         /// </summary>
         public bool InProgress => m_State == SyncState.InProgress;
-        
+
         /// <summary>
         /// Property is `true` if <see cref="State"/> is equals to <see cref="SyncState.NotSynced"/>, otherwise 'false'
         /// </summary>
         public bool NotSynced => m_State == SyncState.NotSynced;
-        
+
         /// <summary>
         /// Property is `true` if <see cref="State"/> is equals to <see cref="SyncState.SyncedWithError"/>, otherwise 'false'
         /// </summary>
@@ -155,29 +155,29 @@ namespace StansAssets.GoogleDoc
             }
             set => m_DateTimeStr = value.ToString();
         }
-        
+
         internal Spreadsheet(string id)
         {
             m_Id = id;
             m_Name = k_DefaultName;
         }
-        
+
         internal void ChangeStatus(SyncState state)
         {
             m_State = state;
             OnSyncStateChange(this);
         }
-        
+
         internal void SetName(string name)
         {
             m_Name = name;
         }
-        
+
         internal void SetUrl(string url)
         {
             m_Url = url;
         }
-        
+
         internal void SetError(string error)
         {
             m_SyncErrorMassage = error;
@@ -187,12 +187,12 @@ namespace StansAssets.GoogleDoc
         {
             m_Path = path;
         }
-        
+
         internal void SetMachineName(string name)
         {
             m_LastSyncMachineName = name;
         }
-        
+
         internal void CleanupSheets()
         {
             m_Sheets.Clear();
@@ -228,7 +228,7 @@ namespace StansAssets.GoogleDoc
         {
             return m_Sheets.FirstOrDefault(sheet => sheetId == sheet.Id);
         }
-        
+
         internal Sheet CreateSheet(int sheetId, string name)
         {
             //Create new Sheet if we don't have one
@@ -253,12 +253,6 @@ namespace StansAssets.GoogleDoc
             {
                 File.Delete(m_Path);
             }
-        }
-
-        internal void Load()
-        {
-            var loader = new SpreadsheetLoader(this);
-            _ = loader.Load();
         }
     }
 }
