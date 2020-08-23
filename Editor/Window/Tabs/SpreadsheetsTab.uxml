@@ -11,13 +11,5 @@
         <ui:Button text="Import" name="addSpreadsheetBtn"/>
     </sa:SettingsBlock>
     
-
-    <ui:VisualElement name="d1">
-        <ui:VisualElement name="d2">
-            <ui:Foldout view-data-key="deep-no-view-new2" text="From cloned tree2"/>
-        </ui:VisualElement>
-    </ui:VisualElement>
-    
     <ui:Button text="Load Example" name="loadExampleConfigBtn"/>
-    
 </ui:UXML>
