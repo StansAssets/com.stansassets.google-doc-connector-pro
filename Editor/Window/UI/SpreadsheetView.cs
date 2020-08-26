@@ -38,6 +38,13 @@ namespace StansAssets.GoogleDoc
 
             m_SpreadsheetId = this.Q<SelectableLabel>("spreadsheet-id");
             m_SpreadsheetErrorMessage = this.Q<HelpBox>("spreadsheet-error");
+            m_SpreadsheetErrorMessage.AddManipulator(new ContextualMenuManipulator(evt =>
+            {
+                evt.menu.AppendAction("Copy", (x) =>
+                {
+                    GUIUtility.systemCopyBuffer = m_SpreadsheetErrorMessage.Text;
+                });
+            }));
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
