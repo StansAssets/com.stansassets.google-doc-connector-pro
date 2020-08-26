@@ -122,7 +122,7 @@ namespace StansAssets.GoogleDoc
                 foreach (var namedRange in sheet.NamedRanges)
                 {
                     var rangeLabel = new SelectableLabel();
-                    rangeLabel.text = $"✔ {namedRange.Name} ({namedRange.Range.Name}) - {sheet.Name}({sheet.Id})";
+                    rangeLabel.text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name}))";
                     m_RangesContainer.Add(rangeLabel);
                 }
             }
