@@ -25,7 +25,7 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Name of the range. For example A1:B2, A:B, 1:2, etc.
         /// </summary>
-        public string Name => "A1:B2";
+        public string Name { get; private set; }
 
         public GridRange() { }
 
@@ -83,6 +83,8 @@ namespace StansAssets.GoogleDoc
                 EndColumnIndex = column1;
                 StartColumnIndex = column2;
             }
+            
+            SetName();
         }
 
         /// <summary>
@@ -98,6 +100,8 @@ namespace StansAssets.GoogleDoc
             EndRowIndex = endRowIndex;
             StartColumnIndex = startColumnIndex;
             StartRowIndex = startRowIndex;
+            
+            SetName();
         }
 
         /// <summary>
@@ -118,6 +122,24 @@ namespace StansAssets.GoogleDoc
                 EndRowIndex = end;
                 StartRowIndex = start;
             }
+            SetName();
         }
+        internal GridRange(Google.Apis.Sheets.v4.Data.GridRange range)
+        {
+            EndColumnIndex = range.EndColumnIndex;
+            EndRowIndex = range.EndRowIndex;
+            StartColumnIndex = range.StartColumnIndex;
+            StartRowIndex = range.StartRowIndex;
+
+            SetName();
+        }
+
+        void SetName()
+        {
+            var cell1 = CellNameUtility.GetCellNameForRange(StartRowIndex, StartColumnIndex);
+            var cell2 = CellNameUtility.GetCellNameForRange(EndRowIndex, EndColumnIndex);
+            Name = $"{cell1}:{cell2}";
+        }
+
     }
 }

@@ -102,8 +102,8 @@ namespace StansAssets.GoogleDoc
                 "No");
             if (dialog)
             {
-                GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
                 m_SpreadsheetsContainer.Remove(sender);
+                GoogleDocConnectorEditor.RemoveSpreadsheet(spreadsheet.Id);
                 RecreateSpreadsheetsView();
             }
         }

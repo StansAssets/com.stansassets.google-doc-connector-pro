@@ -177,13 +177,19 @@
 }
 
 .status-icon-yellow {
-    background-image: url('Resources/circle_yellow.png');
+    background-image: url('Resources/circle.png');
+    border-radius: 6px;
+    -unity-background-image-tint-color: yellow;
 }
 
 .status-icon-green {
-    background-image: url('Resources/circle_green.png');
+    background-image: url('Resources/circle.png');
+    border-radius: 6px;
+    -unity-background-image-tint-color: green;
 }
 
 .status-icon-red {
-    background-image: url('Resources/circle_red.png');
+    background-image: url('Resources/circle.png');
+    border-radius: 6px;
+    -unity-background-image-tint-color: red;
 }
