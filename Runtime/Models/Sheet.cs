@@ -129,7 +129,6 @@ namespace StansAssets.GoogleDoc
                 Debug.Log(e);
                 throw;
             }
-            
         }
 
         public T GetCellValue<T>(int row, int column)
@@ -162,7 +161,7 @@ namespace StansAssets.GoogleDoc
         {
             return GetRow(row).Select(cell => cell.GetValue<T>()).ToList();
         }
-        
+
         /// <summary>
         /// Returns all the cells in the column.
         /// </summary>
@@ -203,6 +202,7 @@ namespace StansAssets.GoogleDoc
         {
             return GetColumn(name).Select(cell => cell.GetValue<T>()).ToList();
         }
+
         /// <summary>
         /// Returns all the cells in the range.
         /// </summary>
@@ -219,7 +219,7 @@ namespace StansAssets.GoogleDoc
                 {
                     throw new ArgumentException("Range column indices out of range of sheet rows");
                 }
-                
+
                 for (var i = 0; i < m_Rows.Count; i++)
                 {
                     rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex && cell.Column <= range.EndColumnIndex));
@@ -232,9 +232,12 @@ namespace StansAssets.GoogleDoc
                     throw new ArgumentException("Range row indices out of range of sheet rows");
                 }
 
-                for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
+                if (range.StartRowIndex > 0 && range.StartRowIndex < m_Rows.Count && range.EndRowIndex < m_Rows.Count)
                 {
-                    rowData.AddRange(m_Rows[i].Cells);
+                    for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
+                    {
+                        rowData.AddRange(m_Rows[i].Cells);
+                    }
                 }
             }
             else
@@ -243,14 +246,18 @@ namespace StansAssets.GoogleDoc
                 {
                     throw new ArgumentException("Range row indices out of range of sheet rows");
                 }
+
                 if (range.StartColumnIndex == null || range.EndColumnIndex == null)
                 {
                     throw new ArgumentException("Range column indices out of range of sheet rows");
                 }
-                
-                for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
+
+                if (range.StartRowIndex > 0 && range.StartRowIndex < m_Rows.Count && range.EndRowIndex < m_Rows.Count)
                 {
-                    rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex && cell.Column <= range.EndColumnIndex));
+                    for (var i = (int)range.StartRowIndex; i <= (int)range.EndRowIndex; i++)
+                    {
+                        rowData.AddRange(m_Rows[i].Cells.Where(cell => cell.Column >= range.StartColumnIndex && cell.Column <= range.EndColumnIndex));
+                    }
                 }
             }
 

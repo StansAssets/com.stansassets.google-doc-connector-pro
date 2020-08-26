@@ -147,24 +147,10 @@ namespace StansAssets.GoogleDoc
                         var sheetId = namedRangeData.Range.SheetId ?? 0;
                         var sheet = m_Spreadsheet.GetSheet(sheetId);
                         var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                        var range = namedRangeData.Range;
+                        var range = new GridRange(namedRangeData.Range);
 
-                        Debug.Assert(range.StartRowIndex != null, "range.StartRowIndex != null");
-                        Debug.Assert(range.EndRowIndex != null, "range.EndRowIndex != null");
-                        Debug.Assert(range.StartColumnIndex != null, "range.StartColumnIndex != null");
-                        Debug.Assert(range.EndColumnIndex != null, "range.EndColumnIndex != null");
-
-                        var cells = new List<Cell>();
-                        for (var i = range.StartRowIndex.Value; i < range.EndRowIndex.Value; i++)
-                        {
-                            for (var j = range.StartColumnIndex.Value; j < range.EndColumnIndex.Value; j++)
-                            {
-                                var cell = new Cell(i, j);
-                                cells.Add(cell);
-                            }
-                        }
-
-                        namedRange.SetCells(cells);
+                        var cells = sheet.GetRange(range);
+                        namedRange.SetCells(cells, range);
                     }
                 }
 

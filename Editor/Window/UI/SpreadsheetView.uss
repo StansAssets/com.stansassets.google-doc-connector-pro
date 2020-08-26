@@ -170,6 +170,8 @@
     margin: 1px 2px 0 2px;
     height: 8px;
     width: 8px;
+    background-image: url('Resources/circle.png');
+    border-radius: 6px;
 }
 
 .spreadsheet-expanded-panel {
@@ -177,13 +179,13 @@
 }
 
 .status-icon-yellow {
-    background-image: url('Resources/circle_yellow.png');
+    -unity-background-image-tint-color: yellow;
 }
 
 .status-icon-green {
-    background-image: url('Resources/circle_green.png');
+    -unity-background-image-tint-color: green;
 }
 
 .status-icon-red {
-    background-image: url('Resources/circle_red.png');
+    -unity-background-image-tint-color: red;
 }

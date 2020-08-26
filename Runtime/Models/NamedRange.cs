@@ -41,5 +41,11 @@ namespace StansAssets.GoogleDoc
             m_Cells = cells.ToList();
             Range = new GridRange(m_Cells.First().Row, m_Cells.First().Column, m_Cells.Last().Row, m_Cells.Last().Column);
         }
+
+        internal void SetCells(IEnumerable<ICellPointer> cells, GridRange range)
+        {
+            m_Cells = cells.ToList();
+            Range = range;
+        }
     }
 }

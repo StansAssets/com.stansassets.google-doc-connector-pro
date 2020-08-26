@@ -38,6 +38,13 @@ namespace StansAssets.GoogleDoc
 
             m_SpreadsheetId = this.Q<SelectableLabel>("spreadsheet-id");
             m_SpreadsheetErrorMessage = this.Q<HelpBox>("spreadsheet-error");
+            m_SpreadsheetErrorMessage.AddManipulator(new ContextualMenuManipulator(evt =>
+            {
+                evt.menu.AppendAction("Copy", (x) =>
+                {
+                    GUIUtility.systemCopyBuffer = m_SpreadsheetErrorMessage.Text;
+                });
+            }));
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
@@ -106,16 +113,16 @@ namespace StansAssets.GoogleDoc
             foreach (var sheet in spreadsheet.Sheets)
             {
                 var sheetLabel = new SelectableLabel();
-                sheetLabel.text = $"{sheet.Name} ({sheet.Id})";
+                sheetLabel.text = $"~ {sheet.Name} ({sheet.Id})";
                 m_SheetsContainer.Add(sheetLabel);
 
                 if(sheet.NamedRanges == null)
                     continue;
-                
+
                 foreach (var namedRange in sheet.NamedRanges)
                 {
                     var rangeLabel = new SelectableLabel();
-                    rangeLabel.text = $"{namedRange.Name} ({namedRange.Range.Name})";
+                    rangeLabel.text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name}))";
                     m_RangesContainer.Add(rangeLabel);
                 }
             }

@@ -9,8 +9,8 @@ namespace StansAssets.GoogleDoc
         internal static ICellPointer GetCellPointer(string name)
         {
             name = string.Concat(name.Where(c => !char.IsWhiteSpace(c) || !char.IsPunctuation(c) || !char.IsSeparator(c) || !char.IsSymbol(c)));
-            
-           var column = 0;
+
+            var column = 0;
 
             //Split row number and column number
             var strRow = string.Concat(name.Where(char.IsDigit));
@@ -47,6 +47,26 @@ namespace StansAssets.GoogleDoc
 
             //Return
             return strColumn + row;
+        }
+
+        internal static string GetCellNameForRange(int? row, int? column)
+        {
+            var strColumn = string.Empty;
+            var strRow = string.Empty;
+            
+            if (row != null)
+                strRow = (row + 1).ToString();
+
+            if (column != null)
+            {
+                column += 1;
+
+                //Convert column number to name
+                strColumn = ColumnNumberToName(column ?? 0);
+            }
+
+            //Return
+            return strColumn + strRow;
         }
 
         internal static void ConvertCellNameToPositions(string name, out int? row, out int? column)
