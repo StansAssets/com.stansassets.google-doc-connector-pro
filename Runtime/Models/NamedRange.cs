@@ -26,7 +26,7 @@ namespace StansAssets.GoogleDoc
         /// The cells inside the named range.
         /// </summary>
         public IEnumerable<ICellPointer> Cells => m_Cells;
-        IEnumerable<Cell> m_Cells = new List<Cell>();
+        IEnumerable<ICellPointer> m_Cells = new List<ICellPointer>();
 
         /// <summary>
         /// First and last points of the range
@@ -48,13 +48,13 @@ namespace StansAssets.GoogleDoc
             Name = name;
         }
 
-        internal void SetCells(IEnumerable<Cell> cells)
+        internal void SetCells(IEnumerable<ICellPointer> cells)
         {
             m_Cells = cells.ToList();
             Range = new GridRange(m_Cells.First().Row, m_Cells.First().Column, m_Cells.Last().Row, m_Cells.Last().Column);
         }
 
-        internal void SetCells(IEnumerable<Cell> cells, GridRange range)
+        internal void SetCells(IEnumerable<ICellPointer> cells, GridRange range)
         {
             m_Cells = cells.ToList();
             Range = range;

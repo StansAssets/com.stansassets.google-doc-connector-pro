@@ -17,7 +17,6 @@ namespace StansAssets.GoogleDoc
 
         public static void CleanUpLocalCache(this Spreadsheet spreadsheet)
         {
-            
             if (File.Exists(spreadsheet.Path))
             {
                 File.Delete(spreadsheet.Path);
