@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEditor;
+using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
@@ -19,8 +21,8 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Cell Column Index starts from `0`.
         /// </summary>
-        public int Column { get; }
-
+        public int Column { get;}
+        
         /// <summary>
         /// Cell Name.
         /// For example "A1" / "B20" 
@@ -31,18 +33,19 @@ namespace StansAssets.GoogleDoc
         /// Cell Value representation.
         /// </summary>
         public CellValue Value { get; }
-
+        
         internal Cell(int row, int column)
         {
             Row = row;
             Column = column;
             Name = CellNameUtility.GetCellName(row, column);
         }
-
-        internal Cell(int row, int column, CellValue cellValue)
+        
+        [JsonConstructor]
+        internal Cell(int row, int column, CellValue value)
             : this(row, column)
         {
-            Value = cellValue;
+            Value = value;
         }
 
         /// <exception cref="ArgumentException">The method returns an error if the column name is empty</exception>

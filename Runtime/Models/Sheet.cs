@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc
@@ -40,8 +41,7 @@ namespace StansAssets.GoogleDoc
         public IEnumerable<RowData> Rows => m_Rows;
         List<RowData> m_Rows = new List<RowData>();
 
-        internal bool NamedRangeFoldOutUIState = false;
-
+        [JsonConstructor]
         internal Sheet(int id, string name)
         {
             m_Id = id;

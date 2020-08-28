@@ -1,5 +1,5 @@
 using System;
-using System.ComponentModel;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc
@@ -7,7 +7,7 @@ namespace StansAssets.GoogleDoc
     /// <summary>
     /// The kinds of value that a cell in a spreadsheet can have.
     /// </summary>
-    [Serializable]
+     [Serializable]
     public class CellValue
     {
         /// <summary>
@@ -25,13 +25,16 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public string StringValue { get; }
 
-        internal CellValue(string formattedValue, string formulaValue, string stringValue)
+        public CellValue() { }
+
+        [JsonConstructor]
+        public CellValue(string formattedValue, string formulaValue, string stringValue)
         {
             FormattedValue = formattedValue;
             FormulaValue = formulaValue;
             StringValue = stringValue;
         }
-
+        
         /// <summary>
         /// Converts Cell <see cref="StringValue"/> to the specified type.
         /// Some special cases:
