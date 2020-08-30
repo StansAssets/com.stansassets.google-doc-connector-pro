@@ -21,7 +21,7 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Cell Column Index starts from `0`.
         /// </summary>
-        public int Column { get;}
+        public int Column { get; }
         
         /// <summary>
         /// Cell Name.
