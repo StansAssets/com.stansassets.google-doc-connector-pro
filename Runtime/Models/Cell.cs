@@ -33,7 +33,6 @@ namespace StansAssets.GoogleDoc
         /// Cell Value representation.
         /// </summary>
         public CellValue Value { get; }
-        
         internal Cell(int row, int column)
         {
             Row = row;

@@ -7,7 +7,7 @@ namespace StansAssets.GoogleDoc
     /// <summary>
     /// The kinds of value that a cell in a spreadsheet can have.
     /// </summary>
-     [Serializable]
+    [Serializable]
     public class CellValue
     {
         /// <summary>
@@ -34,7 +34,6 @@ namespace StansAssets.GoogleDoc
             FormulaValue = formulaValue;
             StringValue = stringValue;
         }
-        
         /// <summary>
         /// Converts Cell <see cref="StringValue"/> to the specified type.
         /// Some special cases:
