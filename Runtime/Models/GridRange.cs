@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace StansAssets.GoogleDoc
 {
@@ -20,8 +21,7 @@ namespace StansAssets.GoogleDoc
         /// The start row of the range, property are zero-based or null if unbounded.
         /// </summary>
         public int? StartRowIndex { get; }
-
-        // TODO implement
+        
         /// <summary>
         /// Name of the range. For example A1:B2, A:B, 1:2, etc.
         /// </summary>
@@ -94,6 +94,7 @@ namespace StansAssets.GoogleDoc
         /// <param name="startColumnIndex">number of first column</param>
         /// <param name="endRowIndex">number of last row</param>
         /// <param name="endColumnIndex">number of column column</param>
+        [JsonConstructor]
         public GridRange(int startRowIndex, int startColumnIndex, int endRowIndex, int endColumnIndex)
         {
             EndColumnIndex = endColumnIndex;

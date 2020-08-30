@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
     /// <summary>
     /// A named range.
     /// </summary>
+    [Serializable]
     public class NamedRange
     {
         /// <summary>
@@ -17,19 +21,27 @@ namespace StansAssets.GoogleDoc
         /// The name of the named range.
         /// </summary>
         public string Name { get; }
-
-        IEnumerable<ICellPointer> m_Cells = new List<ICellPointer>();
-
+        
         /// <summary>
         /// The cells inside the named range.
         /// </summary>
         public IEnumerable<ICellPointer> Cells => m_Cells;
+        IEnumerable<ICellPointer> m_Cells = new List<ICellPointer>();
 
         /// <summary>
         /// First and last points of the range
         /// </summary>
         public GridRange Range { get; private set; } = new GridRange();
-
+        
+        [JsonConstructor]
+        internal NamedRange(string id, string name, IEnumerable<Cell> cells, GridRange range)
+        {
+            Id = id;
+            Name = name;
+            m_Cells = cells.ToList();
+            Range = range;
+        }
+        
         internal NamedRange(string id, string name)
         {
             Id = id;

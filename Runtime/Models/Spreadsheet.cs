@@ -186,6 +186,11 @@ namespace StansAssets.GoogleDoc
         {
             m_Path = path;
         }
+        
+        internal void SetSheets(IEnumerable<Sheet> sheets)
+        {
+            m_Sheets = sheets.ToList();
+        }
 
         internal void SetMachineName(string name)
         {
@@ -234,24 +239,6 @@ namespace StansAssets.GoogleDoc
             var newSheet = new Sheet(sheetId, name);
             m_Sheets.Add(newSheet);
             return newSheet;
-        }
-
-        internal void InitFromCache()
-        {
-            if (File.Exists(m_Path))
-            {
-                string serializedData = File.ReadAllText(m_Path);
-                var spreadsheet = JsonConvert.DeserializeObject<Spreadsheet>(serializedData);
-                m_Sheets = spreadsheet.m_Sheets;
-            }
-        }
-
-        internal void CleanUpLocalCache()
-        {
-            if (File.Exists(m_Path))
-            {
-                File.Delete(m_Path);
-            }
         }
     }
 }
