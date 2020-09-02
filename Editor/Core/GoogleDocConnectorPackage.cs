@@ -1,4 +1,5 @@
-﻿using StansAssets.Foundation.Editor;
+﻿#if UNITY_2019_4_OR_NEWER || UNITY_2020_2_OR_NEWER
+using StansAssets.Foundation.Editor;
 using UnityEditor.PackageManager;
 
 namespace StansAssets.GoogleDoc
@@ -27,3 +28,4 @@ namespace StansAssets.GoogleDoc
         internal static readonly string WindowTabsPath = $"{RootPath}/Editor/Window/Tabs";
     }
 }
+#endif

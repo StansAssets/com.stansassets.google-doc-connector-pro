@@ -1,3 +1,4 @@
+#if UNITY_2019_4_OR_NEWER || UNITY_2020_2_OR_NEWER
 using StansAssets.Plugins.Editor;
 using UnityEditor;
 
@@ -13,3 +14,4 @@ namespace StansAssets.GoogleDoc
         }
     }
 }
+#endif

@@ -1,8 +1,14 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
          xmlns:sa="StansAssets.Foundation.UIElements">
-    
+
     <sa:SettingsBlock label="Spreadsheets">
         <sa:HelpBox type="Info" name="no-spreadsheets-note" text="You haven't added any Spreadsheets yet."/>
+        <ui:VisualElement name="NoCredentials" >
+            <sa:HelpBox type="Error" name="no-credentials" text="You haven't have credentials"/>
+            <sa:Hyperlink link="https://developers.google.com/sheets/api/quickstart/dotnet">
+                <ui:Label text="Create credentials.json" class="no-credentials-label"/>
+            </sa:Hyperlink>
+        </ui:VisualElement>
         <ui:VisualElement focusable="True" name="spreadsheets-container" class="tab-spreadsheets-container"/>
     </sa:SettingsBlock>
 
@@ -10,6 +16,29 @@
         <ui:TextField picking-mode="Ignore" name="spreadsheetIdText" class="add-new-spreadsheet"/>
         <ui:Button text="Import" name="addSpreadsheetBtn"/>
     </sa:SettingsBlock>
-    
-    <ui:Button text="Load Example" name="loadExampleConfigBtn"/>
+
+    <ui:VisualElement class="panel">
+        <ui:VisualElement name="DocTopPanel" class="top-panel">
+            <ui:Foldout text="Documentation" name="DocArrowToggleFoldout" class="arrowToggle"
+                        view-data-key="doc_toggle"/>
+            <ui:VisualElement class="flexible-space"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="DocExpandedPanel" class="expanded-panel">
+            <ui:Label text="This section contains useful links." class="panel-label"/>
+            <ui:VisualElement name="DocItemsPanel" class="doc-panel"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+
+    <ui:VisualElement class="panel">
+        <ui:VisualElement name="SampleTopPanel" class="top-panel">
+            <ui:Foldout text="Samples" name="SampleArrowToggleFoldout" class="arrowToggle"
+                        view-data-key="sample_toggle"/>
+            <ui:VisualElement class="flexible-space"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="SampleExpandedPanel" class="expanded-panel">
+            <ui:Label text="Examples and tutorials" class="panel-label"/>
+            <ui:Button text="Load Example" name="loadExampleConfigBtn"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+
 </ui:UXML>

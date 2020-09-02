@@ -4,12 +4,7 @@
     margin-left: 0;
     margin-right: 0;
     border-bottom-width: 1px;
-    border-left-color: rgb(0, 0, 0);
-    border-right-color: rgb(0, 0, 0);
-    border-top-color: rgb(0, 0, 0);
-    border-bottom-color: rgb(0, 0, 0);
     padding-top: 1px;
-    background-color: #4d4d4d;
     margin-bottom: 6px;
 }
 

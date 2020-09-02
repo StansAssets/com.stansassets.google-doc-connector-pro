@@ -1,0 +1,12 @@
+.root {
+
+    border-color: rgb(138, 138, 138);
+    background-color: rgb(165, 165, 165);
+}
+
+.spreadsheet-id-copy,
+.spreadsheet-url-copy,
+.btn-refresh,
+.btn-remove {
+    -unity-background-image-tint-color: rgb(101, 101, 101);
+}
