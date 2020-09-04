@@ -41,6 +41,14 @@ namespace StansAssets.GoogleDoc
         public IEnumerable<RowData> Rows => m_Rows;
         List<RowData> m_Rows = new List<RowData>();
 
+        internal DataState DataState => m_DataState;
+        DataState m_DataState = DataState.Default;
+
+        internal void SetDataState(DataState state)
+        {
+            m_DataState = state;
+        }
+
         [JsonConstructor]
         internal Sheet(int id, string name)
         {
@@ -301,6 +309,40 @@ namespace StansAssets.GoogleDoc
             return range is null
                 ? new List<Cell>()
                 : range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
+        }
+
+        /// <summary>
+        /// Updates the value for a cell, if any, or create a new cell with that value
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="cellValue"></param>
+        public void UpdateCell(int row, int column, CellValue cellValue)
+        {
+            if (row < 0 || column < 0)
+            {
+                throw new Exception("Row and Column must be greater than or equal to zero");
+            }
+
+            if (GetCell(row, column) != null)
+            {
+                m_Rows[row].UpdateCell(column, cellValue);
+                return;
+            }
+
+            while (m_Rows.Count <= row)
+            {
+                m_Rows.Add(new RowData());
+            }
+
+            for (var columnIndex = m_Rows[row].Cells.Count(); columnIndex < column; columnIndex++)
+            {
+                m_Rows[row].AddCell(new Cell(row, columnIndex));
+            }
+
+            var cell = new Cell(row, column, cellValue);
+            cell.SetDataState(DataState.Updated);
+            m_Rows[row].AddCell(cell);
         }
 
         public List<T> GetNamedRangeValues<T>(string name)

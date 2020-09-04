@@ -25,15 +25,22 @@ namespace StansAssets.GoogleDoc
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>
             {
-                /*
-                var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
-                spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
-                spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
-                spreadsheet1.Load();
+                var spreadsheet1 = GoogleDocConnector.GetSpreadsheet("1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo");
+                spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet("1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo");
+               // spreadsheet1.CreateGoogleSheet("Sheet3");
+                spreadsheet1.UpdateGoogleCell("Sheet3!A1", "123");
+                spreadsheet1.UpdateGoogleCell("Sheet3!A2", "456");
+                spreadsheet1.UpdateGoogleCell("Sheet3!A3", "789");
+                spreadsheet1.DeleteGoogleCell("Sheet3!A1");
+                /*var sheet1 = spreadsheet1.GetSheetOrCreate("Лист1");
+                sheet1.UpdateCell(0, 0, new CellValue("vasa", "", "vasa") );
+                spreadsheet1.SaveToGoogle();
+                /*spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
+               spreadsheet1.Load();
 
-                var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
-                spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
-                spreadsheet.Load();*/
+              var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
+               spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
+               spreadsheet.Load();*/
 
                 RecreateSpreadsheetsView();
             };
@@ -76,6 +83,9 @@ namespace StansAssets.GoogleDoc
             }
 
             Debug.Log(builder);
+
+
+            
         }
 
         void RecreateSpreadsheetsView()

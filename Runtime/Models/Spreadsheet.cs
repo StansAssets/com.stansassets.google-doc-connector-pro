@@ -186,7 +186,7 @@ namespace StansAssets.GoogleDoc
         {
             m_Path = path;
         }
-        
+
         internal void SetSheets(IEnumerable<Sheet> sheets)
         {
             m_Sheets = sheets.ToList();
@@ -221,6 +221,24 @@ namespace StansAssets.GoogleDoc
         }
 
         /// <summary>
+        /// Returns `true` if spreadsheet contains a sheet with the name, otherwise `false`.
+        /// </summary>
+        /// <param name="sheetName">A sheet name.</param>
+        /// <returns>`true` if spreadsheet contains a sheet with the name, otherwise `false`.</returns>
+        public bool HasSheet(string sheetName)
+        {
+            foreach (var sheet in m_Sheets)
+            {
+                if (sheetName == sheet.Name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Gets spreadsheet sheet by it's id.
         /// </summary>
         /// <param name="sheetId">A sheet id.</param>
@@ -231,6 +249,28 @@ namespace StansAssets.GoogleDoc
         public Sheet GetSheet(int sheetId)
         {
             return m_Sheets.FirstOrDefault(sheet => sheetId == sheet.Id);
+        }
+
+        /// <summary>
+        /// Gets first spreadsheet sheet by it's name.
+        /// </summary>
+        /// <param name="sheetName">A sheet name.</param>
+        /// <returns>
+        /// Returns the <see cref="Sheets"/> object
+        /// if spreadsheet contains a sheet with the name, otherwise `null`
+        /// </returns>
+        public Sheet GetSheet(string sheetName)
+        {
+            return m_Sheets.FirstOrDefault(sheet => sheetName == sheet.Name);
+        }
+
+        public Sheet GetSheetOrCreate(string sheetName)
+        {
+            if (HasSheet(sheetName))
+                return GetSheet(sheetName);
+            var sheet = CreateSheet(m_Sheets.Count, sheetName);
+            sheet.SetDataState(DataState.Created);
+            return sheet;
         }
 
         internal Sheet CreateSheet(int sheetId, string name)
