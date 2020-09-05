@@ -27,14 +27,16 @@ namespace StansAssets.GoogleDoc
             {
                 var spreadsheet1 = GoogleDocConnector.GetSpreadsheet("1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo");
                 spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet("1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo");
-               // spreadsheet1.CreateGoogleSheet("Sheet3");
-                spreadsheet1.UpdateGoogleCell("Sheet3!A1", "123");
-                spreadsheet1.UpdateGoogleCell("Sheet3!A2", "456");
-                spreadsheet1.UpdateGoogleCell("Sheet3!A3", "789");
-                spreadsheet1.DeleteGoogleCell("Sheet3!A1");
-                /*var sheet1 = spreadsheet1.GetSheetOrCreate("Лист1");
-                sheet1.UpdateCell(0, 0, new CellValue("vasa", "", "vasa") );
-                spreadsheet1.SaveToGoogle();
+                //spreadsheet1.CreateGoogleSheet("Sheet4");
+                spreadsheet1.UpdateGoogleCell("Sheet4!A1", "123");
+                spreadsheet1.UpdateGoogleCell("Sheet4!A2", "456");
+                spreadsheet1.UpdateGoogleCell("Sheet4!A3", "789");
+                spreadsheet1.DeleteGoogleCell("Sheet4!A1");
+                var sheet1 = spreadsheet1.GetSheetOrCreate("Лист1");
+                sheet1.UpdateCell(0, 0, new CellValue("vasa", "", "vasa"));
+                sheet1.UpdateCell(1, 0, new CellValue("vasa", "", "vasa"));
+                sheet1.UpdateCell(0, 1, new CellValue("vasa", "", "vasa"));
+                spreadsheet1.Save();
                 /*spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
                spreadsheet1.Load();
 
@@ -44,7 +46,8 @@ namespace StansAssets.GoogleDoc
 
                 RecreateSpreadsheetsView();
             };
-          //  connectBtn.style.display = DisplayStyle.None;
+
+            //  connectBtn.style.display = DisplayStyle.None;
 
             m_NoSpreadsheetsNote = this.Q("no-spreadsheets-note");
             var spreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
@@ -59,11 +62,10 @@ namespace StansAssets.GoogleDoc
                 spreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
                 RecreateSpreadsheetsView();
             };
-            
+
             m_SpreadsheetsContainer = this.Q<VisualElement>("spreadsheets-container");
             RecreateSpreadsheetsView();
         }
-        
 
         static void OnSheetStateChanged(Spreadsheet spreadsheet)
         {
@@ -83,17 +85,14 @@ namespace StansAssets.GoogleDoc
             }
 
             Debug.Log(builder);
-
-
-            
         }
 
         void RecreateSpreadsheetsView()
         {
-            m_NoSpreadsheetsNote.style.display = GoogleDocConnectorSettings.Instance.Spreadsheets.Any() 
-                ? DisplayStyle.None 
+            m_NoSpreadsheetsNote.style.display = GoogleDocConnectorSettings.Instance.Spreadsheets.Any()
+                ? DisplayStyle.None
                 : DisplayStyle.Flex;
-            
+
             m_SpreadsheetsContainer.Clear();
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
             {

@@ -8,7 +8,15 @@
             _ = loader.Load();
         }
         /// <summary>
-        /// Update cell in docs.google.com
+        /// Save local spreadsheet changes to docs.google.com
+        /// </summary>
+        public static void Save(this Spreadsheet spreadsheet)
+        {
+            var saver = new SpreadsheetSaverToGoogle(spreadsheet);
+            _ = saver.Save();
+        }
+        /// <summary>
+        /// Update cell to docs.google.com
         /// </summary>
         /// <param name="range">Cell address. For example: Sheet1!F3</param>
         /// <param name="value"></param>
@@ -18,7 +26,7 @@
             _ = saver.UpdateCell(range, value);
         }
         /// <summary>
-        ///  Create sheet in docs.google.com
+        ///  Create sheet to docs.google.com
         /// </summary>
         /// <param name="name">sheet name. For example: Sheet3</param>
         public static void CreateGoogleSheet(this Spreadsheet spreadsheet, string name)
@@ -27,7 +35,7 @@
             _ = saver.CreateSheet(name);
         }
         /// <summary>
-        /// Delete range of cells in docs.google.com
+        /// Delete range of cells to docs.google.com
         /// </summary>
         /// <param name="range">Cell address. For example: Sheet1!A1:F1</param>
         public static void DeleteGoogleCell(this Spreadsheet spreadsheet, string range)
