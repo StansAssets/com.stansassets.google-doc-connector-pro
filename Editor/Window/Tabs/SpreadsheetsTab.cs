@@ -1,5 +1,4 @@
-﻿#if UNITY_2019_4_OR_NEWER || UNITY_2020_2_OR_NEWER
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using StansAssets.Foundation.UIElements;
@@ -17,16 +16,16 @@ namespace StansAssets.GoogleDoc
 
         readonly VisualElement m_SpreadsheetsContainer;
         VisualElement m_NoSpreadsheetsNote;
-        
+
         VisualElement m_NoCredentials;
         HelpBox m_NoCredentialsHelpBox;
-        
+
         TextField m_SpreadsheetIdField;
         Button m_AddSpreadsheetBtn;
 
-        const string k_SpreadsheetId = "19Bs5Ts6OBXh7SFNdI3W0ZK-BrNiCHVt10keUBwHX2fc";
-        const string k_SpreadsheetId2 = "1QuJ0M7s25KxX_E0mRtmJiZQciKjvVt77yKMlUkvOWrc";
-        const string k_RangeName = "Bike3";
+        const string k_SampleSpreadsheetId = "19Bs5Ts6OBXh7SFNdI3W0ZK-BrNiCHVt10keUBwHX2fc";
+        const string k_SampleSpreadsheetId2 = "1QuJ0M7s25KxX_E0mRtmJiZQciKjvVt77yKMlUkvOWrc";
+        const string k_SampleRangeName = "Bike3";
 
         public SpreadsheetsTab()
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/SpreadsheetsTab")
@@ -34,15 +33,14 @@ namespace StansAssets.GoogleDoc
             var connectBtn = this.Q<Button>("loadExampleConfigBtn");
             connectBtn.clicked += () =>
             {
-                /*
-                var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId);
-                spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
-                spreadsheet1.OnSyncStateChange += OnSheetStateChanged;
+                var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SampleSpreadsheetId);
+                spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId);
+                spreadsheet1.OnSyncStateChange += OnSampleSheetStateChanged;
                 spreadsheet1.Load();
 
-                var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId2);
-                spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId2);
-                spreadsheet.Load();*/
+                var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SampleSpreadsheetId2);
+                spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId2);
+                spreadsheet.Load();
 
                 RecreateSpreadsheetsView();
             };
@@ -68,39 +66,58 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetsContainer = this.Q<VisualElement>("spreadsheets-container");
             RecreateSpreadsheetsView();
 
-            //Bind Documentation Panel
-            var docExpandedPanel = this.Q<VisualElement>("DocExpandedPanel");
-            CreateDocumentationList();
-            var docFoldout = this.Q<Foldout>("DocArrowToggleFoldout");
+            CheckCredentials();
+            schedule.Execute(() => { }).Every(100000);
 
-            docFoldout.RegisterValueChangedCallback(e =>
-            {
-                docExpandedPanel.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
-            });
-            docExpandedPanel.style.display = docFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-
-            //Bind Samples Panel
-            var sampleExpandedPanel = this.Q<VisualElement>("SampleExpandedPanel");
-            var sampleFoldout = this.Q<Foldout>("SampleArrowToggleFoldout");
-
-            sampleFoldout.RegisterValueChangedCallback(e =>
-            {
-                sampleExpandedPanel.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
-            });
-            sampleExpandedPanel.style.display = docFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+            BindFoldoutPanel("DocExpandedPanel", "DocArrowToggleFoldout");
+            BindFoldoutPanel("SampleExpandedPanel", "SampleArrowToggleFoldout");
         }
 
-        static void OnSheetStateChanged(Spreadsheet spreadsheet)
+        void CheckCredentials()
         {
-            if (spreadsheet.State != Spreadsheet.SyncState.Synced)
+            GoogleDocConnectorSettings.Instance.CheckCredentials().ContinueWith((b) =>
+            {
+                if (b.Result != string.Empty)
+                {
+                    m_NoCredentials.style.display = DisplayStyle.Flex;
+
+                    m_NoCredentialsHelpBox.Text = b.Result;
+
+                    m_SpreadsheetIdField.SetEnabled(false);
+                    m_AddSpreadsheetBtn.SetEnabled(false);
+                }
+                else
+                {
+                    m_NoCredentials.style.display = DisplayStyle.None;
+                    m_SpreadsheetIdField.SetEnabled(true);
+                    m_AddSpreadsheetBtn.SetEnabled(true);
+                }
+            });
+        }
+
+        void BindFoldoutPanel(string visualElementName, string foldoutName)
+        {
+            var visualElement = this.Q<VisualElement>(visualElementName);
+            var foldout = this.Q<Foldout>(foldoutName);
+
+            foldout.RegisterValueChangedCallback(e =>
+            {
+                visualElement.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
+            });
+            visualElement.style.display = foldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        static void OnSampleSheetStateChanged(Spreadsheet spreadsheet)
+        {
+            if (!spreadsheet.Synced)
             {
                 return;
             }
 
             var sheet = spreadsheet.GetSheet(0);
-            var range = sheet.GetNamedRangeCells(k_RangeName);
+            var range = sheet.GetNamedRangeCells(k_SampleRangeName);
             Debug.Log(sheet.GetCell(3, 0).Value.FormattedValue);
-            var builder = new StringBuilder($"NamedRange Id:{k_RangeName} Data:");
+            var builder = new StringBuilder($"NamedRange Id:{k_SampleRangeName} Data:");
             foreach (var obj in range)
             {
                 builder.Append(obj.Value.FormattedValue ?? string.Empty);
@@ -113,26 +130,15 @@ namespace StansAssets.GoogleDoc
         void RecreateSpreadsheetsView()
         {
             m_SpreadsheetsContainer.Clear();
-            
-            if (!GoogleDocConnectorSettings.Instance.CheckCredentials(out var errorMassage))
-            {
-                m_NoSpreadsheetsNote.style.display = DisplayStyle.None;
-                m_NoCredentials.style.display = DisplayStyle.Flex;
-                m_NoCredentialsHelpBox.Text = errorMassage;
-                
-                m_SpreadsheetIdField.SetEnabled(false);
-                m_AddSpreadsheetBtn.SetEnabled(false);
-                return;
-            }
-            
+
             m_SpreadsheetIdField.SetEnabled(true);
             m_AddSpreadsheetBtn.SetEnabled(true);
-            
+
             m_NoCredentials.style.display = DisplayStyle.None;
             m_NoSpreadsheetsNote.style.display = GoogleDocConnectorSettings.Instance.Spreadsheets.Any()
                 ? DisplayStyle.None
                 : DisplayStyle.Flex;
-            
+
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
             {
                 var item = new SpreadsheetView(spreadsheet);
@@ -190,4 +196,3 @@ namespace StansAssets.GoogleDoc
         }
     }
 }
-#endif

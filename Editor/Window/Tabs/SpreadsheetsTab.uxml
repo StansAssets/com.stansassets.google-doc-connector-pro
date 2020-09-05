@@ -6,7 +6,7 @@
         <ui:VisualElement name="NoCredentials" >
             <sa:HelpBox type="Error" name="no-credentials" text="You haven't have credentials"/>
             <sa:Hyperlink link="https://developers.google.com/sheets/api/quickstart/dotnet">
-                <ui:Label text="Create credentials.json" class="no-credentials-label"/>
+                <ui:Label text="Add credentials.json" class="no-credentials-label"/>
             </sa:Hyperlink>
         </ui:VisualElement>
         <ui:VisualElement focusable="True" name="spreadsheets-container" class="tab-spreadsheets-container"/>

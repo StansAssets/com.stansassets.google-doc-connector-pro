@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
@@ -62,32 +63,33 @@ namespace StansAssets.GoogleDoc
                 ? spreadsheet 
                 : null;
         }
-
-        internal bool CheckCredentials(out string errorMassage)
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>Message Error if CheckCredentials has errors, otherwise empty string. </returns>
+        internal async Task<string> CheckCredentials()
         {
-            errorMassage = "";
+            //errorMassage = "";
             try
             {
-                using (var stream = new FileStream($"{СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
-                {
-                    // The file token.json stores the user's access and refresh tokens, and is created
-                    // automatically when the authorization flow completes for the first time.
-                    var credPath = $"{СredentialsFolderPath}/token.json";
-                    GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        new[] {SheetsService.Scope.SpreadsheetsReadonly},
-                        "user",
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true));
-                }
+                using var stream = new FileStream($"{СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read);
+
+                // The file token.json stores the user's access and refresh tokens, and is created
+                // automatically when the authorization flow completes for the first time.
+                var credPath = $"{СredentialsFolderPath}/token.json";
+               await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    new[] {SheetsService.Scope.SpreadsheetsReadonly},
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(credPath, true));
+               return String.Empty;
             }
             catch (Exception ex)
             {
-                errorMassage = ex.Message;
-                return false;
+                return ex.Message;
             }
-
-            return true;
         }
 
         public void OnBeforeSerialize()

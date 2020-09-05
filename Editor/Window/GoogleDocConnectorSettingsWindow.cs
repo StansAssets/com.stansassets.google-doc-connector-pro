@@ -1,5 +1,4 @@
-﻿#if UNITY_2019_4_OR_NEWER || UNITY_2020_2_OR_NEWER
-using StansAssets.Foundation.Editor;
+﻿using StansAssets.Foundation.Editor;
 using StansAssets.Plugins.Editor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -22,4 +21,3 @@ namespace StansAssets.GoogleDoc
         public static GUIContent WindowTitle => new GUIContent(GoogleDocConnectorPackage.DisplayName);
     }
 }
-#endif

@@ -1,5 +1,4 @@
-﻿#if UNITY_2019_4_OR_NEWER || UNITY_2020_2_OR_NEWER
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using StansAssets.Foundation.UIElements;
@@ -34,11 +33,6 @@ namespace StansAssets.GoogleDoc
         public SpreadsheetView(Spreadsheet spreadsheet): 
             base($"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView")
         {
-            /*var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView.uxml";
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
-            visualTree.CloneTree(this);
-            style.flexGrow = 1.0f;*/
-
             m_SpreadsheetId = this.Q<SelectableLabel>("spreadsheet-id");
             m_SpreadsheetErrorMessage = this.Q<HelpBox>("spreadsheet-error");
             m_SpreadsheetErrorMessage.AddManipulator(new ContextualMenuManipulator(evt =>
@@ -147,4 +141,3 @@ namespace StansAssets.GoogleDoc
         }
     }
 }
-#endif
