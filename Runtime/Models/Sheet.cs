@@ -188,7 +188,7 @@ namespace StansAssets.GoogleDoc
             if (name.Equals(string.Empty))
                 return new List<Cell>();
 
-            CellNameUtility.ConvertCellNameToPositions(name, out var row, out var column);
+            CellNameUtility.ConvertCellNameToPositions(name, out _, out var column);
 
             return GetColumn(column ?? default);
         }
