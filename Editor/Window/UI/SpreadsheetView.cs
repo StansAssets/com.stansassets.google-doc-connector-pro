@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using StansAssets.Foundation.UIElements;
+using StansAssets.Plugins.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,7 +10,7 @@ using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
 namespace StansAssets.GoogleDoc
 {
-    class SpreadsheetView : VisualElement
+    class SpreadsheetView : BaseTab
     {
         public event Action<SpreadsheetView, Spreadsheet> OnRemoveClick = delegate { };
         public event Action<Spreadsheet> OnRefreshClick = delegate { };
@@ -29,13 +30,9 @@ namespace StansAssets.GoogleDoc
         readonly VisualElement m_SheetsContainer;
         readonly VisualElement m_RangesContainer;
 
-        public SpreadsheetView(Spreadsheet spreadsheet)
+        public SpreadsheetView(Spreadsheet spreadsheet): 
+            base($"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView")
         {
-            var uxmlPath = $"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView.uxml";
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
-            visualTree.CloneTree(this);
-            style.flexGrow = 1.0f;
-
             m_SpreadsheetId = this.Q<SelectableLabel>("spreadsheet-id");
             m_SpreadsheetErrorMessage = this.Q<HelpBox>("spreadsheet-error");
             m_SpreadsheetErrorMessage.AddManipulator(new ContextualMenuManipulator(evt =>
