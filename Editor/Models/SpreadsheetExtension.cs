@@ -1,12 +1,25 @@
-﻿namespace StansAssets.GoogleDoc
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+
+namespace StansAssets.GoogleDoc
 {
     public static class SpreadsheetExtension
     {
         public static void Load(this Spreadsheet spreadsheet)
         {
             var loader = new SpreadsheetLoader(spreadsheet);
-            _ = loader.Load();
+            loader.Load().Wait();
         }
+
+        public static async Task LoadAsync(this Spreadsheet spreadsheet)
+        {
+            var loader = new SpreadsheetLoader(spreadsheet);
+            await loader.Load();
+        }
+
         /// <summary>
         /// Save local spreadsheet changes to docs.google.com
         /// </summary>
@@ -15,6 +28,7 @@
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
             _ = saver.Save();
         }
+
         /// <summary>
         /// Update cell to docs.google.com
         /// </summary>
@@ -23,8 +37,20 @@
         public static void UpdateGoogleCell(this Spreadsheet spreadsheet, string range, string value)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            _ = saver.UpdateCell(range, value);
+            saver.UpdateCell(range, value).Wait();
         }
+
+        /// <summary>
+        /// Append cell in end of sheet to docs.google.com
+        /// </summary>
+        /// <param name="range">Cell address. For example: Sheet1!F3:F6</param>
+        /// <param name="value"></param>
+        public static void AppendGoogleCell(this Spreadsheet spreadsheet, string range, List<object> value)
+        {
+            var saver = new SpreadsheetSaverToGoogle(spreadsheet);
+            saver.AppendCell(range, value).Wait();
+        }
+
         /// <summary>
         ///  Create sheet to docs.google.com
         /// </summary>
@@ -32,8 +58,9 @@
         public static void CreateGoogleSheet(this Spreadsheet spreadsheet, string name)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            _ = saver.CreateSheet(name);
+            saver.CreateSheet(name).Wait();
         }
+
         /// <summary>
         /// Delete range of cells to docs.google.com
         /// </summary>
@@ -41,7 +68,27 @@
         public static void DeleteGoogleCell(this Spreadsheet spreadsheet, string range)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            _ = saver.DeleteCell(range);
+            saver.DeleteCell(range).Wait();
+        }
+
+        /// <summary>
+        /// Save spreadsheet to local json file. File will be saving in spreadsheet.Path 
+        /// </summary>
+        public static void CacheDocument(this Spreadsheet spreadsheet)
+        {
+            try
+            {
+                spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
+                File.WriteAllText(spreadsheet.Path, JsonConvert.SerializeObject(spreadsheet));
+                spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
+            }
+            catch (Exception e)
+            {
+                spreadsheet.SetError($"Error: {e.Message}");
+                spreadsheet.SyncDateTime = DateTime.Now;
+                spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+            }
+
         }
     }
 }

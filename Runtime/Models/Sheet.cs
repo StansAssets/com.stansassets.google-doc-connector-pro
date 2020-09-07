@@ -10,23 +10,9 @@ namespace StansAssets.GoogleDoc
     /// A sheet in a spreadsheet.
     /// </summary>
     [Serializable]
-    public class Sheet
+    public class Sheet: SheetMetadata
     {
-        [SerializeField]
-        string m_Name;
 
-        /// <summary>
-        /// The name of the sheet.
-        /// </summary>
-        public string Name => m_Name;
-
-        [SerializeField]
-        int m_Id;
-
-        /// <summary>
-        /// The ID of the sheet.
-        /// </summary>
-        public int Id => m_Id;
 
         List<NamedRange> m_NamedRanges = new List<NamedRange>();
 
@@ -50,10 +36,8 @@ namespace StansAssets.GoogleDoc
         }
 
         [JsonConstructor]
-        internal Sheet(int id, string name)
+        internal Sheet(int id, string name):base(id, name)
         {
-            m_Id = id;
-            m_Name = name;
         }
 
         internal void CleanupRows()

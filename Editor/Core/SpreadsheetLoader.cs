@@ -19,7 +19,6 @@ namespace StansAssets.GoogleDoc
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
         static readonly string[] s_Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-        const string k_ApplicationName = "Google Sheets API .NET Quickstart";
 
         readonly Spreadsheet m_Spreadsheet;
 
@@ -58,11 +57,11 @@ namespace StansAssets.GoogleDoc
             var service = new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
-                ApplicationName = k_ApplicationName,
+                ApplicationName = GoogleDocConnectorSettings.Instance.PackageName,
             });
 
             // Define request parameters.
-            SpreadsheetsResource.GetRequest rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
+            var rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
             rangeRequest.IncludeGridData = true;
             GoogleSheet.Spreadsheet spreadsheetData;
             try
@@ -72,7 +71,7 @@ namespace StansAssets.GoogleDoc
                 m_Spreadsheet.SyncDateTime = DateTime.Now;
                 m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
 
-                string projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
+                var projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
                 var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath, m_Spreadsheet.Name);
                 m_Spreadsheet.SetPath(spreadsheetPath);
                 m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
@@ -155,8 +154,7 @@ namespace StansAssets.GoogleDoc
 
                 if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                     Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
-
-                File.WriteAllText(spreadsheetPath, JsonConvert.SerializeObject(m_Spreadsheet));
+                
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
             }
             catch (GoogleApiException exception)
