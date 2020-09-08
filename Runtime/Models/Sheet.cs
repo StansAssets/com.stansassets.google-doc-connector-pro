@@ -10,23 +10,9 @@ namespace StansAssets.GoogleDoc
     /// A sheet in a spreadsheet.
     /// </summary>
     [Serializable]
-    public class Sheet
+    public class Sheet: SheetMetadata
     {
-        [SerializeField]
-        string m_Name;
 
-        /// <summary>
-        /// The name of the sheet.
-        /// </summary>
-        public string Name => m_Name;
-
-        [SerializeField]
-        int m_Id;
-
-        /// <summary>
-        /// The ID of the sheet.
-        /// </summary>
-        public int Id => m_Id;
 
         List<NamedRange> m_NamedRanges = new List<NamedRange>();
 
@@ -41,11 +27,17 @@ namespace StansAssets.GoogleDoc
         public IEnumerable<RowData> Rows => m_Rows;
         List<RowData> m_Rows = new List<RowData>();
 
-        [JsonConstructor]
-        internal Sheet(int id, string name)
+        internal DataState DataState => m_DataState;
+        DataState m_DataState = DataState.Default;
+
+        internal void SetDataState(DataState state)
         {
-            m_Id = id;
-            m_Name = name;
+            m_DataState = state;
+        }
+
+        [JsonConstructor]
+        internal Sheet(int id, string name):base(id, name)
+        {
         }
 
         internal void CleanupRows()
@@ -301,6 +293,40 @@ namespace StansAssets.GoogleDoc
             return range is null
                 ? new List<Cell>()
                 : range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
+        }
+
+        /// <summary>
+        /// Updates the value for a cell, if any, or create a new cell with that value
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <param name="cellValue"></param>
+        public void UpdateCell(int row, int column, CellValue cellValue)
+        {
+            if (row < 0 || column < 0)
+            {
+                throw new Exception("Row and Column must be greater than or equal to zero");
+            }
+
+            if (GetCell(row, column) != null)
+            {
+                m_Rows[row].UpdateCell(column, cellValue);
+                return;
+            }
+
+            while (m_Rows.Count <= row)
+            {
+                m_Rows.Add(new RowData());
+            }
+
+            for (var columnIndex = m_Rows[row].Cells.Count(); columnIndex < column; columnIndex++)
+            {
+                m_Rows[row].AddCell(new Cell(row, columnIndex));
+            }
+
+            var cell = new Cell(row, column, cellValue);
+            cell.SetDataState(DataState.Updated);
+            m_Rows[row].AddCell(cell);
         }
 
         public List<T> GetNamedRangeValues<T>(string name)

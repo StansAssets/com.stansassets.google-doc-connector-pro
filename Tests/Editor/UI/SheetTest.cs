@@ -19,24 +19,22 @@ namespace StansAssets.GoogleDoc.EditorTests
             AddSpreadsheet(k_SpreadsheetId2);
             AddSpreadsheet(k_SpreadsheetId3);
             AddSpreadsheet(k_SpreadsheetId4);
-            System.Threading.Thread.Sleep(5000);
         }
 
         void AddSpreadsheet(string spreadsheetId)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
-            spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheetId);
+            var spreadsheet = new Spreadsheet(spreadsheetId);
             spreadsheet.Load();
         }
 
-        [OneTimeTearDown]
+        /*[OneTimeTearDown]
         public void Teardown()
         {
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId1);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId2);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId3);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId4);
-        }
+        }*/
 
         [Test]
         [TestCase(k_SpreadsheetId1)]

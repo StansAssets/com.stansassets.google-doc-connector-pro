@@ -22,7 +22,7 @@ namespace StansAssets.GoogleDoc
         /// Cell Column Index starts from `0`.
         /// </summary>
         public int Column { get; }
-        
+
         /// <summary>
         /// Cell Name.
         /// For example "A1" / "B20" 
@@ -32,14 +32,23 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Cell Value representation.
         /// </summary>
-        public CellValue Value { get; }
+        public CellValue Value { get; private set; }
+        
+        internal DataState DataState => m_DataState;
+        DataState m_DataState = DataState.Default;
+
+        internal void SetDataState(DataState state)
+        {
+            m_DataState = state;
+        }
+
         internal Cell(int row, int column)
         {
             Row = row;
             Column = column;
             Name = CellNameUtility.GetCellName(row, column);
         }
-        
+
         [JsonConstructor]
         internal Cell(int row, int column, CellValue value)
             : this(row, column)
@@ -50,7 +59,7 @@ namespace StansAssets.GoogleDoc
         /// <exception cref="ArgumentException">The method returns an error if the column name is empty</exception>
         internal Cell(string name)
         {
-           var cell =  CellNameUtility.GetCellPointer(name);
+            var cell = CellNameUtility.GetCellPointer(name);
             Row = cell.Row;
             Column = cell.Column;
             Name = name;
@@ -58,6 +67,11 @@ namespace StansAssets.GoogleDoc
 
         internal Cell(string cell, CellValue cellValue)
             : this(cell)
+        {
+            Value = cellValue;
+        }
+
+        internal void SetValue(CellValue cellValue)
         {
             Value = cellValue;
         }
@@ -71,5 +85,12 @@ namespace StansAssets.GoogleDoc
         {
             return Value.GetValue<T>();
         }
+    }
+
+    enum DataState
+    {
+        Default,
+        Updated,
+        Created
     }
 }

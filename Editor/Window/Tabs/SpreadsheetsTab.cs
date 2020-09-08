@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using StansAssets.Foundation.UIElements;
@@ -57,9 +58,10 @@ namespace StansAssets.GoogleDoc
             m_AddSpreadsheetBtn = this.Q<Button>("addSpreadsheetBtn");
             m_AddSpreadsheetBtn.clicked += () =>
             {
-                var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(m_SpreadsheetIdField.text);
-                spreadsheet.Load();
-                m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
+                var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheetIdField.text);
+                spreadsheet.LoadAsync().ContinueWith(_ => {spreadsheet.CacheDocument();});
+                spreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
+
                 RecreateSpreadsheetsView();
             };
 
@@ -139,9 +141,9 @@ namespace StansAssets.GoogleDoc
                 ? DisplayStyle.None
                 : DisplayStyle.Flex;
 
-            foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets)
+            foreach (var item in GoogleDocConnectorSettings.Instance.Spreadsheets.Select(spreadsheet => new SpreadsheetView(spreadsheet)))
+
             {
-                var item = new SpreadsheetView(spreadsheet);
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;
                 m_SpreadsheetsContainer.Add(item);
@@ -164,7 +166,7 @@ namespace StansAssets.GoogleDoc
 
         static void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
-            spreadsheet.Load();
+            spreadsheet.LoadAsync().ContinueWith(_ => {spreadsheet.CacheDocument();});
         }
 
         void CreateDocumentationList()
