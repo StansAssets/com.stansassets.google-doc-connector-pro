@@ -9,7 +9,7 @@ namespace StansAssets.GoogleDoc
     public static class GoogleDocConnectorPackage
     {
         /// <summary>
-        /// The na
+        /// The package name
         /// </summary>
         public const string DisplayName = "Google Doc Connector";
 

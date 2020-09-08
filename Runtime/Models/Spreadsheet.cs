@@ -155,7 +155,7 @@ namespace StansAssets.GoogleDoc
 
         internal Spreadsheet() { }
 
-        internal Spreadsheet(string id)
+        public Spreadsheet(string id)
         {
             m_Id = id;
             m_Name = k_DefaultName;

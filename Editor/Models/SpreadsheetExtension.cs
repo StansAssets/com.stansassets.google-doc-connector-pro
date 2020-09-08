@@ -11,13 +11,13 @@ namespace StansAssets.GoogleDoc
         public static void Load(this Spreadsheet spreadsheet)
         {
             var loader = new SpreadsheetLoader(spreadsheet);
-            loader.Load().Wait();
+            loader.Load();
         }
 
         public static async Task LoadAsync(this Spreadsheet spreadsheet)
         {
             var loader = new SpreadsheetLoader(spreadsheet);
-            await loader.Load();
+            await loader.LoadAsync();
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace StansAssets.GoogleDoc
         public static void Save(this Spreadsheet spreadsheet)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            _ = saver.Save();
+            saver.Save();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace StansAssets.GoogleDoc
         public static void UpdateGoogleCell(this Spreadsheet spreadsheet, string range, string value)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            saver.UpdateCell(range, value).Wait();
+            saver.UpdateCell(range, value);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace StansAssets.GoogleDoc
         public static void AppendGoogleCell(this Spreadsheet spreadsheet, string range, List<object> value)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            saver.AppendCell(range, value).Wait();
+            saver.AppendCell(range, value);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace StansAssets.GoogleDoc
         public static void CreateGoogleSheet(this Spreadsheet spreadsheet, string name)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            saver.CreateSheet(name).Wait();
+            saver.CreateSheet(name);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace StansAssets.GoogleDoc
         public static void DeleteGoogleCell(this Spreadsheet spreadsheet, string range)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            saver.DeleteCell(range).Wait();
+            saver.DeleteCell(range);
         }
 
         /// <summary>

@@ -21,52 +21,22 @@ namespace StansAssets.GoogleDoc
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
         static readonly string[] s_Scopes = { SheetsService.Scope.Spreadsheets };
 
-        readonly Spreadsheet m_Spreadsheet;
+        static Spreadsheet s_Spreadsheet;
+        static SheetsService s_SheetsService;
+        static SheetsService Service => s_SheetsService ?? (s_SheetsService = Credential());
 
         public SpreadsheetSaverToGoogle(Spreadsheet spreadsheet)
         {
-            m_Spreadsheet = spreadsheet;
+            s_Spreadsheet = spreadsheet;
         }
 
-        public async Task<List<SheetMetadata>> GetSheets()
+        public void Save()
         {
-            var service = await Credential();
-            var sheets = new List<SheetMetadata>();
-            try
-            {
-                var rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
-                rangeRequest.IncludeGridData = true;
-                var spreadsheetData = rangeRequest.Execute();
-                
-                //Set Sheets
-                foreach (var sheetData in spreadsheetData.Sheets)
-                {
-                    var sheetId = sheetData.Properties.SheetId ?? 0;
-                    sheets.Add(new SheetMetadata(sheetId, sheetData.Properties.Title));
-                }
-
-
-            }
-            catch (GoogleApiException exception)
-            {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
-            }
-            catch (Exception exception)
-            {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
-            }
-            return sheets;
-        }
-
-        public async Task Save()
-        {
-            var service = await Credential();
-
             try
             {
                 var sheetChange = false;
                 var batchUpdate = new GoogleSheet.BatchUpdateSpreadsheetRequest { Requests = new List<GoogleSheet.Request>() };
-                foreach (var sheet in m_Spreadsheet.Sheets)
+                foreach (var sheet in s_Spreadsheet.Sheets)
                 {
                     if (sheet.DataState == DataState.Created)
                     {
@@ -78,11 +48,11 @@ namespace StansAssets.GoogleDoc
 
                 if (sheetChange)
                 {
-                    var request = service.Spreadsheets.BatchUpdate(batchUpdate, m_Spreadsheet.Id);
-                    await request.ExecuteAsync();
+                    var request = Service.Spreadsheets.BatchUpdate(batchUpdate, s_Spreadsheet.Id);
+                    request.Execute();
                 }
 
-                foreach (var sheet in m_Spreadsheet.Sheets)
+                foreach (var sheet in s_Spreadsheet.Sheets)
                 {
                     foreach (var row in sheet.Rows)
                     {
@@ -94,9 +64,9 @@ namespace StansAssets.GoogleDoc
                                 var valueRange = new GoogleSheet.ValueRange();
                                 var list = new List<object>() { cell.Value.StringValue };
                                 valueRange.Values = new List<IList<object>> { list };
-                                var updateRequest = service.Spreadsheets.Values.Update(valueRange, m_Spreadsheet.Id, range);
+                                var updateRequest = Service.Spreadsheets.Values.Update(valueRange, s_Spreadsheet.Id, range);
                                 updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-                                await updateRequest.ExecuteAsync();
+                                updateRequest.Execute();
                             }
                         }
                     }
@@ -104,18 +74,16 @@ namespace StansAssets.GoogleDoc
             }
             catch (GoogleApiException exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Error.Message);
             }
             catch (Exception exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
             }
         }
 
-        public async Task CreateSheet(string name)
+        public void CreateSheet(string name)
         {
-            var service = await Credential();
-
             try
             {
                 var batchUpdate = new GoogleSheet.BatchUpdateSpreadsheetRequest { Requests = new List<GoogleSheet.Request>() };
@@ -123,83 +91,77 @@ namespace StansAssets.GoogleDoc
                 var requestSheetCreate = new GoogleSheet.Request { AddSheet = new GoogleSheet.AddSheetRequest { Properties = new GoogleSheet.SheetProperties { Title = name } } };
                 batchUpdate.Requests.Add(requestSheetCreate);
 
-                var request = service.Spreadsheets.BatchUpdate(batchUpdate, m_Spreadsheet.Id);
-                await request.ExecuteAsync();
+                var request = Service.Spreadsheets.BatchUpdate(batchUpdate, s_Spreadsheet.Id);
+                request.Execute();
             }
             catch (GoogleApiException exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Error.Message);
             }
             catch (Exception exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
             }
         }
 
-        public async Task UpdateCell(string range, string value)
+        public void UpdateCell(string range, string value)
         {
-            var service = await Credential();
-
             try
             {
                 var valueRange = new GoogleSheet.ValueRange { Values = new List<IList<object>> { new List<object>() { value } } };
-                var updateRequest = service.Spreadsheets.Values.Update(valueRange, m_Spreadsheet.Id, range);
+                var updateRequest = Service.Spreadsheets.Values.Update(valueRange, s_Spreadsheet.Id, range);
                 updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-                await updateRequest.ExecuteAsync();
+                updateRequest.Execute();
             }
             catch (GoogleApiException exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Error.Message);
             }
             catch (Exception exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
             }
         }
 
-        public async Task AppendCell(string range, List<object> value)
+        public void AppendCell(string range, List<object> value)
         {
-            var service = await Credential();
-
             try
             {
                 var valueRange = new GoogleSheet.ValueRange { Values = new List<IList<object>> { value } };
-                var updateRequest = service.Spreadsheets.Values.Append(valueRange, m_Spreadsheet.Id, range);
+                var updateRequest = Service.Spreadsheets.Values.Append(valueRange, s_Spreadsheet.Id, range);
                 updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
-                await updateRequest.ExecuteAsync();
+                updateRequest.Execute();
             }
             catch (GoogleApiException exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Error.Message);
             }
             catch (Exception exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
             }
         }
 
-        public async Task DeleteCell(string range)
+        public void DeleteCell(string range)
         {
-            var service = await Credential();
-
             try
             {
                 var requestBody = new GoogleSheet.ClearValuesRequest();
 
-                var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, m_Spreadsheet.Id, range);
-                await deleteRequest.ExecuteAsync();
+                var deleteRequest = Service.Spreadsheets.Values.Clear(requestBody, s_Spreadsheet.Id, range);
+                deleteRequest.Execute();
             }
             catch (GoogleApiException exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Error.Message);
             }
             catch (Exception exception)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
             }
         }
 
-        async Task<SheetsService> Credential()
+         static SheetsService Credential()
         {
             try
             {
@@ -212,29 +174,29 @@ namespace StansAssets.GoogleDoc
                     // Create Google Sheets API service.
                     return new SheetsService(new BaseClientService.Initializer()
                     {
-                        HttpClientInitializer = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        HttpClientInitializer = GoogleWebAuthorizationBroker.AuthorizeAsync(
                             GoogleClientSecrets.Load(stream).Secrets,
                             s_Scopes,
                             "user",
                             CancellationToken.None,
-                            new FileDataStore(credPath, true)),
+                            new FileDataStore(credPath, true)).Result,
                         ApplicationName = GoogleDocConnectorSettings.Instance.PackageName,
                     });
                 }
             }
             catch (Exception ex)
             {
-                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
+                SetSpreadsheetSyncError(s_Spreadsheet, ex.Message);
             }
 
             return new SheetsService(new BaseClientService.Initializer());
         }
 
-        void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
+        static void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
         {
             spreadsheet.SetError($"Error: {exceptionMessage}");
             spreadsheet.SetMachineName(SystemInfo.deviceName);
-            m_Spreadsheet.SyncDateTime = DateTime.Now;
+            spreadsheet.SyncDateTime = DateTime.Now;
 
             spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
         }
