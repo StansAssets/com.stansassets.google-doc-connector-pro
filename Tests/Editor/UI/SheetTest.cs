@@ -132,11 +132,14 @@ namespace StansAssets.GoogleDoc.EditorTests
             var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId1);
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetCell(cellName);
-            var res = cell.Value.FormattedValue;
-            var res1 = cell.Value.GetValue<int>();
+            var res = cell.Value.StringValue;
             var res2 = cell.Value.GetValue<double>();
             var res3 = cell.Value.GetValue<string>();
-            Assert.True(!string.IsNullOrEmpty(res) && res1 > 0 && res2 > 0 && !string.IsNullOrEmpty(res3), "Expected get first cell from spreadsheet but it was not");
+            var cell1 = sheet.GetCell("c1");
+            var res11 = cell1.Value.GetValue<bool>();
+            var cell2 = sheet.GetCell("a2");
+            var res21 = cell2.Value.GetValue<DateTime>();
+            Assert.True(!string.IsNullOrEmpty(res) && !res11  && res2 > 0 && !string.IsNullOrEmpty(res3) && res21 == new DateTime(2020, 08, 09), "Expected get first cell from spreadsheet but it was not");
         }
 
         [Test]
