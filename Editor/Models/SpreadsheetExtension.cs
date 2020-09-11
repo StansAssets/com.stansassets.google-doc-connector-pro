@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace StansAssets.GoogleDoc
 {
@@ -76,19 +73,8 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public static void CacheDocument(this Spreadsheet spreadsheet)
         {
-            try
-            {
-                spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
-                File.WriteAllText(spreadsheet.Path, JsonConvert.SerializeObject(spreadsheet));
-                spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
-            }
-            catch (Exception e)
-            {
-                spreadsheet.SetError($"Error: {e.Message}");
-                spreadsheet.SyncDateTime = DateTime.Now;
-                spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
-            }
-
+            var loader = new SpreadsheetLoader(spreadsheet);
+            _ = loader.CacheDocument();
         }
     }
 }

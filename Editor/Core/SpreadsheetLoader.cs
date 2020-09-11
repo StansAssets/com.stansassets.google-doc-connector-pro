@@ -144,7 +144,7 @@ namespace StansAssets.GoogleDoc
                         var sheetId = namedRangeData.Range.SheetId ?? 0;
                         var sheet = m_Spreadsheet.GetSheet(sheetId);
                         var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                        var range = new GridRange(namedRangeData.Range);
+                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartRowIndex, namedRangeData.Range.EndRowIndex, namedRangeData.Range.EndColumnIndex);
 
                         var cells = sheet.GetRange(range);
                         namedRange.SetCells(cells, range);
@@ -283,8 +283,8 @@ namespace StansAssets.GoogleDoc
                         {
                             var sheetId = namedRangeData.Range.SheetId ?? 0;
                             var sheet = m_Spreadsheet.GetSheet(sheetId);
-                            var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                            var range = new GridRange(namedRangeData.Range);
+                            var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name); 
+                            var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartRowIndex, namedRangeData.Range.EndRowIndex, namedRangeData.Range.EndColumnIndex);
 
                             var cells = sheet.GetRange(range);
                             namedRange.SetCells(cells, range);
@@ -304,6 +304,21 @@ namespace StansAssets.GoogleDoc
                 {
                     SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
                 }
+            }
+            public Task CacheDocument()
+            {
+                return new Task(() => {try
+                    {
+                        m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
+                        File.WriteAllText(m_Spreadsheet.Path, JsonConvert.SerializeObject(m_Spreadsheet));
+                        m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
+                    }
+                    catch (Exception e)
+                    {
+                        m_Spreadsheet.SetError($"Error: {e.Message}");
+                        m_Spreadsheet.SyncDateTime = DateTime.Now;
+                        m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                    }});
             }
 
             void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
