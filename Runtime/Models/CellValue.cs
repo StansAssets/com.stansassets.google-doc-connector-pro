@@ -44,13 +44,6 @@ namespace StansAssets.GoogleDoc
         /// <returns>Converted value.</returns>
         public T GetValue<T>()
         {
-            if (typeof(T) == typeof(DateTime))	
-            {	
-                var startDate = new DateTime(1899, 12, 30);
-                int.TryParse(StringValue, out var days);
-                var date = startDate.AddDays(days);
-                return (T)(object)(date);	
-            }
             if (typeof(T) == typeof(string))	
             {	
                 return (T)(object)(StringValue);	

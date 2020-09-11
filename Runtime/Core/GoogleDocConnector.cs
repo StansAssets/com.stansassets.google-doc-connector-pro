@@ -56,11 +56,19 @@ namespace StansAssets.GoogleDoc
                     s_TypeConvertor.Register<string, float>(Convert.ToSingle);
                     s_TypeConvertor.Register<string, double>(Convert.ToDouble);
                     s_TypeConvertor.Register<string, decimal>(Convert.ToDecimal);
-                    s_TypeConvertor.Register<string, DateTime>(Convert.ToDateTime);
+                    s_TypeConvertor.Register<string, DateTime>(CustomConvertDateTime);
                 }
 
                 return s_TypeConvertor;
             }
+        }
+
+        internal static DateTime CustomConvertDateTime(string value)
+        {
+            var startDate = new DateTime(1899, 12, 30);
+            int.TryParse(value, out var days);
+            var date = startDate.AddDays(days);
+            return (date);	
         }
     }
 }
