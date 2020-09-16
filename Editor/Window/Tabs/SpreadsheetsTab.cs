@@ -35,12 +35,12 @@ namespace StansAssets.GoogleDoc
             connectBtn.clicked += () =>
             {
                 var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SampleSpreadsheetId);
-                spreadsheet1 ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId);
+                spreadsheet1 = spreadsheet1 ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId);
                 spreadsheet1.OnSyncStateChange += OnSampleSheetStateChanged;
                 spreadsheet1.Load();
 
                 var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SampleSpreadsheetId2);
-                spreadsheet ??= GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId2);
+                spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId2);
                 spreadsheet.Load();
 
                 RecreateSpreadsheetsView();
@@ -58,9 +58,9 @@ namespace StansAssets.GoogleDoc
             m_AddSpreadsheetBtn = this.Q<Button>("addSpreadsheetBtn");
             m_AddSpreadsheetBtn.clicked += () =>
             {
-                var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(spreadsheetIdField.text);
+                var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(m_SpreadsheetIdField.text);
                 spreadsheet.LoadAsync().ContinueWith(_ => {spreadsheet.CacheDocument();});
-                spreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
+                m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
 
                 RecreateSpreadsheetsView();
             };

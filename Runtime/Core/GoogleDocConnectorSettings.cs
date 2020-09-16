@@ -73,18 +73,21 @@ namespace StansAssets.GoogleDoc
             //errorMassage = "";
             try
             {
-                using var stream = new FileStream($"{СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read);
+                using (var stream = new FileStream($"{СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
+                {
+                    // The file token.json stores the user's access and refresh tokens, and is created
+                    // automatically when the authorization flow completes for the first time.
+                    var credPath = $"{СredentialsFolderPath}/token.json";
+                    await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        new[] {SheetsService.Scope.SpreadsheetsReadonly},
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true));
+                    return String.Empty;
+                }
 
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                var credPath = $"{СredentialsFolderPath}/token.json";
-               await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    new[] {SheetsService.Scope.SpreadsheetsReadonly},
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true));
-               return String.Empty;
+
             }
             catch (Exception ex)
             {
