@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc.EditorTests
@@ -9,6 +10,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         const string k_SpreadsheetId2 = "1QuJ0M7s25KxX_E0mRtmJiZQciKjvVt77yKMlUkvOWrc";
         const string k_SpreadsheetId3 = "123456789";
         const string k_SpreadsheetId4 = "szsdgdgsfdsgsdgdsgsdg";
+        readonly List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
 
         [OneTimeSetUp]
         public void Setup()
@@ -17,16 +19,17 @@ namespace StansAssets.GoogleDoc.EditorTests
             AddSpreadsheet(k_SpreadsheetId2);
             AddSpreadsheet(k_SpreadsheetId3);
             AddSpreadsheet(k_SpreadsheetId4);
-            System.Threading.Thread.Sleep(5000);
+            //System.Threading.Thread.Sleep(5000);
         }
 
         void AddSpreadsheet(string spreadsheetId)
         {
             var spreadsheet = new Spreadsheet(spreadsheetId);
             spreadsheet.Load();
+            m_Spreadsheets.Add(spreadsheet);
         }
         
-        /*OneTimeTearDown]
+        /*[OneTimeTearDown]
         public void Teardown()
         {
             

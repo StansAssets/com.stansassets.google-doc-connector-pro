@@ -11,6 +11,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         const string k_SpreadsheetId3 = "123456789";
         const string k_SpreadsheetId4 = "szsdgdgsfdsgsdgdsgsdg";
         const string k_RangeName = "Bike3";
+        List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
 
         [OneTimeSetUp]
         public void Setup()
@@ -19,6 +20,7 @@ namespace StansAssets.GoogleDoc.EditorTests
             AddSpreadsheet(k_SpreadsheetId2);
             AddSpreadsheet(k_SpreadsheetId3);
             AddSpreadsheet(k_SpreadsheetId4);
+            System.Threading.Thread.Sleep(5000);
         }
 
         void AddSpreadsheet(string spreadsheetId)
@@ -27,14 +29,14 @@ namespace StansAssets.GoogleDoc.EditorTests
             spreadsheet.Load();
         }
 
-        /*[OneTimeTearDown]
+        [OneTimeTearDown]
         public void Teardown()
         {
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId1);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId2);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId3);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId4);
-        }*/
+        }
 
         [Test]
         [TestCase(k_SpreadsheetId1)]
