@@ -40,40 +40,40 @@ namespace StansAssets.GoogleDoc.EditorTests
         }*/
         
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void CheckSyncedSpreadsheet(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void CheckSyncedSpreadsheet(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             Debug.Log(spreadsheet.Id);
             Debug.Log("spreadsheet.Synced " + spreadsheet.Synced);
             Assert.True(spreadsheet.Synced, "Expected synced spreadsheet but it was not");
         }
         
         [Test]
-        [TestCase(k_SpreadsheetId3)]
-        [TestCase(k_SpreadsheetId4)]
-        public void CheckSyncedWithErrorSpreadsheet(string spreadsheetId)
+        [TestCase(2)]
+        [TestCase(3)]
+        public void CheckSyncedWithErrorSpreadsheet(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             Assert.True(spreadsheet.SyncedWithError, "Expected synced wit error spreadsheet but it was not");
         }
         
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void CheckFirstSheetSpreadsheet(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void CheckFirstSheetSpreadsheet(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             Assert.True(spreadsheet.HasSheet(0), "Expected get first sheet from spreadsheet but it was not");
         }
         
         [Test]
-        [TestCase(k_SpreadsheetId3)]
-        [TestCase(k_SpreadsheetId4)]
-        public void CheckNoFirstSheetSpreadsheet(string spreadsheetId)
+        [TestCase(2)]
+        [TestCase(3)]
+        public void CheckNoFirstSheetSpreadsheet(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             Assert.False(spreadsheet.HasSheet(0), "Unexpected get first sheet from spreadsheet but it was");
         }
     }
