@@ -7,5 +7,19 @@
   "dependencies": {
     "com.stansassets.foundation": "1.0.13",
     "com.stansassets.plugins-dev-kit": "0.0.5-preview"
+  },
+  "author": {
+    "name": "Stan's Assets",
+    "email": "stan@stansassets.com",
+    "url": "https://stansassets.com/"
+  },
+  "homepage": "https://api.stansassets.com/",
+  "bugs": {
+    "url": "https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/issues",
+    "email" : "support@stansassets.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:StansAssets/com.stansassets.google-doc-connector-pro.git"
   }
 }

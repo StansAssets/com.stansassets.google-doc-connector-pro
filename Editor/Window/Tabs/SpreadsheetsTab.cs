@@ -77,7 +77,7 @@ namespace StansAssets.GoogleDoc
 
         void CheckCredentials()
         {
-            GoogleDocConnectorSettings.Instance.CheckCredentials().ContinueWith((b) =>
+            GoogleDocConnectorEditor.CheckCredentials().ContinueWith((b) =>
             {
                 if (b.Result != string.Empty)
                 {

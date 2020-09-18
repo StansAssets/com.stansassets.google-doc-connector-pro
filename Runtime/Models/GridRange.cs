@@ -104,6 +104,16 @@ namespace StansAssets.GoogleDoc
             
             SetName();
         }
+        
+        internal GridRange(int? startRowIndex, int? startColumnIndex, int? endRowIndex, int? endColumnIndex)
+        {
+            EndColumnIndex = endColumnIndex;
+            EndRowIndex = endRowIndex;
+            StartColumnIndex = startColumnIndex;
+            StartRowIndex = startRowIndex;
+            
+            SetName();
+        }
 
         /// <summary>
         /// A range on a sheet. All indexes are zero-based. Start and end index is inclusive.
@@ -123,15 +133,6 @@ namespace StansAssets.GoogleDoc
                 EndRowIndex = end;
                 StartRowIndex = start;
             }
-            SetName();
-        }
-        internal GridRange(Google.Apis.Sheets.v4.Data.GridRange range)
-        {
-            EndColumnIndex = range.EndColumnIndex;
-            EndRowIndex = range.EndRowIndex;
-            StartColumnIndex = range.StartColumnIndex;
-            StartRowIndex = range.StartRowIndex;
-
             SetName();
         }
 
