@@ -9,7 +9,7 @@ namespace StansAssets.GoogleDoc
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
         
         [SerializeField]
-        string m_SpreadsheetId;
+        string m_SpreadsheetId = "";
         public string SpreadsheetId => m_SpreadsheetId;
 
         internal void SpreadsheetIdSet(string newSpreadsheetId)

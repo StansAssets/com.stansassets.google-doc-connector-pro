@@ -59,9 +59,14 @@ namespace StansAssets.GoogleDoc
 
         internal Spreadsheet GetSpreadsheet(string id)
         {
-            return m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet) 
-                ? spreadsheet 
-                : null;
+            if (m_SpreadsheetsMap != null)
+            {
+                return m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet) 
+                    ? spreadsheet 
+                    : null;
+            }
+
+            return null;
         }
         
         /// <summary>

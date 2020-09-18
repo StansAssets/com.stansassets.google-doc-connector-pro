@@ -9,7 +9,7 @@ namespace StansAssets.GoogleDoc
         {
             if (File.Exists(spreadsheet.Path))
             {
-                string serializedData = File.ReadAllText(spreadsheet.Path);
+                var serializedData = File.ReadAllText(spreadsheet.Path);
                 var spreadsheetJson = JsonConvert.DeserializeObject<Spreadsheet>(serializedData);
                 spreadsheet.SetSheets(spreadsheetJson.Sheets);
             }
@@ -20,6 +20,7 @@ namespace StansAssets.GoogleDoc
             if (File.Exists(spreadsheet.Path))
             {
                 File.Delete(spreadsheet.Path);
+                File.Delete($"{spreadsheet.Path}.meta");
             }
         }
     }

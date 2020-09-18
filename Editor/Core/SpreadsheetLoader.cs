@@ -166,7 +166,7 @@ namespace StansAssets.GoogleDoc
             }
         }
 
-            public async Task LoadAsync()
+            public async Task LoadAsync(bool saveSpreadsheet = false)
             {
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
                 UserCredential credential;
@@ -294,6 +294,12 @@ namespace StansAssets.GoogleDoc
                     if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                         Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
 
+                    if (saveSpreadsheet)
+                    {
+                        File.WriteAllText(m_Spreadsheet.Path, JsonConvert.SerializeObject(m_Spreadsheet));
+                    }
+
+                    
                     m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
                 }
                 catch (GoogleApiException exception)

@@ -13,6 +13,10 @@
     </sa:SettingsBlock>
         <!--Document Info-->
     <sa:SettingsBlock label="Document Info">
+        <ui:Label text="" name="labelLang" class="label-doc-info"/>
+        <ui:VisualElement name="listLang" class="list-doc-info"/>
+        <ui:Label text="" name="labelSheet" class="label-doc-info"/>
+        <ui:VisualElement name="listSheet" class="list-doc-info"/>
     </sa:SettingsBlock>
 
 </ui:UXML>

@@ -109,8 +109,7 @@ namespace StansAssets.GoogleDoc
             m_RangesContainer.Clear();
             foreach (var sheet in spreadsheet.Sheets)
             {
-                var sheetLabel = new SelectableLabel();
-                sheetLabel.text = $"~ {sheet.Name} ({sheet.Id})";
+                var sheetLabel = new SelectableLabel { text = $"~ {sheet.Name} ({sheet.Id})" };
                 m_SheetsContainer.Add(sheetLabel);
 
                 if(sheet.NamedRanges == null)
@@ -118,8 +117,7 @@ namespace StansAssets.GoogleDoc
 
                 foreach (var namedRange in sheet.NamedRanges)
                 {
-                    var rangeLabel = new SelectableLabel();
-//                    rangeLabel.text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name}))";
+                    var rangeLabel = new SelectableLabel { text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name}))" };
                     m_RangesContainer.Add(rangeLabel);
                 }
             }

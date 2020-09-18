@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
@@ -59,7 +57,7 @@ namespace StansAssets.GoogleDoc
             m_AddSpreadsheetBtn.clicked += () =>
             {
                 var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(m_SpreadsheetIdField.text);
-                spreadsheet.LoadAsync().ContinueWith(_ => {spreadsheet.CacheDocument();});
+                spreadsheet.LoadAsync(true).ContinueWith(_ => _);
                 m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
 
                 RecreateSpreadsheetsView();
@@ -166,7 +164,7 @@ namespace StansAssets.GoogleDoc
 
         static void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
-            spreadsheet.LoadAsync().ContinueWith(_ => {spreadsheet.CacheDocument();});
+            spreadsheet.LoadAsync(true).ContinueWith(_ => _);
         }
 
         void CreateDocumentationList()

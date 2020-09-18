@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace StansAssets.GoogleDoc
 {
@@ -19,13 +18,14 @@ namespace StansAssets.GoogleDoc
 
         /// <summary>
         /// Default language for localization language
+        /// If the language is not defined in the constructor, it returns the first language in the list.
         /// </summary>
-        public string DefaultLanguage => Languages[0] ?? "";
-
+        public string DefaultLanguage => m_DefaultLanguage ?? "";
+        readonly string m_DefaultLanguage;
         /// <summary>
         /// Current chosen language
         /// </summary>
-        public string CurrentLanguageCode { get; private set; }
+        public string CurrentLanguage { get; private set; }
 
         /// <summary>
         /// Current chosen language
@@ -66,33 +66,47 @@ namespace StansAssets.GoogleDoc
             }
 
             Languages = new List<string>();
+            var indexRow = 0;
             foreach (var cell in row.Cells)
             {
-                Languages.Add(cell.Value.StringValue.ToUpper());
+                if (indexRow != 0)
+                {
+                    Languages.Add(cell.Value.StringValue.ToUpper());
+                }
+
+                indexRow++;
             }
 
-            CurrentLanguageCode = DefaultLanguage;
+            m_DefaultLanguage = Languages[0];
+            CurrentLanguage = DefaultLanguage;
             m_CurrentLanguageCodeIndex = 1;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="langCode">Set CurrentLanguageCode</param>
-        /// <param name="playerPrefname"></param>
+        /// <param name="defaultLangCode">Set default language</param>
+        /// <param name="currentLangCode">Set current language</param>
         /// <exception cref="Exception">Will return an error if it could not find langCode in the available languages and
         /// the first sheet of the spreadsheet does not have the first completed row</exception>
-        public LocalizationClient(string langCode, string playerPrefname)
+        public LocalizationClient(string defaultLangCode, string currentLangCode)
             : this()
         {
-            langCode = langCode.ToUpper();
-            if (!Languages.Contains(langCode))
+            defaultLangCode = defaultLangCode.ToUpper();
+            if (!Languages.Contains(defaultLangCode))
             {
                 throw new Exception("Can't find langCode in the available languages");
             }
-
-            CurrentLanguageCode = langCode;
-            m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguageCode) + 1;
+            m_DefaultLanguage = defaultLangCode;
+            
+            currentLangCode = currentLangCode.ToUpper();
+            if (!Languages.Contains(currentLangCode))
+            {
+                throw new Exception("Can't find langCode in the available languages");
+            }
+            CurrentLanguage = currentLangCode;
+            
+            m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguage) + 1;
         }
 
         /// <summary>
@@ -107,8 +121,8 @@ namespace StansAssets.GoogleDoc
                 throw new Exception("Can't find langCode in the available languages");
             }
 
-            CurrentLanguageCode = langCode;
-            m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguageCode) + 1;
+            CurrentLanguage = langCode;
+            m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguage) + 1;
             OnLanguageChanged(langCode);
         }
 
@@ -175,7 +189,7 @@ namespace StansAssets.GoogleDoc
         /// <param name="section">Spreadsheet sheet name</param>
         /// <exception cref="Exception"> Can't find sheet with name <param name="section" />
         /// </exception>
-        public string GetLocalizedString(string token, TextType textType, string section)
+        public string GetLocalizedString(string token, string section, TextType textType)
         {
             var value = GetLocalizedString(token, section);
             return ConvertLocalizedString(value, textType);
@@ -287,7 +301,7 @@ namespace StansAssets.GoogleDoc
                 if (row.Cells.Any())
                 {
                     var cell = row.Cells.FirstOrDefault();
-                    if (cell != null && cell.Value.FormattedValue == token)
+                    if (cell != null && cell.Value.FormattedValue.Trim().Equals(token.Trim()))
                     {
                         return index;
                     }
