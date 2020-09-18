@@ -5,8 +5,8 @@
   "unity": "2020.1",
   "description": "The Google Sheets API lets you read and modify any aspect of a spreadsheet. Spreadsheets have many settings that let you craft beautiful and functional sheets, so the API has many settings too. ",
   "dependencies": {
-    "com.stansassets.foundation": "1.0.4",
-    "com.stansassets.plugins-dev-kit": "0.0.3-preview"
+    "com.stansassets.foundation": "1.0.13",
+    "com.stansassets.plugins-dev-kit": "0.0.5-preview"
   },
   "author": {
     "name": "Stan's Assets",
