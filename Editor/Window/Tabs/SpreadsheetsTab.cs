@@ -57,7 +57,9 @@ namespace StansAssets.GoogleDoc
             m_AddSpreadsheetBtn.clicked += () =>
             {
                 var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(m_SpreadsheetIdField.text);
+                
                 spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+                
                 m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
 
                 RecreateSpreadsheetsView();
@@ -75,7 +77,7 @@ namespace StansAssets.GoogleDoc
 
         void CheckCredentials()
         {
-            GoogleDocConnectorSettings.Instance.CheckCredentials().ContinueWith((b) =>
+            GoogleDocConnectorEditor.CheckCredentials().ContinueWith((b) =>
             {
                 if (b.Result != string.Empty)
                 {

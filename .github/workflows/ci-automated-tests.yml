@@ -1,0 +1,29 @@
+name: Continuous Integration. Package Tests
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: [self-hosted, ci-cd-automated-tests]
+    steps:
+      - name: Checkout StansAssets/SA-CI-CD Repository
+        uses: actions/checkout@v2
+        with:
+          repository: "StansAssets/SA-CI-CD"
+          token: ${{ secrets.GH_API_TOKEN }}
+          path: "SA-CI-CD"
+      - name: Run Tests
+        env:
+          PACKAGE_REPO: ${{ github.repository }}
+          PR_BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          chmod +x SA-CI-CD/CI/AutomatedTests/Packages/editor-editmode-tests.sh
+          SA-CI-CD/CI/AutomatedTests/Packages/editor-editmode-tests.sh
+      - name: Upload artifact
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: tests-results
+          path: "/Users/mac/Desktop/ci-cd/github-action-runners/automated-tests/_work/TestsResults"
