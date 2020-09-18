@@ -10,7 +10,8 @@ namespace StansAssets.GoogleDoc
 {
     static class GoogleDocConnectorEditor
     {
-        internal static Action s_SpreadsheetsChange = delegate {  };
+        internal static Action s_SpreadsheetsChange = delegate { };
+
         public static Spreadsheet CreateSpreadsheet(string id)
         {
             var spr = GoogleDocConnectorSettings.Instance.CreateSpreadsheet(id);
@@ -23,7 +24,7 @@ namespace StansAssets.GoogleDoc
             GoogleDocConnectorSettings.Instance.RemoveSpreadsheet(id);
             s_SpreadsheetsChange();
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -33,24 +34,24 @@ namespace StansAssets.GoogleDoc
             //errorMassage = "";
             try
             {
-                using var stream = new FileStream($"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read);
-
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                var credPath = $"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/token.json";
-                await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    new[] {SheetsService.Scope.SpreadsheetsReadonly},
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true));
-                return String.Empty;
+                using (var stream = new FileStream($"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/credentials.json", FileMode.Open, FileAccess.Read))
+                {
+                    // The file token.json stores the user's access and refresh tokens, and is created
+                    // automatically when the authorization flow completes for the first time.
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/token.json";
+                    await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        new[] { SheetsService.Scope.SpreadsheetsReadonly },
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true));
+                    return string.Empty;
+                }
             }
             catch (Exception ex)
             {
                 return ex.Message;
             }
         }
-
     }
 }
