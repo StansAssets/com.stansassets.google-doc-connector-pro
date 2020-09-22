@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -10,7 +9,6 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using UnityEngine;
 using FileMode = System.IO.FileMode;
-using Task = System.Threading.Tasks.Task;
 using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
 namespace StansAssets.GoogleDoc

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -11,6 +12,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         const string k_SpreadsheetId3 = "123456789";
         const string k_SpreadsheetId4 = "szsdgdgsfdsgsdgdsgsdg";
         const string k_RangeName = "Bike3";
+        readonly List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();
 
         [OneTimeSetUp]
         public void Setup()
@@ -19,12 +21,14 @@ namespace StansAssets.GoogleDoc.EditorTests
             AddSpreadsheet(k_SpreadsheetId2);
             AddSpreadsheet(k_SpreadsheetId3);
             AddSpreadsheet(k_SpreadsheetId4);
+            //System.Threading.Thread.Sleep(5000);
         }
 
         void AddSpreadsheet(string spreadsheetId)
         {
             var spreadsheet = new Spreadsheet(spreadsheetId);
             spreadsheet.Load();
+            m_Spreadsheets.Add(spreadsheet);
         }
 
         /*[OneTimeTearDown]
@@ -37,86 +41,86 @@ namespace StansAssets.GoogleDoc.EditorTests
         }*/
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        public void GetRangeName(string spreadsheetId)
+        [TestCase(0)]
+        public void GetRangeName(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var rangeName = sheet.GetNamedRange(k_RangeName);
             Assert.True(rangeName.Cells.Count() > 1, "Expected rangeName spreadsheet Count > 1 but it was not");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetRangeNameEmpty(string spreadsheetId)
+        [TestCase(1)]
+        public void GetRangeNameEmpty(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var rangeName = sheet.GetNamedRange(k_RangeName);
             Assert.False(rangeName != null, "Expected rangeName spreadsheet Count < 1 but it was not");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetCell(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetCell(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetCell(0, 0);
             Assert.False(string.IsNullOrEmpty(cell.ToString()), "Expected get first cell from spreadsheet but it was not");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetCellEmpty(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetCellEmpty(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetCell(1000, 1000);
             Assert.True(cell == null, "Unexpected get first cell from spreadsheet but it was");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetColumn(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetColumn(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var column = sheet.GetColumn(0);
             Assert.True(column.Count > 0, "Expected get first column from sheet but it was not");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetColumnEmpty(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetColumnEmpty(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var column = sheet.GetColumn(-1);
             Assert.False(column.Count > 0, "Unexpected get first column from sheet but it was");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetRow(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetRow(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var row = sheet.GetRow(0);
             Assert.True(row.Count > 0, "Expected get first row from sheet but it was not");
         }
 
         [Test]
-        [TestCase(k_SpreadsheetId1)]
-        [TestCase(k_SpreadsheetId2)]
-        public void GetRowEmpty(string spreadsheetId)
+        [TestCase(0)]
+        [TestCase(1)]
+        public void GetRowEmpty(int index)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(spreadsheetId);
+            var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var row = sheet.GetRow(-1);
             Assert.False(row.Count > 0, "Unexpected get first row from sheet but it was");
@@ -127,7 +131,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         [TestCase("b1")]
         public void GetValueT(string cellName)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId1);
+            var spreadsheet = m_Spreadsheets[0];
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetCell(cellName);
             var res = cell.Value.StringValue;
@@ -145,7 +149,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         [TestCase("b")]
         public void GetColumnByName(string columnName)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId1);
+            var spreadsheet = m_Spreadsheets[0];
             var sheet = spreadsheet.GetSheet(0);
             var column = sheet.GetColumn(columnName);
             Assert.True(column.Count > 0, "Expected get first cell from spreadsheet but it was not");
@@ -157,7 +161,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         [TestCase("1:2")]
         public void GetRangeByName(string nameRange)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId1);
+            var spreadsheet = m_Spreadsheets[0];
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetRange(nameRange);
             Assert.True(cell.Count > 0, "Expected get first cell from spreadsheet but it was not");
@@ -168,7 +172,7 @@ namespace StansAssets.GoogleDoc.EditorTests
         [TestCase("b1")]
         public void GetCellByName(string cellName)
         {
-            var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SpreadsheetId1);
+            var spreadsheet = m_Spreadsheets[0];
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetCell(cellName);
             var res = cell.Value.FormattedValue;

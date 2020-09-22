@@ -1,6 +1,22 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-  
-        <ui:Label text="Coming soon" name="loadExampleConfigBtn"/>
-  
-    
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+        <!--Localization Spreadsheet-->
+    <sa:SettingsBlock label="Localization Spreadsheet">
+        <ui:VisualElement class="row">
+        <ui:VisualElement name="list-spreadsheet"/>
+            <ui:VisualElement name="flexible-space"/>
+        <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-bottom-panel">
+            <ui:Button name="openBtn" class="spreadsheet-url-copy btn-left" tooltip="Open spreadsheet in browser."/>
+            <ui:Button name="refreshBtn" class="btn-refresh btn-right" tooltip="Refresh spreadsheet."/>
+        </ui:VisualElement>
+        </ui:VisualElement>
+    </sa:SettingsBlock>
+        <!--Document Info-->
+    <sa:SettingsBlock label="Document Info">
+        <ui:Label text="" name="labelLang" class="label-doc-info"/>
+        <ui:VisualElement name="listLang" class="list-doc-info"/>
+        <ui:Label text="" name="labelSheet" class="label-doc-info"/>
+        <ui:VisualElement name="listSheet" class="list-doc-info"/>
+    </sa:SettingsBlock>
+
 </ui:UXML>

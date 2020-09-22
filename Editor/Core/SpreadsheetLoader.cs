@@ -144,7 +144,7 @@ namespace StansAssets.GoogleDoc
                         var sheetId = namedRangeData.Range.SheetId ?? 0;
                         var sheet = m_Spreadsheet.GetSheet(sheetId);
                         var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartRowIndex, namedRangeData.Range.EndRowIndex, namedRangeData.Range.EndColumnIndex);
+                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex-1, namedRangeData.Range.EndColumnIndex-1);
 
                         var cells = sheet.GetRange(range);
                         namedRange.SetCells(cells, range);
@@ -166,7 +166,7 @@ namespace StansAssets.GoogleDoc
             }
         }
 
-            public async Task LoadAsync()
+            public async Task LoadAsync(bool saveSpreadsheet = false)
             {
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
                 UserCredential credential;
@@ -284,7 +284,7 @@ namespace StansAssets.GoogleDoc
                             var sheetId = namedRangeData.Range.SheetId ?? 0;
                             var sheet = m_Spreadsheet.GetSheet(sheetId);
                             var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name); 
-                            var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartRowIndex, namedRangeData.Range.EndRowIndex, namedRangeData.Range.EndColumnIndex);
+                            var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex-1, namedRangeData.Range.EndColumnIndex-1);
 
                             var cells = sheet.GetRange(range);
                             namedRange.SetCells(cells, range);
@@ -294,6 +294,12 @@ namespace StansAssets.GoogleDoc
                     if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                         Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
 
+                    if (saveSpreadsheet)
+                    {
+                        File.WriteAllText(m_Spreadsheet.Path, JsonConvert.SerializeObject(m_Spreadsheet));
+                    }
+
+                    
                     m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
                 }
                 catch (GoogleApiException exception)

@@ -11,10 +11,10 @@ namespace StansAssets.GoogleDoc
             loader.Load();
         }
 
-        public static async Task LoadAsync(this Spreadsheet spreadsheet)
+        public static async Task LoadAsync(this Spreadsheet spreadsheet, bool saveSpreadsheet = false)
         {
             var loader = new SpreadsheetLoader(spreadsheet);
-            await loader.LoadAsync();
+            await loader.LoadAsync(saveSpreadsheet);
         }
 
         /// <summary>

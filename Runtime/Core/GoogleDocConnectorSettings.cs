@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using StansAssets.Plugins;
 using UnityEngine;
 
@@ -56,9 +53,14 @@ namespace StansAssets.GoogleDoc
 
         internal Spreadsheet GetSpreadsheet(string id)
         {
-            return m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet) 
-                ? spreadsheet 
-                : null;
+            if (m_SpreadsheetsMap != null)
+            {
+                return m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet) 
+                    ? spreadsheet 
+                    : null;
+            }
+
+            return null;
         }
         
         public void OnBeforeSerialize()
