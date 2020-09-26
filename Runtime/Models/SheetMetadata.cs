@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
+    /// <summary>
+    /// Sheet metadata
+    /// </summary>
     [Serializable]
     public class SheetMetadata
     {
@@ -22,6 +25,12 @@ namespace StansAssets.GoogleDoc
         /// The ID of the sheet.
         /// </summary>
         public int Id => m_Id;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">The ID of the sheet.</param>
+        /// <param name="name">The name of the sheet.</param>
         [JsonConstructor]
         public SheetMetadata(int id, string name)
         {

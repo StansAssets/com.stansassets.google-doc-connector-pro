@@ -3,6 +3,7 @@ using System.Text;
 using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
@@ -29,22 +30,16 @@ namespace StansAssets.GoogleDoc
         public SpreadsheetsTab()
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/SpreadsheetsTab")
         {
-            var connectBtn = this.Q<Button>("loadExampleConfigBtn");
-            connectBtn.clicked += () =>
+            var sampleBtn = this.Q<Button>("loadSampleLocalizationBtn");
+            sampleBtn.clicked += () =>
             {
-                var spreadsheet1 = GoogleDocConnector.GetSpreadsheet(k_SampleSpreadsheetId);
-                spreadsheet1 = spreadsheet1 ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId);
-                spreadsheet1.OnSyncStateChange += OnSampleSheetStateChanged;
-                spreadsheet1.Load();
-
-                var spreadsheet = GoogleDocConnector.GetSpreadsheet(k_SampleSpreadsheetId2);
-                spreadsheet = spreadsheet ?? GoogleDocConnectorEditor.CreateSpreadsheet(k_SampleSpreadsheetId2);
-                spreadsheet.Load();
-
-                RecreateSpreadsheetsView();
+                EditorSceneManager.OpenScene(GoogleDocConnectorPackage.SamplesPath + "/GoogleDocSampleLocalization.unity");
             };
-
-            //  connectBtn.style.display = DisplayStyle.None;
+            sampleBtn = this.Q<Button>("loadSampleBtn");
+            sampleBtn.clicked += () =>
+            {
+                EditorSceneManager.OpenScene(GoogleDocConnectorPackage.SamplesPath + "/GoogleDocSampleScene.unity");
+            };
 
             m_NoSpreadsheetsNote = this.Q("no-spreadsheets-note");
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-credentials");
@@ -57,9 +52,9 @@ namespace StansAssets.GoogleDoc
             m_AddSpreadsheetBtn.clicked += () =>
             {
                 var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(m_SpreadsheetIdField.text);
-                
+
                 spreadsheet.LoadAsync(true).ContinueWith(_ => _);
-                
+
                 m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
 
                 RecreateSpreadsheetsView();
@@ -69,10 +64,11 @@ namespace StansAssets.GoogleDoc
             RecreateSpreadsheetsView();
 
             CheckCredentials();
-            schedule.Execute(() => { }).Every(100000);
+            schedule.Execute(CheckCredentials).Every(100000);
 
             BindFoldoutPanel("DocExpandedPanel", "DocArrowToggleFoldout");
             BindFoldoutPanel("SampleExpandedPanel", "SampleArrowToggleFoldout");
+            CreateDocumentationList();
         }
 
         void CheckCredentials()
@@ -106,7 +102,10 @@ namespace StansAssets.GoogleDoc
             {
                 visualElement.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
             });
-            visualElement.style.display = foldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+            foldout.schedule.Execute(() =>
+            {
+                visualElement.style.display = foldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+            }).StartingIn(900);
         }
 
         static void OnSampleSheetStateChanged(Spreadsheet spreadsheet)
@@ -142,7 +141,6 @@ namespace StansAssets.GoogleDoc
                 : DisplayStyle.Flex;
 
             foreach (var item in GoogleDocConnectorSettings.Instance.Spreadsheets.Select(spreadsheet => new SpreadsheetView(spreadsheet)))
-
             {
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;
@@ -172,18 +170,9 @@ namespace StansAssets.GoogleDoc
         void CreateDocumentationList()
         {
             var docExpandedPanel = this.Q<VisualElement>("DocItemsPanel");
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
-            docExpandedPanel.Add(DocumentationItem("Credentials", "https://developers.google.com/sheets/api/quickstart/dotnet"));
+            docExpandedPanel.Add(DocumentationItem("Credentials", "https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Setup"));
+            docExpandedPanel.Add(DocumentationItem("Wiki", "https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki"));
+            docExpandedPanel.Add(DocumentationItem("Documentation", "https://api.stansassets.com/google-doc/StansAssets.GoogleDoc.html"));
         }
 
         VisualElement DocumentationItem(string nameItem, string link)

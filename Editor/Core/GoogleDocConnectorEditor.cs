@@ -15,7 +15,6 @@ namespace StansAssets.GoogleDoc
         public static Spreadsheet CreateSpreadsheet(string id)
         {
             var spr = GoogleDocConnectorSettings.Instance.CreateSpreadsheet(id);
-            s_SpreadsheetsChange();
             return spr;
         }
 

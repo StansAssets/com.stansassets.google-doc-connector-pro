@@ -1,5 +1,5 @@
 {
-    "name": "StansAssets.GoogleDoc.EditorTests",
+    "name": "StansAssets.GoogleDoc.Tests",
     "references": [
         "StansAssets.GoogleDoc",
         "StansAssets.GoogleDoc.Editor",

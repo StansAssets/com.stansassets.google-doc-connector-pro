@@ -25,5 +25,6 @@ namespace StansAssets.GoogleDoc
 
         internal static readonly string UILayoutPath = $"{RootPath}/Editor/Window/UI";
         internal static readonly string WindowTabsPath = $"{RootPath}/Editor/Window/Tabs";
+        internal static readonly string SamplesPath = $"{RootPath}/Samples/Scene";
     }
 }

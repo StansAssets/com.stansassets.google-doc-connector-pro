@@ -28,7 +28,7 @@ namespace StansAssets.GoogleDoc
             s_Spreadsheet = spreadsheet;
         }
 
-        public void Save()
+       /* public void Save()
         {
             try
             {
@@ -78,7 +78,7 @@ namespace StansAssets.GoogleDoc
             {
                 SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
             }
-        }
+        }*/
 
         public void CreateSheet(string name)
         {
