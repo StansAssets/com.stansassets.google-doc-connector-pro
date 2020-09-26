@@ -68,7 +68,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetFoldout.schedule.Execute(() =>
             {
                 spreadsheetExpandedPanel.style.display = m_SpreadsheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-            }).StartingIn(900);
+            }).StartingIn(1000);
             
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };

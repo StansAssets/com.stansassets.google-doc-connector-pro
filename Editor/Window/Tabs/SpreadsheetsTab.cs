@@ -105,7 +105,7 @@ namespace StansAssets.GoogleDoc
             foldout.schedule.Execute(() =>
             {
                 visualElement.style.display = foldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-            }).StartingIn(900);
+            }).StartingIn(1000);
         }
 
         static void OnSampleSheetStateChanged(Spreadsheet spreadsheet)
