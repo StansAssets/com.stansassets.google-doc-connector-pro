@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
+    
     class LocalizationSettings : PackageScriptableSettingsSingleton<LocalizationSettings>, ISerializationCallbackReceiver
     {
         
@@ -12,7 +13,7 @@ namespace StansAssets.GoogleDoc
         string m_SpreadsheetId = "";
         public string SpreadsheetId => m_SpreadsheetId;
 
-        internal void SpreadsheetIdSet(string newSpreadsheetId)
+        public void SpreadsheetIdSet(string newSpreadsheetId)
         {
             m_SpreadsheetId = newSpreadsheetId;
         }

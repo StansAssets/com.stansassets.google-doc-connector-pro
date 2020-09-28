@@ -26,13 +26,18 @@ namespace StansAssets.GoogleDoc
         public string StringValue { get; }
 
         public CellValue() { }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="formattedValue">The formatted value of the cell. This is the value as it's shown to the user.</param>
+        /// <param name="formulaValue">Represents a formula.</param>
+        /// <param name="stringValue">Represents a value in string format.</param>
         [JsonConstructor]
         public CellValue(string formattedValue, string formulaValue, string stringValue)
         {
-            FormattedValue = formattedValue;
-            FormulaValue = formulaValue;
-            StringValue = stringValue;
+            FormattedValue = formattedValue ?? string.Empty;
+            FormulaValue = formulaValue ?? string.Empty;
+            StringValue = stringValue ?? string.Empty;
         }
 
         /// <summary>

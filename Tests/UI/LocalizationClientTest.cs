@@ -19,8 +19,6 @@ namespace StansAssets.GoogleDoc.EditorTests
             LocalizationSettings.Instance.SpreadsheetIdSet(k_SpreadsheetId);
             m_Client = new LocalizationClient();
         }
-
-
         
         [OneTimeTearDown]
         public void Teardown()

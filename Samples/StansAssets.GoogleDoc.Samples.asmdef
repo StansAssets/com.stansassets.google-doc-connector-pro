@@ -1,0 +1,17 @@
+{
+    "name": "StansAssets.GoogleDoc.Samples",
+    "references": [
+        "GUID:cab1c19acbf774c75ad707ed435825ff",
+        "GUID:fcd17e43322f74f52ae0123a37a82dd4",
+        "GUID:9c2d25c8e11a94c0db463f6b069b38f4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

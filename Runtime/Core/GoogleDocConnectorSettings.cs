@@ -21,7 +21,7 @@ namespace StansAssets.GoogleDoc
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
         
-        public Spreadsheet CreateSpreadsheet(string id)
+        internal Spreadsheet CreateSpreadsheet(string id)
         {
             if (m_SpreadsheetsMap.ContainsKey(id))
             {
@@ -32,13 +32,11 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheets.Add(spreadsheet);
             m_SpreadsheetsMap.Add(id, spreadsheet);
 
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-#endif
+            Save();
             return spreadsheet;
         }
 
-        public void RemoveSpreadsheet(string id)
+        internal void RemoveSpreadsheet(string id)
         {
             var spreadsheet = GetSpreadsheet(id);
             if (spreadsheet == null)

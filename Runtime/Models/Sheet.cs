@@ -27,13 +27,13 @@ namespace StansAssets.GoogleDoc
         public IEnumerable<RowData> Rows => m_Rows;
         List<RowData> m_Rows = new List<RowData>();
 
-        internal DataState DataState => m_DataState;
+        /*internal DataState DataState => m_DataState;
         DataState m_DataState = DataState.Default;
 
         internal void SetDataState(DataState state)
         {
             m_DataState = state;
-        }
+        }*/
 
         [JsonConstructor]
         internal Sheet(int id, string name):base(id, name)
@@ -60,7 +60,7 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         /// <param name="name">Name of Named Range to search</param>
         /// <returns>True if the element is in the sheet; otherwise, false</returns>
-        internal bool HasNamedRange(string name)
+        public bool HasNamedRange(string name)
         {
             return m_NamedRanges.Exists(n => name.Equals(n.Name));
         }
@@ -70,7 +70,7 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         /// <param name="name">Name of Named Range to search for</param>
         /// <returns>NamedRange if the element with provided name exists, otherwise null</returns>
-        internal NamedRange GetNamedRange(string name)
+        public NamedRange GetNamedRange(string name)
         {
             return m_NamedRanges.FirstOrDefault(n => name.Equals(n.Name));
         }
@@ -122,12 +122,25 @@ namespace StansAssets.GoogleDoc
                 throw;
             }
         }
-
+        
+        /// <summary>
+        /// Gets converted cell value from specified row & col. See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <param name="row">Row index. Index starts from 0 </param>
+        /// <param name="column">Column index. Index starts from 0 </param>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Converted value.</returns>
         public T GetCellValue<T>(int row, int column)
         {
             return GetCell(row, column).GetValue<T>();
         }
-
+        
+        /// <summary>
+        /// Gets converted cell value  by name. For example "A1" or "B5". See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <param name="name">The name of the cell.</param>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Converted value.</returns>
         public T GetCellValue<T>(string name)
         {
             return GetCell(name).GetValue<T>();
@@ -148,16 +161,22 @@ namespace StansAssets.GoogleDoc
 
             return rowData;
         }
-
+        
+        /// <summary>
+        /// Returns all the cells converted values in the row. See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <param name="row">Row index. Index starts from 0</param>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Converted cells value</returns>
         public List<T> GetRowValues<T>(int row)
         {
             return GetRow(row).Select(cell => cell.GetValue<T>()).ToList();
         }
 
         /// <summary>
-        /// Returns all the cells in the column.
+        /// Returns all the cells in the column. 
         /// </summary>
-        /// <param name="column">The name of the column</param>
+        /// <param name="column">Column index. Index starts from 0</param>
         /// <returns>Cells List.</returns>
         public List<Cell> GetColumn(int column)
         {
@@ -173,7 +192,7 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Returns all the cells in the column.
         /// </summary>
-        /// <param name="name">Column index. Index starts from 0</param>
+        /// <param name="name">The name of the column.</param>
         /// <returns>Cells List.</returns>
         public List<Cell> GetColumn(string name)
         {
@@ -184,12 +203,24 @@ namespace StansAssets.GoogleDoc
 
             return GetColumn(column ?? default);
         }
-
+        
+        /// <summary>
+        /// Returns all the converted cells value in the column. See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <param name="column">Column index. Index starts from 0</param>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Converted cells value</returns>
         public List<T> GetColumnValues<T>(int column)
         {
             return GetColumn(column).Select(cell => cell.GetValue<T>()).ToList();
         }
-
+        
+        /// <summary>
+        /// Returns all the converted cells value by name. For example "A" or "B". See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <param name="name">The name of the column.</param>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Converted cells value</returns>
         public List<T> GetColumnValues<T>(string name)
         {
             return GetColumn(name).Select(cell => cell.GetValue<T>()).ToList();
@@ -294,8 +325,19 @@ namespace StansAssets.GoogleDoc
                 ? new List<Cell>()
                 : range.Cells.Select(cell => GetCell(cell.Row, cell.Column)).ToList();
         }
-
+        
         /// <summary>
+        ///  Returns all the converted cells value of the requested Named Range. See <see cref="CellValue.GetValue"/> for more info.
+        /// </summary>
+        /// <param name="name">Name of the requested Named Range</param>
+        /// <typeparam name="T">Type you want to convert a value to.</typeparam>
+        /// <returns>Returns all the converted cells</returns>
+        public List<T> GetNamedRangeValues<T>(string name)
+        {
+            return GetNamedRangeCells(name).Select(cell => cell.GetValue<T>()).ToList();
+        }
+
+        /*/// <summary>
         /// Updates the value for a cell, if any, or create a new cell with that value
         /// </summary>
         /// <param name="row"></param>
@@ -327,11 +369,6 @@ namespace StansAssets.GoogleDoc
             var cell = new Cell(row, column, cellValue);
             cell.SetDataState(DataState.Updated);
             m_Rows[row].AddCell(cell);
-        }
-
-        public List<T> GetNamedRangeValues<T>(string name)
-        {
-            return GetNamedRangeCells(name).Select(cell => cell.GetValue<T>()).ToList();
-        }
+        }*/
     }
 }

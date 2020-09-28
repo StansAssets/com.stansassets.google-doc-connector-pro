@@ -34,13 +34,13 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public CellValue Value { get; private set; }
         
-        internal DataState DataState => m_DataState;
+       /* internal DataState DataState => m_DataState;
         DataState m_DataState = DataState.Default;
 
         internal void SetDataState(DataState state)
         {
             m_DataState = state;
-        }
+        }*/
 
         internal Cell(int row, int column)
         {
@@ -87,10 +87,10 @@ namespace StansAssets.GoogleDoc
         }
     }
 
-    enum DataState
+   /* enum DataState
     {
         Default,
         Updated,
         Created
-    }
+    }*/
 }

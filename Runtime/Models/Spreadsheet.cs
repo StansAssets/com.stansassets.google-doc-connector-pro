@@ -154,7 +154,11 @@ namespace StansAssets.GoogleDoc
         }
 
         internal Spreadsheet() { }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Spreadsheet Id</param>
         public Spreadsheet(string id)
         {
             m_Id = id;
@@ -209,15 +213,7 @@ namespace StansAssets.GoogleDoc
         /// <returns>`true` if spreadsheet contains a sheet with specified id, otherwise `false`.</returns>
         public bool HasSheet(int sheetId)
         {
-            foreach (var sheet in m_Sheets)
-            {
-                if (sheetId == sheet.Id)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return m_Sheets.Any(sheet => sheetId == sheet.Id);
         }
 
         /// <summary>
@@ -227,15 +223,7 @@ namespace StansAssets.GoogleDoc
         /// <returns>`true` if spreadsheet contains a sheet with the name, otherwise `false`.</returns>
         public bool HasSheet(string sheetName)
         {
-            foreach (var sheet in m_Sheets)
-            {
-                if (sheetName == sheet.Name)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return m_Sheets.Any(sheet => sheetName == sheet.Name);
         }
 
         /// <summary>
@@ -263,7 +251,15 @@ namespace StansAssets.GoogleDoc
         {
             return m_Sheets.FirstOrDefault(sheet => sheetName == sheet.Name);
         }
-
+        
+       /* /// <summary>
+        /// Gets first spreadsheet sheet by it's name or create it.
+        /// </summary>
+        /// <param name="sheetName"></param>
+        /// <returns>
+        /// Returns the <see cref="Sheets"/> object
+        /// if spreadsheet contains a sheet with the name, otherwise `null`
+        /// </returns>
         public Sheet GetSheetOrCreate(string sheetName)
         {
             if (HasSheet(sheetName))
@@ -271,7 +267,7 @@ namespace StansAssets.GoogleDoc
             var sheet = CreateSheet(m_Sheets.Count, sheetName);
             sheet.SetDataState(DataState.Created);
             return sheet;
-        }
+        }*/
 
         internal Sheet CreateSheet(int sheetId, string name)
         {

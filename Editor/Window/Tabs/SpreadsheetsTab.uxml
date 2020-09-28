@@ -3,9 +3,9 @@
 
     <sa:SettingsBlock label="Spreadsheets">
         <sa:HelpBox type="Info" name="no-spreadsheets-note" text="You haven't added any Spreadsheets yet."/>
-        <ui:VisualElement name="NoCredentials" >
+        <ui:VisualElement name="NoCredentials">
             <sa:HelpBox type="Error" name="no-credentials" text="You haven't have credentials"/>
-            <sa:Hyperlink link="https://developers.google.com/sheets/api/quickstart/dotnet">
+            <sa:Hyperlink link="https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Setup">
                 <ui:Label text="Add credentials.json" class="no-credentials-label"/>
             </sa:Hyperlink>
         </ui:VisualElement>
@@ -37,7 +37,16 @@
         </ui:VisualElement>
         <ui:VisualElement name="SampleExpandedPanel" class="expanded-panel">
             <ui:Label text="Examples and tutorials" class="panel-label"/>
-            <ui:Button text="Load Example" name="loadExampleConfigBtn"/>
+            <ui:Label text="Please add this Id to Google Doc Connector for use Samples." class="id-sample-text"/>
+            <ui:VisualElement name="spreadsheetIdSamplePanel" class="row-panel id-sample-panel">
+                <ui:Label text="Id:" name="spreadsheetIdTitle"/>
+                <sa:SelectableLabel text="1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo" name="spreadsheet-id"
+                                    class="id-sample"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="spreadsheetIdSamplePanel" class="row-panel">
+                <ui:Button text="Load Sample scene" name="loadSampleBtn" class="sample-btn" />
+                <ui:Button text="Load Localization Sample scene" name="loadSampleLocalizationBtn" class="sample-btn"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 

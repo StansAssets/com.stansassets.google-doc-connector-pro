@@ -65,8 +65,11 @@ namespace StansAssets.GoogleDoc
             {
                 spreadsheetExpandedPanel.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
             });
-            spreadsheetExpandedPanel.style.display = m_SpreadsheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-
+            m_SpreadsheetFoldout.schedule.Execute(() =>
+            {
+                spreadsheetExpandedPanel.style.display = m_SpreadsheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
+            }).StartingIn(1000);
+            
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
 
@@ -117,7 +120,7 @@ namespace StansAssets.GoogleDoc
 
                 foreach (var namedRange in sheet.NamedRanges)
                 {
-                    var rangeLabel = new SelectableLabel { text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name}))" };
+                    var rangeLabel = new SelectableLabel { text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name})" };
                     m_RangesContainer.Add(rangeLabel);
                 }
             }
@@ -126,6 +129,10 @@ namespace StansAssets.GoogleDoc
         void StateChange(Spreadsheet spreadsheet)
         {
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
+            if (spreadsheet.Synced)
+            {
+                GoogleDocConnectorEditor.s_SpreadsheetsChange();
+            }
             if (spreadsheet.Synced || spreadsheet.SyncedWithError)
             {
                 Bind(spreadsheet);
