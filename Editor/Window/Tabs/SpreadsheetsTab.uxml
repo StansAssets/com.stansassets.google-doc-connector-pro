@@ -44,8 +44,8 @@
                                     class="id-sample"/>
             </ui:VisualElement>
             <ui:VisualElement name="spreadsheetIdSamplePanel" class="row-panel">
-                <ui:Button text="Load Sample scene" name="loadSampleBtn" class="sample-btn" />
-                <ui:Button text="Load Localization Sample scene" name="loadSampleLocalizationBtn" class="sample-btn"/>
+                <ui:Button text="Receiving data Sample" name="loadSampleBtn" class="sample-btn" />
+                <ui:Button text="Localization Sample" name="loadSampleLocalizationBtn" class="sample-btn"/>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

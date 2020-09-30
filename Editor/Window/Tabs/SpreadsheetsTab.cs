@@ -97,6 +97,8 @@ namespace StansAssets.GoogleDoc
         {
             var visualElement = this.Q<VisualElement>(visualElementName);
             var foldout = this.Q<Foldout>(foldoutName);
+            foldout.value = false;
+            visualElement.style.display = DisplayStyle.None;
 
             foldout.RegisterValueChangedCallback(e =>
             {
@@ -107,26 +109,7 @@ namespace StansAssets.GoogleDoc
                 visualElement.style.display = foldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             }).StartingIn(1000);
         }
-
-        static void OnSampleSheetStateChanged(Spreadsheet spreadsheet)
-        {
-            if (!spreadsheet.Synced)
-            {
-                return;
-            }
-
-            var sheet = spreadsheet.GetSheet(0);
-            var range = sheet.GetNamedRangeCells(k_SampleRangeName);
-            Debug.Log(sheet.GetCell(3, 0).Value.FormattedValue);
-            var builder = new StringBuilder($"NamedRange Id:{k_SampleRangeName} Data:");
-            foreach (var obj in range)
-            {
-                builder.Append(obj.Value.FormattedValue ?? string.Empty);
-                builder.Append(",");
-            }
-
-            Debug.Log(builder);
-        }
+        
 
         void RecreateSpreadsheetsView()
         {

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc.Samples
 {
@@ -15,30 +13,35 @@ namespace StansAssets.GoogleDoc.Samples
         [FormerlySerializedAs("PanelID")]
         public GameObject PanelId;
         public Dropdown Dropdown;
-        List<GameObject> Balls;
+        public GameObject WhiteBall;
+        public GameObject BlackBall;
+        readonly List<GameObject> m_Balls = new List<GameObject>();
 
         // Start is called before the first frame update
         void Start()
         {
-            try
-            {
-                var spreadsheet = GoogleDocConnector.GetSpreadsheet(SpreadsheetId);
-                var sheet = spreadsheet.GetSheet("Sample");
-                m_NamedRanges = sheet.NamedRanges.Select(n => n.Name).ToList();
-                m_NamedRanges.Sort();
-            }
-            catch
+            if (!GoogleDocConnector.HasSpreadsheet(SpreadsheetId))
             {
                 PanelId.SetActive(true);
+                return;
             }
-            
-            var whiteBall = GameObject.Find("WhiteBall");
-            Balls.Add(whiteBall);
-            var blackBall = GameObject.Find("BlackBall");
-            Balls.Add(blackBall);
+
+            var spreadsheet = GoogleDocConnector.GetSpreadsheet(SpreadsheetId);
+            if (!spreadsheet.HasSheet("Sample"))
+            {
+                PanelId.SetActive(true);
+                return;
+            }
+
+            var sheet = spreadsheet.GetSheet("Sample");
+            m_NamedRanges = sheet.NamedRanges.Select(n => n.Name).ToList();
+            m_NamedRanges.Sort();
+
+            m_Balls.Add(WhiteBall);
+            m_Balls.Add(BlackBall);
             for (var index = 0; index < 5; index++)
             {
-                Balls.Add(Instantiate(blackBall));
+                m_Balls.Add(Instantiate(BlackBall));
             }
 
             Dropdown.ClearOptions();
@@ -55,13 +58,12 @@ namespace StansAssets.GoogleDoc.Samples
 
             var xIndex = 0;
             var yIndex = 1;
-            foreach (var ball in Balls)
+            foreach (var ball in m_Balls)
             {
                 ball.transform.position = new Vector3(cells[xIndex], cells[yIndex], ball.transform.position.z);
                 xIndex += 2;
                 yIndex += 2;
             }
         }
-        
     }
 }

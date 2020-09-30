@@ -15,6 +15,11 @@ namespace StansAssets.GoogleDoc
         /// Available Languages
         /// </summary>
         public List<string> Languages { get; }
+        
+        /// <summary>
+        /// Available Spreadsheet sheet names
+        /// </summary>
+        public List<string> Sheets { get; }
 
         /// <summary>
         /// Default language for localization language
@@ -64,7 +69,15 @@ namespace StansAssets.GoogleDoc
             {
                 throw new Exception("The first row on the first sheet of the table has no filled cells");
             }
+            
+            var cellToken = row.Cells.FirstOrDefault();
+            if (cellToken != null && (cellToken.Value.StringValue.ToLower() != "token" &&  cellToken.Value.StringValue.ToLower() != "tokens"))
+            {
+                throw new Exception("Token column name not found");
+            }
 
+            Sheets =  spr.Sheets.Select(sh => sh.Name).ToList();
+            
             Languages = new List<string>();
             var indexRow = 0;
             foreach (var cell in row.Cells)
@@ -75,6 +88,10 @@ namespace StansAssets.GoogleDoc
                 }
 
                 indexRow++;
+            }
+            if (!Languages.Any())
+            {
+                throw new Exception("No headings found for available languages");
             }
 
             m_DefaultLanguage = Languages[0];

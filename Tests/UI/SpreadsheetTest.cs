@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using UnityEngine;
 
-namespace StansAssets.GoogleDoc.EditorTests
+namespace StansAssets.GoogleDoc.Tests
 {
     public class SpreadsheetTest
     {
@@ -19,7 +19,6 @@ namespace StansAssets.GoogleDoc.EditorTests
             AddSpreadsheet(k_SpreadsheetId2);
             AddSpreadsheet(k_SpreadsheetId3);
             AddSpreadsheet(k_SpreadsheetId4);
-            //System.Threading.Thread.Sleep(5000);
         }
 
         void AddSpreadsheet(string spreadsheetId)
@@ -29,15 +28,6 @@ namespace StansAssets.GoogleDoc.EditorTests
             m_Spreadsheets.Add(spreadsheet);
         }
         
-        /*[OneTimeTearDown]
-        public void Teardown()
-        {
-            
-            GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId1);
-            GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId2);
-            GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId3);
-            GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId4);
-        }*/
         
         [Test]
         [TestCase(0)]

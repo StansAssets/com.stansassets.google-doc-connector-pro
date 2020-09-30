@@ -23,6 +23,16 @@ namespace StansAssets.GoogleDoc
         {
             return GoogleDocConnectorSettings.Instance.GetSpreadsheet(id);
         }
+        
+        /// <summary>
+        /// Spreadsheet exists by it's id 
+        /// </summary>
+        /// <param name="id">An id of the spreadsheet.</param>
+        /// <returns>True if the spreadsheet exists; otherwise false</returns>
+        public static bool HasSpreadsheet(string id)
+        {
+            return GoogleDocConnectorSettings.Instance.HasSpreadsheet(id);
+        }
 
         /// <summary>
         /// Returns absolute web url for the spreadsheet.

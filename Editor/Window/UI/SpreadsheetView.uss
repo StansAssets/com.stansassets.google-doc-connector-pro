@@ -36,7 +36,7 @@
 }
 
 .spreadsheet-id {
-  /*  -unity-text-align: middle-left;*/
+   -unity-text-align: middle-left;
 }
 
 .spreadsheet-id-bold {
@@ -70,7 +70,9 @@
     margin-bottom: 5px;
 }
 
-.btn-left {
+.btn-left,
+.btn-middle,
+.btn-right {
     width: 16px;
     height: 16px;
     border-left-width: 1px;
@@ -83,7 +85,7 @@
     flex: 0 0 auto;
     overflow: hidden;
     white-space: nowrap;
-    color: rgb(228, 228, 228);
+    -unity-background-image-tint-color: rgb(228, 228, 228);
     border-width: 1px;
     padding-left: 1px;
     padding-right: 1px;
@@ -98,41 +100,24 @@
     border-bottom-right-radius: -1px;
 }
 
-.btn-refresh {
-    background-image: url('Resources/refresh.png');
+.btn-middle{
+    border-radius: 0;
+    border-left-width: -1px;
 }
 
+.btn-right {
+    border-radius: -1px 3px 3px -1px;
+    border-left-width: -1px;
+}
+
+.btn-middle:hover,
 .btn-left:hover,
 .btn-right:hover {
     background-color: rgb(134, 134, 134);
 }
 
-.btn-right {
-    width: 16px;
-    height: 16px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    -unity-text-align: middle-center;
-    flex: 0 0 auto;
-    overflow: hidden;
-    white-space: nowrap;
-    color: rgb(228, 228, 228);
-    border-width: 1px;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 1px;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    border-radius: 3px;
-    font-size: 12px;
-    flex-shrink: 0;
-    border-bottom-left-radius: -1px;
-    border-top-left-radius: -1px;
-    border-left-width: -1px;
+.btn-refresh {
+    background-image: url('Resources/refresh.png');
 }
 
 .btn-remove {
