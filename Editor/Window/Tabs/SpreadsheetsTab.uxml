@@ -16,38 +16,5 @@
         <ui:TextField picking-mode="Ignore" name="spreadsheetIdText" class="add-new-spreadsheet"/>
         <ui:Button text="Import" name="addSpreadsheetBtn"/>
     </sa:SettingsBlock>
-
-    <ui:VisualElement class="panel">
-        <ui:VisualElement name="DocTopPanel" class="top-panel">
-            <ui:Foldout text="Documentation" name="DocArrowToggleFoldout" class="arrowToggle"
-                        view-data-key="doc_toggle"/>
-            <ui:VisualElement class="flexible-space"/>
-        </ui:VisualElement>
-        <ui:VisualElement name="DocExpandedPanel" class="expanded-panel">
-            <ui:Label text="This section contains useful links." class="panel-label"/>
-            <ui:VisualElement name="DocItemsPanel" class="doc-panel"/>
-        </ui:VisualElement>
-    </ui:VisualElement>
-
-    <ui:VisualElement class="panel">
-        <ui:VisualElement name="SampleTopPanel" class="top-panel">
-            <ui:Foldout text="Samples" name="SampleArrowToggleFoldout" class="arrowToggle"
-                        view-data-key="sample_toggle"/>
-            <ui:VisualElement class="flexible-space"/>
-        </ui:VisualElement>
-        <ui:VisualElement name="SampleExpandedPanel" class="expanded-panel">
-            <ui:Label text="Examples and tutorials" class="panel-label"/>
-            <ui:Label text="Please add this Id to Google Doc Connector for use Samples." class="id-sample-text"/>
-            <ui:VisualElement name="spreadsheetIdSamplePanel" class="row-panel id-sample-panel">
-                <ui:Label text="Id:" name="spreadsheetIdTitle"/>
-                <sa:SelectableLabel text="1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo" name="spreadsheet-id"
-                                    class="id-sample"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="spreadsheetIdSamplePanel" class="row-panel">
-                <ui:Button text="Receiving data Sample" name="loadSampleBtn" class="sample-btn" />
-                <ui:Button text="Localization Sample" name="loadSampleLocalizationBtn" class="sample-btn"/>
-            </ui:VisualElement>
-        </ui:VisualElement>
-    </ui:VisualElement>
-
+    
 </ui:UXML>

@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
-         xmlns:sa="StansAssets.Foundation.UIElements">>
+         xmlns:sa="StansAssets.Foundation.UIElements">
     <ui:VisualElement name="spreadsheetRoot" class="root">
         <Style src="SpreadsheetView.uss"/>
         <ui:VisualElement name="spreadsheetTopPanel" class="spreadsheet-top-panel">

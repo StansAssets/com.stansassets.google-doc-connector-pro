@@ -5,7 +5,7 @@ namespace StansAssets.GoogleDoc
 {
     static class GoogleDocConnectorEditorMenu
     {
-        [MenuItem(PackagesConfigEditor.RootMenu + "/" + GoogleDocConnectorPackage.DisplayName + "/Settings", false, 0)]
+        [MenuItem(PluginsDevKitPackage.RootMenu + "/" + GoogleDocConnectorPackage.DisplayName + "/Settings", false, 0)]
         public static void OpenSettingsTest()
         {
             var headerContent = GoogleDocConnectorSettingsWindow.WindowTitle;
