@@ -57,17 +57,6 @@
     margin-bottom: 5px;
 }
 
-.doc-panel {
-    padding-left: 10px;
-    max-height: 100px;
-    flex-wrap: wrap;
-}
-
-.doc-item {
-    margin: 5px 5% 0 10px;
-    flex-grow: 1;
-}
-
 .no-credentials-label {
     font-size: 13px;
     color: blue;
@@ -80,21 +69,4 @@
 .row-panel {
     flex-direction: row;
     flex-wrap: wrap;
-}
-
-.id-sample-panel {
-    margin-left: 15px;
-    margin-bottom: 5px;
-}
-
-.id-sample {
-    margin-left: 5px;
-}
-
-.id-sample-text {
-    margin-left: 15px;
-}
-
-.sample-btn {
-    margin: 0 0 0 15px;
 }

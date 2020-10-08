@@ -2,7 +2,11 @@
     background-image: url("../UI/Resources/browser.png");
 }
 
-.btn-left {
+.btn-refresh {
+    background-image: url('../UI/Resources/refresh.png');
+}
+
+.btn-spreadsheet {
     width: 16px;
     height: 16px;
     border-left-width: 1px;
@@ -15,7 +19,7 @@
     flex: 0 0 auto;
     overflow: hidden;
     white-space: nowrap;
-    color: rgb(228, 228, 228);
+    -unity-background-image-tint-color: rgb(228, 228, 228);
     border-width: 1px;
     padding-left: 1px;
     padding-right: 1px;
@@ -25,49 +29,16 @@
     border-radius: 3px;
     font-size: 12px;
     flex-shrink: 0;
-    border-top-right-radius: -1px;
-    border-bottom-right-radius: -1px;
-    margin-right: 5px;
-}
-
-.btn-refresh {
-    background-image: url('../UI/Resources/refresh.png');
+    margin-right: 10px;
 }
 
 .btn-left:hover,
-.btn-right:hover {
+.btn-right:hover,
+.lang-element:hover {
     background-color: rgb(134, 134, 134);
 }
 
-.btn-right {
-    width: 16px;
-    height: 16px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    -unity-text-align: middle-center;
-    flex: 0 0 auto;
-    overflow: hidden;
-    white-space: nowrap;
-    color: rgb(228, 228, 228);
-    border-width: 1px;
-    padding-left: 1px;
-    padding-right: 1px;
-    padding-top: 1px;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-    border-radius: 3px;
-    font-size: 12px;
-    flex-shrink: 0;
-    border-bottom-left-radius: -1px;
-    border-top-left-radius: -1px;
-    border-left-width: -1px;
-}
-
-.row{
+.row {
     flex-direction: row;
 }
 
@@ -106,4 +77,12 @@
     margin-bottom: 6px;
     flex-direction: row;
     border-radius: 6px;
+}
+
+.choose-spreadsheet {
+    margin: 0 5px 5px 3px;
+}
+
+.localization-error {
+    margin-top: 5px;
 }

@@ -48,6 +48,12 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheets.Remove(spreadsheet);
             m_SpreadsheetsMap.Remove(spreadsheet.Id);
         }
+        
+        internal bool HasSpreadsheet(string id)
+        {
+            var spreadsheet = GetSpreadsheet(id);
+            return spreadsheet != null;
+        }
 
         internal Spreadsheet GetSpreadsheet(string id)
         {

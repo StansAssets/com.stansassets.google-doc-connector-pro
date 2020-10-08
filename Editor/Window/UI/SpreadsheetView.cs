@@ -77,7 +77,7 @@ namespace StansAssets.GoogleDoc
             refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
             
             var openBtn = this.Q<Button>("openBtn");
-            openBtn.clicked += () => { Application.OpenURL(GoogleDocConnector.GetSpreadsheetWebUrl(spreadsheet.Id)); };
+            openBtn.clicked += () => { Application.OpenURL(spreadsheet.Url); };
             
             spreadsheet.OnSyncStateChange += StateChange;
 

@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using TextType = StansAssets.GoogleDoc.LocalizationClient.TextType;
 
-namespace StansAssets.GoogleDoc.EditorTests
+namespace StansAssets.GoogleDoc.Tests
 {
     public class LocalizationClientTest
     {
