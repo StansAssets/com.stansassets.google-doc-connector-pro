@@ -2,6 +2,7 @@
          xmlns:sa="StansAssets.Foundation.UIElements">
     <!--Localization Spreadsheet-->
     <sa:SettingsBlock label="Localization Spreadsheet">
+        <sa:HelpBox type="Info" name="no-spreadsheets-note" text="Please add at least one document in the Spreadsheets tab to use this tab."/>
         <ui:Label text="Choose spreadsheet" name="choose-spreadsheet" class="choose-spreadsheet"/>
         <ui:VisualElement class="row">
             <ui:VisualElement name="list-spreadsheet"/>

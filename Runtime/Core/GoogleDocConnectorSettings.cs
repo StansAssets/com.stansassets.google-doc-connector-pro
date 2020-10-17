@@ -14,6 +14,7 @@ namespace StansAssets.GoogleDoc
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
         public string СredentialsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
         public string SpreadsheetsFolderPath => $"{SettingsFolderPath}/Spreadsheets";
+        public string CredentialsPath => $"{СredentialsFolderPath}/credentials.json";
 
         [SerializeField]
         List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();

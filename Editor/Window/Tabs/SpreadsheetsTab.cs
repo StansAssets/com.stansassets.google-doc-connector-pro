@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Text;
 using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
@@ -18,6 +19,7 @@ namespace StansAssets.GoogleDoc
         VisualElement m_NoSpreadsheetsNote;
 
         VisualElement m_NoCredentials;
+        Button m_UploadCredentials;
         HelpBox m_NoCredentialsHelpBox;
 
         TextField m_SpreadsheetIdField;
@@ -32,8 +34,18 @@ namespace StansAssets.GoogleDoc
         {
             m_NoSpreadsheetsNote = this.Q("no-spreadsheets-note");
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-credentials");
-            m_NoCredentials = this.Q("NoCredentials");
+            m_NoCredentials =  this.Q<VisualElement>("NoCredentials");
             m_SpreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
+            m_UploadCredentials = this.Q<Button>("upload-credentials");
+            m_UploadCredentials.clicked += () =>
+            {
+                var path = EditorUtility.OpenFilePanel("Credentials", "", "json");
+                if (File.Exists(path))  
+                {
+                    File.Copy(path, GoogleDocConnectorSettings.Instance.CredentialsPath, true);
+                    CheckCredentials();
+                }
+            };
             m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
             m_SpreadsheetIdField.tooltip = k_SpreadsheetIdTextPlaceholder;
 
@@ -53,28 +65,14 @@ namespace StansAssets.GoogleDoc
             RecreateSpreadsheetsView();
 
             CheckCredentials();
-            schedule.Execute(CheckCredentials).Every(100000);
+            //schedule.Execute(CheckCredentials).Every(100000);
         }
 
         void CheckCredentials()
         {
             GoogleDocConnectorEditor.CheckCredentials().ContinueWith((b) =>
             {
-                if (b.Result != string.Empty)
-                {
-                    m_NoCredentials.style.display = DisplayStyle.Flex;
-
-                    m_NoCredentialsHelpBox.Text = b.Result;
-
-                    m_SpreadsheetIdField.SetEnabled(false);
-                    m_AddSpreadsheetBtn.SetEnabled(false);
-                }
-                else
-                {
-                    m_NoCredentials.style.display = DisplayStyle.None;
-                    m_SpreadsheetIdField.SetEnabled(true);
-                    m_AddSpreadsheetBtn.SetEnabled(true);
-                }
+                NoCredentialsView(b.Result);
             });
         }
 
@@ -112,6 +110,7 @@ namespace StansAssets.GoogleDoc
             {
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;
+                item.SyncedWithErrorEvent += NoCredentialsView;
                 m_SpreadsheetsContainer.Add(item);
             }
         }
@@ -133,6 +132,28 @@ namespace StansAssets.GoogleDoc
         static void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
             spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+        }
+
+        public void NoCredentialsView(string error)
+        {
+            if (error != string.Empty)
+            {
+                m_NoCredentials.style.display = DisplayStyle.Flex;
+                m_NoSpreadsheetsNote.style.display = DisplayStyle.None;
+                m_NoCredentialsHelpBox.Text = error;
+
+                m_SpreadsheetIdField.SetEnabled(false);
+                m_AddSpreadsheetBtn.SetEnabled(false);
+            }
+            else
+            {
+                m_SpreadsheetIdField.SetEnabled(true);
+                m_AddSpreadsheetBtn.SetEnabled(true);
+                m_NoSpreadsheetsNote.style.display = GoogleDocConnectorSettings.Instance.Spreadsheets.Any()
+                    ? DisplayStyle.None
+                    : DisplayStyle.Flex;
+                m_NoCredentials.style.display = DisplayStyle.None;
+            }
         }
     }
 }
