@@ -33,7 +33,7 @@ namespace StansAssets.GoogleDoc
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/SpreadsheetsTab")
         {
             m_NoSpreadsheetsNote = this.Q("no-spreadsheets-note");
-            m_NoCredentialsHelpBox = this.Q<HelpBox>("no-credentials");
+            m_NoCredentialsHelpBox = this.Q<HelpBox>("no-credentials-HelpBox");
             m_NoCredentials =  this.Q<VisualElement>("NoCredentials");
             m_SpreadsheetIdField = this.Q<TextField>("spreadsheetIdText");
             m_UploadCredentials = this.Q<Button>("upload-credentials");
@@ -43,6 +43,7 @@ namespace StansAssets.GoogleDoc
                 if (File.Exists(path))  
                 {
                     File.Copy(path, GoogleDocConnectorSettings.Instance.CredentialsPath, true);
+                    NoCredentialsView("");
                     CheckCredentials();
                 }
             };
@@ -138,12 +139,11 @@ namespace StansAssets.GoogleDoc
         {
             if (error != string.Empty)
             {
+                m_SpreadsheetIdField.SetEnabled(false);
+                m_AddSpreadsheetBtn.SetEnabled(false);
                 m_NoCredentials.style.display = DisplayStyle.Flex;
                 m_NoSpreadsheetsNote.style.display = DisplayStyle.None;
                 m_NoCredentialsHelpBox.Text = error;
-
-                m_SpreadsheetIdField.SetEnabled(false);
-                m_AddSpreadsheetBtn.SetEnabled(false);
             }
             else
             {

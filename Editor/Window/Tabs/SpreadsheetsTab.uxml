@@ -5,7 +5,7 @@
         <sa:HelpBox type="Info" name="no-spreadsheets-note" text="You haven't added any Spreadsheets yet."/>
         <ui:VisualElement name="NoCredentials">
             <ui:Button text="Upload credentials" name="upload-credentials"/>
-            <sa:HelpBox type="Error" name="no-credentials" text="You haven't have credentials"/>
+            <sa:HelpBox type="Error" name="no-credentials-HelpBox" text="You haven't have credentials"/>
             <sa:Hyperlink link="https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Setup">
                 <ui:Label text="Add credentials.json" class="no-credentials-label"/>
             </sa:Hyperlink>
