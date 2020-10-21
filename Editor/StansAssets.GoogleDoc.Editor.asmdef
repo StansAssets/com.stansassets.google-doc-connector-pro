@@ -12,8 +12,16 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Google.Apis.Auth.dll",
+        "Google.Apis.dll",
+        "Google.Apis.Core.dll",
+        "Google.Apis.Docs.v1.dll",
+        "Google.Apis.PlatformServices.dll",
+        "Google.Apis.Sheets.v4.dll",
+        "Google.Newtonsoft.Json.dll"
+    ],
     "autoReferenced": false,
     "defineConstraints": [],
     "versionDefines": [],
