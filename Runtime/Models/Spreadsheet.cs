@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc
@@ -75,6 +73,8 @@ namespace StansAssets.GoogleDoc
         /// The spreadsheet sheets list.
         /// </summary>
         public IEnumerable<Sheet> Sheets => m_Sheets;
+
+        internal bool IsLoaded => m_Sheets != null;
 
         [SerializeField]
         string m_Id;
