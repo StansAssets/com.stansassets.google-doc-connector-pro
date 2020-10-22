@@ -139,7 +139,7 @@ namespace StansAssets.GoogleDoc
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
             if (spreadsheet.Synced)
             {
-                GoogleDocConnectorEditor.s_SpreadsheetsChange();
+                GoogleDocConnectorEditor.SpreadsheetsChange();
             }
             if (spreadsheet.Synced || spreadsheet.SyncedWithError)
             {

@@ -1,11 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
-using System.Text;
-using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine;
 using UnityEngine.UIElements;
 using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 

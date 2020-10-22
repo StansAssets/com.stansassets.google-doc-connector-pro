@@ -74,7 +74,7 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public IEnumerable<Sheet> Sheets => m_Sheets;
 
-        internal bool IsLoaded => m_Sheets != null;
+        internal bool IsLoaded { get; private set; }
 
         [SerializeField]
         string m_Id;
@@ -184,6 +184,7 @@ namespace StansAssets.GoogleDoc
         internal void SetSheets(IEnumerable<Sheet> sheets)
         {
             m_Sheets = sheets.ToList();
+            IsLoaded = true;
         }
 
         internal void SetMachineName(string name)

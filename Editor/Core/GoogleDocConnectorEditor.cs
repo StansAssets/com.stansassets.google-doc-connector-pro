@@ -10,7 +10,7 @@ namespace StansAssets.GoogleDoc
 {
     static class GoogleDocConnectorEditor
     {
-        internal static Action s_SpreadsheetsChange = delegate { };
+        internal static Action SpreadsheetsChange = delegate { };
 
         public static Spreadsheet CreateSpreadsheet(string id)
         {
@@ -21,7 +21,7 @@ namespace StansAssets.GoogleDoc
         public static void RemoveSpreadsheet(string id)
         {
             GoogleDocConnectorSettings.Instance.RemoveSpreadsheet(id);
-            s_SpreadsheetsChange();
+            SpreadsheetsChange();
         }
 
         /// <summary>

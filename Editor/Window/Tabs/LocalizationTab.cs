@@ -47,7 +47,7 @@ namespace StansAssets.GoogleDoc
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-spreadsheets-note");
-            GoogleDocConnectorEditor.s_SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet()); };
+            GoogleDocConnectorEditor.SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet()); };
 
             Bind(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet());
         }

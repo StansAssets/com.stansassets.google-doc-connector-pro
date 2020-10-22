@@ -59,7 +59,7 @@ namespace StansAssets.GoogleDoc
             {
                 if (m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet))
                 {
-                    if (spreadsheet.IsLoaded)
+                    if (!spreadsheet.IsLoaded)
                     {
                         spreadsheet.InitFromCache();
                     }
