@@ -16,21 +16,23 @@ namespace StansAssets.GoogleDoc
 
             var spreadsheetTextAsset = Resources.Load<TextAsset>($"{GoogleDocConnectorSettings.SpreadsheetsResourcesSubFolder}/{spreadsheet.Name}");
             Debug.Log(spreadsheetTextAsset.text);
-            
-            if (File.Exists(spreadsheet.Path))
+            if (spreadsheetTextAsset != null)
             {
-                var serializedData = File.ReadAllText(spreadsheet.Path);
-                var spreadsheetJson = JsonConvert.DeserializeObject<Spreadsheet>(serializedData);
+                Debug.Log("DeserializeObject start");
+                var spreadsheetJson = JsonConvert.DeserializeObject<Spreadsheet>(spreadsheetTextAsset.text);
+                Debug.Log("DeserializeObject end");
                 spreadsheet.SetSheets(spreadsheetJson.Sheets);
+                Debug.Log("InitFromCache end");
             }
         }
 
         public static void CleanUpLocalCache(this Spreadsheet spreadsheet)
         {
-            if (File.Exists(spreadsheet.Path))
+            var path = GoogleDocConnector.SpreadsheetPathInEditor(spreadsheet);
+            if (File.Exists(path))
             {
-                File.Delete(spreadsheet.Path);
-                File.Delete($"{spreadsheet.Path}.meta");
+                File.Delete(path);
+                File.Delete($"{path}.meta");
             }
         }
     }

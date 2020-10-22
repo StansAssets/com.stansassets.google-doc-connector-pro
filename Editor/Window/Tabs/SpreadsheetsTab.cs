@@ -24,11 +24,7 @@ namespace StansAssets.GoogleDoc
 
         TextField m_SpreadsheetIdField;
         Button m_AddSpreadsheetBtn;
-
-        const string k_SampleSpreadsheetId = "19Bs5Ts6OBXh7SFNdI3W0ZK-BrNiCHVt10keUBwHX2fc";
-        const string k_SampleSpreadsheetId2 = "1QuJ0M7s25KxX_E0mRtmJiZQciKjvVt77yKMlUkvOWrc";
-        const string k_SampleRangeName = "Bike3";
-
+        
         public SpreadsheetsTab()
             : base($"{GoogleDocConnectorPackage.WindowTabsPath}/SpreadsheetsTab")
         {
@@ -66,7 +62,6 @@ namespace StansAssets.GoogleDoc
             RecreateSpreadsheetsView();
 
             CheckCredentials();
-            //schedule.Execute(CheckCredentials).Every(100000);
         }
 
         void CheckCredentials()
@@ -77,23 +72,6 @@ namespace StansAssets.GoogleDoc
             });
         }
 
-        /*void BindFoldoutPanel(string visualElementName, string foldoutName)
-        {
-            var visualElement = this.Q<VisualElement>(visualElementName);
-            var foldout = this.Q<Foldout>(foldoutName);
-            foldout.value = false;
-            visualElement.style.display = DisplayStyle.None;
-
-            foldout.RegisterValueChangedCallback(e =>
-            {
-                visualElement.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
-            });
-            foldout.schedule.Execute(() =>
-            {
-                visualElement.style.display = foldout.value ? DisplayStyle.Flex : DisplayStyle.None;
-            }).StartingIn(1000);
-        }*/
-        
 
         void RecreateSpreadsheetsView()
         {
@@ -107,7 +85,7 @@ namespace StansAssets.GoogleDoc
                 ? DisplayStyle.None
                 : DisplayStyle.Flex;
 
-            foreach (var item in GoogleDocConnectorSettings.Instance.Spreadsheets.Select(spreadsheet => new SpreadsheetView(spreadsheet)))
+            foreach (var item in GoogleDocConnectorSettings.Instance.Spreadsheets.Select(spreadsheet => new SpreadsheetView(GoogleDocConnector.GetSpreadsheet(spreadsheet.Id))))
             {
                 item.OnRemoveClick += OnSpreadsheetRemoveClick;
                 item.OnRefreshClick += OnSpreadsheetRefreshClick;

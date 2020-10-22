@@ -1,5 +1,7 @@
 ﻿using System;
 using StansAssets.Foundation;
+using System.IO;
+using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
@@ -79,6 +81,13 @@ namespace StansAssets.GoogleDoc
             int.TryParse(value, out var days);
             var date = startDate.AddDays(days);
             return (date);	
+        }
+
+        internal static string SpreadsheetPathInEditor(Spreadsheet spreadsheet)
+        {
+            var projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
+            var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath, spreadsheet.Name);
+            return $"{spreadsheetPath}.json";
         }
     }
 }
