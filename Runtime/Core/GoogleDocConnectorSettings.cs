@@ -9,9 +9,9 @@ namespace StansAssets.GoogleDoc
     {
         public const string SpreadsheetsResourcesSubFolder = "Spreadsheets";
         public override string PackageName => "com.stansassets.google-doc-connector-pro";
-        public string СredentialsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
+        public string CredentialsFolderPath => $"{PackagesConfig.SettingsPath}/{PackageName}";
         public string SpreadsheetsFolderPath => $"{SettingsFolderPath}/{SpreadsheetsResourcesSubFolder}";
-        public string CredentialsPath => $"{СredentialsFolderPath}/credentials.json";
+        public string CredentialsPath => $"{CredentialsFolderPath}/credentials.json";
 
         [SerializeField]
         List<Spreadsheet> m_Spreadsheets = new List<Spreadsheet>();

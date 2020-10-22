@@ -101,11 +101,6 @@ namespace StansAssets.GoogleDoc
         public string Name => m_Name;
 
         [SerializeField]
-        string m_Path;
-
-        internal string Path => m_Path;
-
-        [SerializeField]
         string m_LastSyncMachineName;
 
         /// <summary>
@@ -184,11 +179,6 @@ namespace StansAssets.GoogleDoc
         internal void SetError(string error)
         {
             m_SyncErrorMassage = error;
-        }
-
-        internal void SetPath(string path)
-        {
-            m_Path = path;
         }
 
         internal void SetSheets(IEnumerable<Sheet> sheets)

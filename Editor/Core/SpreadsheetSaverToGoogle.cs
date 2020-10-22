@@ -167,7 +167,7 @@ namespace StansAssets.GoogleDoc
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    var credPath = $"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/token.json";
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
 
                     // Create Google Sheets API service.
                     return new SheetsService(new BaseClientService.Initializer()

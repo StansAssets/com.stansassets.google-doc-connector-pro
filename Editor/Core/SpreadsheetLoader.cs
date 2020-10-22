@@ -38,7 +38,7 @@ namespace StansAssets.GoogleDoc
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    var credPath = $"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/token.json";
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
                     credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.Load(stream).Secrets,
                         s_Scopes,
@@ -70,10 +70,6 @@ namespace StansAssets.GoogleDoc
 
                 m_Spreadsheet.SyncDateTime = DateTime.Now;
                 m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
-
-                var projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
-                var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath, m_Spreadsheet.Name);
-                m_Spreadsheet.SetPath(spreadsheetPath);
                 m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
                 m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
                 m_Spreadsheet.CleanupSheets();
@@ -177,7 +173,7 @@ namespace StansAssets.GoogleDoc
                     {
                         // The file token.json stores the user's access and refresh tokens, and is created
                         // automatically when the authorization flow completes for the first time.
-                        var credPath = $"{GoogleDocConnectorSettings.Instance.СredentialsFolderPath}/token.json";
+                        var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
                         credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                             GoogleClientSecrets.Load(stream).Secrets,
                             s_Scopes,
@@ -209,10 +205,7 @@ namespace StansAssets.GoogleDoc
 
                     m_Spreadsheet.SyncDateTime = DateTime.Now;
                     m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
-
-                    var projectRootPath = Application.dataPath.Substring(0, Application.dataPath.Length - 6);
-                    var spreadsheetPath = Path.Combine(projectRootPath, GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath, m_Spreadsheet.Name);
-                    m_Spreadsheet.SetPath(spreadsheetPath);
+                    
                     m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
                     m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
                     m_Spreadsheet.CleanupSheets();
@@ -296,7 +289,7 @@ namespace StansAssets.GoogleDoc
 
                     if (saveSpreadsheet)
                     {
-                        File.WriteAllText(m_Spreadsheet.Path, JsonConvert.SerializeObject(m_Spreadsheet));
+                        File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
                     }
 
                     
@@ -316,7 +309,7 @@ namespace StansAssets.GoogleDoc
                 return new Task(() => {try
                     {
                         m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
-                        File.WriteAllText(m_Spreadsheet.Path, JsonConvert.SerializeObject(m_Spreadsheet));
+                        File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
                         m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
                     }
                     catch (Exception e)
