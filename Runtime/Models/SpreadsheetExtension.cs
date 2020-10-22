@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
@@ -7,6 +8,15 @@ namespace StansAssets.GoogleDoc
     {
         public static void InitFromCache(this Spreadsheet spreadsheet)
         {
+            Debug.Log("InitFromCache");
+            Debug.Log($"spreadsheet.Path: ");
+            Debug.Log(spreadsheet.Name);
+            
+            
+
+            var spreadsheetTextAsset = Resources.Load<TextAsset>($"{GoogleDocConnectorSettings.SpreadsheetsResourcesSubFolder}/{spreadsheet.Name}");
+            Debug.Log(spreadsheetTextAsset.text);
+            
             if (File.Exists(spreadsheet.Path))
             {
                 var serializedData = File.ReadAllText(spreadsheet.Path);
