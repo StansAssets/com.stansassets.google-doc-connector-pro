@@ -8,21 +8,11 @@ namespace StansAssets.GoogleDoc
     {
         public static void InitFromCache(this Spreadsheet spreadsheet)
         {
-            Debug.Log("InitFromCache");
-            Debug.Log($"spreadsheet.Path: ");
-            Debug.Log(spreadsheet.Name);
-            
-            
-
             var spreadsheetTextAsset = Resources.Load<TextAsset>($"{GoogleDocConnectorSettings.SpreadsheetsResourcesSubFolder}/{spreadsheet.Name}");
-            Debug.Log(spreadsheetTextAsset.text);
             if (spreadsheetTextAsset != null)
             {
-                Debug.Log("DeserializeObject start");
                 var spreadsheetJson = JsonConvert.DeserializeObject<Spreadsheet>(spreadsheetTextAsset.text);
-                Debug.Log("DeserializeObject end");
                 spreadsheet.SetSheets(spreadsheetJson.Sheets);
-                Debug.Log("InitFromCache end");
             }
         }
 
