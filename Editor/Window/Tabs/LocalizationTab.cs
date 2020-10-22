@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using StansAssets.Foundation.UIElements;
 using StansAssets.Plugins.Editor;
@@ -11,21 +12,23 @@ namespace StansAssets.GoogleDoc
     public class LocalizationTab : BaseTab
     {
         readonly VisualElement m_ListSpreadsheet;
-        
+
         readonly Label m_LabelLang;
         readonly VisualElement m_ListLang;
         readonly Label m_LabelSheet;
         readonly VisualElement m_ListSheet;
         readonly VisualElement m_DocumentInfo;
-        
+
         readonly HelpBox m_LocalizationError;
-        
+
         readonly Button m_RefreshButton;
         readonly Button m_OpenBtn;
         readonly VisualElement m_Spinner;
-        
+
         readonly Label m_LabelChooseSpreadsheet;
         PopupField<string> m_SpreadsheetField;
+
+        HelpBox m_NoCredentialsHelpBox;
 
         const string k_DefaultSpreadsheetField = "None";
 
@@ -43,6 +46,7 @@ namespace StansAssets.GoogleDoc
             m_OpenBtn = this.Q<Button>("openBtn");
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
+            m_NoCredentialsHelpBox = this.Q<HelpBox>("no-spreadsheets-note");
             GoogleDocConnectorEditor.s_SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet()); };
 
             Bind(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet());
@@ -135,7 +139,7 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetField.RegisterCallback<ChangeEvent<string>>((evt) =>
             {
                 ChosenDefault(evt.newValue);
-                
+
                 spreadsheet.OnSyncStateChange -= LocalizationSpinner;
                 m_Spinner.style.display = DisplayStyle.None;
 
@@ -147,12 +151,14 @@ namespace StansAssets.GoogleDoc
                 }
             });
             m_ListSpreadsheet.Add(m_SpreadsheetField);
+            ListSpreadsheetAvailability();
         }
 
         void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
             spreadsheet.LoadAsync(true).ContinueWith(_ => _);
         }
+
         void ChosenDefault(string newValue)
         {
             m_LocalizationError.style.display = DisplayStyle.None;
@@ -170,6 +176,29 @@ namespace StansAssets.GoogleDoc
                 m_DocumentInfo.style.display =
                     m_RefreshButton.style.display =
                         m_OpenBtn.style.display = DisplayStyle.Flex;
+            }
+            ListSpreadsheetAvailability();
+        }
+
+        void ListSpreadsheetAvailability()
+        {
+            if (GoogleDocConnectorSettings.Instance.Spreadsheets.Any(v => v.Name != "<Spreadsheet>"))
+            {
+                m_NoCredentialsHelpBox.style.display = DisplayStyle.None;
+                m_ListSpreadsheet.style.display =
+                    m_LabelChooseSpreadsheet.style.display =
+                        m_DocumentInfo.style.display =
+                            m_RefreshButton.style.display =
+                                m_OpenBtn.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                m_NoCredentialsHelpBox.style.display = DisplayStyle.Flex;
+                m_ListSpreadsheet.style.display =
+                    m_LabelChooseSpreadsheet.style.display =
+                        m_DocumentInfo.style.display =
+                            m_RefreshButton.style.display =
+                                m_OpenBtn.style.display = DisplayStyle.None;
             }
         }
     }

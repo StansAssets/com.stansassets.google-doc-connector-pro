@@ -14,6 +14,7 @@ namespace StansAssets.GoogleDoc
     {
         public event Action<SpreadsheetView, Spreadsheet> OnRemoveClick = delegate { };
         public event Action<Spreadsheet> OnRefreshClick = delegate { };
+        public event Action<string> SyncedWithErrorEvent = delegate { };
 
         readonly Label m_SpreadsheetId;
         readonly HelpBox m_SpreadsheetErrorMessage;
@@ -96,6 +97,10 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetErrorMessage.style.display = spreadsheet.SyncedWithError ? DisplayStyle.Flex : DisplayStyle.None;
             if (spreadsheet.SyncedWithError)
             {
+                if (spreadsheet.SyncErrorMassage.Contains("Could not find file"))
+                {
+                    SyncedWithErrorEvent(spreadsheet.SyncErrorMassage);
+                }
                 m_SpreadsheetStatusIcon.ClearClassList();
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
@@ -120,8 +125,11 @@ namespace StansAssets.GoogleDoc
 
                 foreach (var namedRange in sheet.NamedRanges)
                 {
-                    var rangeLabel = new SelectableLabel { text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name})" };
-                    m_RangesContainer.Add(rangeLabel);
+                    if (namedRange.Name != null)
+                    {
+                        var rangeLabel = new SelectableLabel { text = $"✔ {namedRange.Name} ({sheet.Name}!{namedRange.Range.Name})" };
+                        m_RangesContainer.Add(rangeLabel);
+                    }
                 }
             }
         }

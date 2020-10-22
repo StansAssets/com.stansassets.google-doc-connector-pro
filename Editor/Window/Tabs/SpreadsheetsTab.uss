@@ -59,10 +59,10 @@
 
 .no-credentials-label {
     font-size: 13px;
-    color: blue;
+    color: rgb(79, 128, 248);
     -unity-font-style: italic;
     border-bottom-width: 1px;
-    border-bottom-color: blue;
+    border-bottom-color: rgb(79, 128, 248);
     margin-bottom: 5px;
 }
 
