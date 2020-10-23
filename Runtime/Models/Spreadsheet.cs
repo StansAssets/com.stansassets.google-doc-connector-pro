@@ -74,7 +74,7 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public IEnumerable<Sheet> Sheets => m_Sheets;
 
-        internal bool IsLoaded { get; private set; }
+        internal bool IsLoaded { get; set; }
 
         [SerializeField]
         string m_Id;

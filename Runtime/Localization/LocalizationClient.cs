@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Localization
 {
     public class LocalizationClient
     {
         /// <summary>
         /// Action is fired, when localization language changed
         /// </summary>
-        public event Action<string> OnLanguageChanged = delegate { };
+        public event Action OnLanguageChanged = delegate { };
 
         /// <summary>
         /// Available Languages
@@ -20,13 +20,7 @@ namespace StansAssets.GoogleDoc
         /// Available Spreadsheet sheet names
         /// </summary>
         public List<string> Sheets { get; }
-
-        /// <summary>
-        /// Default language for localization language
-        /// If the language is not defined in the constructor, it returns the first language in the list.
-        /// </summary>
-        public string DefaultLanguage => m_DefaultLanguage ?? "";
-        readonly string m_DefaultLanguage;
+        
         /// <summary>
         /// Current chosen language
         /// </summary>
@@ -37,28 +31,32 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         int m_CurrentLanguageCodeIndex;
 
-        public enum TextType
+        static LocalizationClient s_DefaultLocalizationClient;
+        public static LocalizationClient Default
         {
-            Default,
-            ToUpper,
-            ToLower,
-            WithCapital,
-            EachWithCapital
-        }
+            get
+            {
+                if (s_DefaultLocalizationClient == null)
+                {
+                    s_DefaultLocalizationClient = new LocalizationClient(GetSettingsLocalizationSpreadsheet());
+                }
 
+                return s_DefaultLocalizationClient;
+            }
+        }
+        
         /// <summary>
         /// 
         /// </summary>
         /// <exception cref="Exception">Will return an error if there is no first filled line in the first sheet of the spreadsheet</exception>
-        public LocalizationClient()
+        internal LocalizationClient(Spreadsheet spreadsheet)
         {
-            var spr = GetSpreadsheet();
-            if (!spr.Sheets.Any())
+            if (!spreadsheet.Sheets.Any())
             {
                 throw new Exception("No sheets in the spreadsheet");
             }
 
-            var sheet = spr.Sheets.First();
+            var sheet = spreadsheet.Sheets.First();
             if (!sheet.Rows.Any())
             {
                 throw new Exception("There are no filled lines on the first sheet of the table");
@@ -76,7 +74,7 @@ namespace StansAssets.GoogleDoc
                 throw new Exception("Token column name not found");
             }
 
-            Sheets =  spr.Sheets.Select(sh => sh.Name).ToList();
+            Sheets =  spreadsheet.Sheets.Select(sh => sh.Name).ToList();
             
             Languages = new List<string>();
             var indexRow = 0;
@@ -93,37 +91,9 @@ namespace StansAssets.GoogleDoc
             {
                 throw new Exception("No headings found for available languages");
             }
-
-            m_DefaultLanguage = Languages[0];
-            CurrentLanguage = DefaultLanguage;
+            
+            CurrentLanguage = Languages[0];
             m_CurrentLanguageCodeIndex = 1;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="defaultLangCode">Set default language</param>
-        /// <param name="currentLangCode">Set current language</param>
-        /// <exception cref="Exception">Will return an error if it could not find langCode in the available languages and
-        /// the first sheet of the spreadsheet does not have the first completed row</exception>
-        public LocalizationClient(string defaultLangCode, string currentLangCode)
-            : this()
-        {
-            defaultLangCode = defaultLangCode.ToUpper();
-            if (!Languages.Contains(defaultLangCode))
-            {
-                throw new Exception("Can't find langCode in the available languages");
-            }
-            m_DefaultLanguage = defaultLangCode;
-            
-            currentLangCode = currentLangCode.ToUpper();
-            if (!Languages.Contains(currentLangCode))
-            {
-                throw new Exception("Can't find langCode in the available languages");
-            }
-            CurrentLanguage = currentLangCode;
-            
-            m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguage) + 1;
         }
 
         /// <summary>
@@ -131,6 +101,12 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         /// <exception cref="Exception">Will return an error if it could not find langCode</exception>
         public void SetLanguage(string langCode)
+        {
+            SetLanguageWithoutNotify(langCode);
+            OnLanguageChanged();
+        }
+
+        public void SetLanguageWithoutNotify(string langCode)
         {
             langCode = langCode.ToUpper();
             if (!Languages.Contains(langCode))
@@ -140,7 +116,6 @@ namespace StansAssets.GoogleDoc
 
             CurrentLanguage = langCode;
             m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguage) + 1;
-            OnLanguageChanged(langCode);
         }
 
         /// <summary>
@@ -150,7 +125,7 @@ namespace StansAssets.GoogleDoc
         /// <exception cref="Exception">"Token <param name="token" /> not found in available tokens</exception>
         public string GetLocalizedString(string token)
         {
-            var spr = GetSpreadsheet();
+            var spr = GetSettingsLocalizationSpreadsheet();
             var sheet = spr.Sheets.First();
             var tokenIndex = GetTokenIndex(sheet.Rows, token);
             if (tokenIndex == 0)
@@ -182,7 +157,7 @@ namespace StansAssets.GoogleDoc
         /// <exception cref="Exception">"Token <param name="token" /> not found in available tokens</exception>
         public string GetLocalizedString(string token, string section)
         {
-            var spr = GetSpreadsheet();
+            var spr = GetSettingsLocalizationSpreadsheet();
             var sheet = spr.Sheets.FirstOrDefault(sh => sh.Name == section);
             if (sheet == null)
             {
@@ -301,7 +276,7 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Returns localization spreadsheet
         /// </summary>
-        Spreadsheet GetSpreadsheet()
+        static Spreadsheet GetSettingsLocalizationSpreadsheet()
         {
             var id = LocalizationSettings.Instance.SpreadsheetId;
             return GoogleDocConnector.GetSpreadsheet(id);
@@ -327,7 +302,7 @@ namespace StansAssets.GoogleDoc
                 index++;
             }
 
-            return index;
+            return 0;
         }
     }
 }

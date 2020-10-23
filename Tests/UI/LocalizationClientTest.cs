@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using TextType = StansAssets.GoogleDoc.LocalizationClient.TextType;
+using StansAssets.GoogleDoc.Localization;
 
 namespace StansAssets.GoogleDoc.Tests
 {
@@ -17,16 +17,16 @@ namespace StansAssets.GoogleDoc.Tests
             m_Spreadsheet.Load();
             m_OldLocalizationClientId = LocalizationSettings.Instance.SpreadsheetId;
             LocalizationSettings.Instance.SpreadsheetIdSet(k_SpreadsheetId);
-            m_Client = new LocalizationClient();
+            m_Client = LocalizationClient.Default;
         }
-        
+
         [OneTimeTearDown]
         public void Teardown()
         {
             LocalizationSettings.Instance.SpreadsheetIdSet(m_OldLocalizationClientId);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId);
         }
-        
+
         [Test]
         [TestCase("singin", "en", "Sign in")]
         [TestCase("singin", "ru", "Войти")]
@@ -39,7 +39,7 @@ namespace StansAssets.GoogleDoc.Tests
             var result = m_Client.GetLocalizedString(token);
             Assert.True(response.Equals(result), "Token does not match expected response");
         }
-        
+
         [Test]
         [TestCase("add_content", "en", "Add your own content", TextType.Default)]
         [TestCase("add_content", "en", "add your own content", TextType.ToLower)]
@@ -52,7 +52,7 @@ namespace StansAssets.GoogleDoc.Tests
             var result = m_Client.GetLocalizedString(token, textType);
             Assert.True(response.Equals(result), "Token does not match expected response");
         }
-        
+
         [Test]
         [TestCase("singin", "en", "Sign in", "Lobby")]
         [TestCase("singin", "en", "Sign in", "General")]
@@ -64,7 +64,7 @@ namespace StansAssets.GoogleDoc.Tests
             var result = m_Client.GetLocalizedString(token, section);
             Assert.True(response.Equals(result), "Token does not match expected response");
         }
-        
+
         [Test]
         [TestCase("room_arrangement", "en", "Room arrangement", TextType.Default, "Room Creator")]
         [TestCase("room_arrangement", "en", "room arrangement", TextType.ToLower, "Room Creator")]
@@ -77,11 +77,11 @@ namespace StansAssets.GoogleDoc.Tests
             var result = m_Client.GetLocalizedString(token, section, textType);
             Assert.True(response.Equals(result), "Token does not match expected response");
         }
-        
+
         [Test]
-        [TestCase("welcomeMessage", "en", "Vasa joined in Ukraine. Welcome!", "MatchMaking", new[]{"Vasa", "in Ukraine"})]
-        [TestCase("welcomeMessage", "en", "2 joined 4. Welcome!", "MatchMaking", new object[]{2, "4"})]
-        [TestCase("welcomeMessage", "en", "Family joined together. Welcome!", "MatchMaking", new[]{"Family", "together"})]
+        [TestCase("welcomeMessage", "en", "Vasa joined in Ukraine. Welcome!", "MatchMaking", new[] { "Vasa", "in Ukraine" })]
+        [TestCase("welcomeMessage", "en", "2 joined 4. Welcome!", "MatchMaking", new object[] { 2, "4" })]
+        [TestCase("welcomeMessage", "en", "Family joined together. Welcome!", "MatchMaking", new[] { "Family", "together" })]
         public void GetLocalizedString(string token, string langCode, string response, string section, object[] args)
         {
             m_Client.SetLanguage(langCode);

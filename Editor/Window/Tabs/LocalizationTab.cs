@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using StansAssets.Foundation.UIElements;
+using StansAssets.GoogleDoc.Localization;
 using StansAssets.Plugins.Editor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
 namespace StansAssets.GoogleDoc
 {
@@ -81,7 +82,7 @@ namespace StansAssets.GoogleDoc
 
             try
             {
-                var loc = new LocalizationClient();
+                var loc = LocalizationClient.Default;
                 if (loc.Sheets.Any())
                 {
                     m_ListSheet.Clear();
@@ -156,7 +157,10 @@ namespace StansAssets.GoogleDoc
 
         void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
-            spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+            spreadsheet.LoadAsync(true).ContinueWith(_ =>
+            {
+                GoogleDocConnectorSettings.Save();
+            });
         }
 
         void ChosenDefault(string newValue)

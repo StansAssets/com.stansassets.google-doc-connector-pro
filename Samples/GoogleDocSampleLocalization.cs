@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using StansAssets.GoogleDoc.Localization;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -24,7 +25,7 @@ namespace StansAssets.GoogleDoc.Samples
             {
                 GoogleDocConnector.GetSpreadsheet(SpreadsheetId);
                 GoogleDocConnectorLocalization.SpreadsheetIdSet(SpreadsheetId);
-                m_Client = new LocalizationClient();
+                m_Client = LocalizationClient.Default;
             }
             catch
             {

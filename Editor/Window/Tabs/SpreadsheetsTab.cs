@@ -47,7 +47,11 @@ namespace StansAssets.GoogleDoc
             {
                 var spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(m_SpreadsheetIdField.text);
 
-                spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+                spreadsheet.LoadAsync(true).ContinueWith(_ =>
+                {
+                    GoogleDocConnectorSettings.Save();
+                });
+                
 
                 m_SpreadsheetIdField.value = k_SpreadsheetIdTextPlaceholder;
 

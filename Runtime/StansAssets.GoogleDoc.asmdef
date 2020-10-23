@@ -3,7 +3,8 @@
     "references": [
         "StansAssets.Foundation",
         "StansAssets.Foundation.Editor",
-        "StansAssets.Plugins"
+        "StansAssets.Plugins",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -12,6 +13,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.textmeshpro",
+            "expression": "1.0.0",
+            "define": "TMP_AVAILABLE"
+        }
+    ],
     "noEngineReferences": false
 }

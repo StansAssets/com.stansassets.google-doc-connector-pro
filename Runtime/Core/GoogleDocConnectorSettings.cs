@@ -85,6 +85,7 @@ namespace StansAssets.GoogleDoc
             foreach (var spreadsheet in m_Spreadsheets)
             {
                 m_SpreadsheetsMap[spreadsheet.Id] = spreadsheet;
+                spreadsheet.IsLoaded = false;
             }
         }
     }

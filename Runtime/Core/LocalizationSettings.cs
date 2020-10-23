@@ -16,6 +16,7 @@ namespace StansAssets.GoogleDoc
         public void SpreadsheetIdSet(string newSpreadsheetId)
         {
             m_SpreadsheetId = newSpreadsheetId;
+            Save();
         }
         
         public void OnBeforeSerialize()
