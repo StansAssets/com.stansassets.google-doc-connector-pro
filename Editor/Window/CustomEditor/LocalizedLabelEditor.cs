@@ -16,23 +16,17 @@ namespace StansAssets.GoogleDoc
         SerializedProperty m_Prefix;
         SerializedProperty m_Suffix;
         string m_ErrorMessage = string.Empty;
-        bool m_ChangeCurrentLang = true;
 
         void OnEnable()
         {
-            m_Token = serializedObject.FindProperty("Token");
-            m_Section = serializedObject.FindProperty("Section");
-            m_TextType = serializedObject.FindProperty("TextType");
-            m_Prefix = serializedObject.FindProperty("Prefix");
-            m_Suffix = serializedObject.FindProperty("Suffix");
-            var t = (LocalizedLabel)target;
-            t.Lang = t.Lang ?? LocalizationClient.Default.CurrentLanguage;
-            LocalizationClient.Default.OnLanguageChanged += () =>
-            {
-                t.Lang = LocalizationClient.Default.CurrentLanguage;
-                t.UpdateLocalizationWithLang();
-            };
+            m_Token = serializedObject.FindProperty("m_Token.m_Token");
+            m_Section = serializedObject.FindProperty("m_Token.m_Section");
+            m_TextType = serializedObject.FindProperty("m_Token.m_TextType");
+            m_Prefix = serializedObject.FindProperty("m_Token.m_Prefix");
+            m_Suffix = serializedObject.FindProperty("m_Token.m_Suffix");
         }
+
+        LocalizedLabel Target => (LocalizedLabel)target;
 
         public override void OnInspectorGUI()
         {
@@ -48,24 +42,23 @@ namespace StansAssets.GoogleDoc
             {
                 EditorGUILayout.HelpBox(m_ErrorMessage, MessageType.Error);
             }
-            
+
             EditorGUILayout.Separator();
-            m_ChangeCurrentLang = EditorGUILayout.Toggle("Change language for current label", m_ChangeCurrentLang);
             SelectedLang();
             serializedObject.ApplyModifiedProperties();
 
             if (GUI.changed)
             {
                 m_ErrorMessage = string.Empty;
-                var t = (LocalizedLabel)target;
                 if (sectionPopup != LocalizationClient.Default.Sheets.IndexOf(m_Section.stringValue))
                 {
-                    t.Section = LocalizationClient.Default.Sheets[sectionPopup];
+                    m_Section.stringValue = LocalizationClient.Default.Sheets[sectionPopup];
+                    serializedObject.ApplyModifiedProperties();
                 }
-                
+
                 try
                 {
-                    t.UpdateLocalizationWithLang();
+                    Target.UpdateLocalization();
                 }
                 catch (Exception ex)
                 {
@@ -76,28 +69,20 @@ namespace StansAssets.GoogleDoc
 
         void SelectedLang()
         {
-            EditorGUILayout.LabelField("Language:");
-            var t = (LocalizedLabel)target;
-            var loc = LocalizationClient.Default;
-            var currentLang = (m_ChangeCurrentLang) ? t.Lang : loc.CurrentLanguage;
-            if (loc.Languages.Any())
+            EditorGUILayout.LabelField("Available Languages:");
+            var localizationClient = LocalizationClient.Default;
+            if (localizationClient.Languages.Any())
             {
                 EditorGUILayout.BeginHorizontal();
-                foreach (var lang in loc.Languages)
+                foreach (var lang in localizationClient.Languages)
                 {
                     var style = new GUIStyle(GUI.skin.button);
-                    if (lang == currentLang)
+                    if (lang == localizationClient.CurrentLanguage)
                         style.normal.textColor = Color.cyan;
+
                     if (GUILayout.Button(lang, style))
                     {
-                        if (m_ChangeCurrentLang)
-                        {
-                            t.Lang = lang;
-                        }
-                        else
-                        {
-                            loc.SetLanguage(lang);
-                        }
+                        localizationClient.SetLanguage(lang);
                     }
                 }
 

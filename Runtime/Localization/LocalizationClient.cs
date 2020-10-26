@@ -15,12 +15,12 @@ namespace StansAssets.GoogleDoc.Localization
         /// Available Languages
         /// </summary>
         public List<string> Languages { get; }
-        
+
         /// <summary>
         /// Available Spreadsheet sheet names
         /// </summary>
         public List<string> Sheets { get; }
-        
+
         /// <summary>
         /// Current chosen language
         /// </summary>
@@ -48,8 +48,8 @@ namespace StansAssets.GoogleDoc.Localization
         internal static void ClearDefault()
         {
             s_DefaultLocalizationClient = null;
-        } 
-        
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -72,15 +72,15 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 throw new Exception("The first row on the first sheet of the table has no filled cells");
             }
-            
+
             var cellToken = row.Cells.FirstOrDefault();
-            if (cellToken != null && (cellToken.Value.StringValue.ToLower() != "token" &&  cellToken.Value.StringValue.ToLower() != "tokens"))
+            if (cellToken != null && (cellToken.Value.StringValue.ToLower() != "token" && cellToken.Value.StringValue.ToLower() != "tokens"))
             {
                 throw new Exception("Token column name not found");
             }
 
-            Sheets =  spreadsheet.Sheets.Select(sh => sh.Name).ToList();
-            
+            Sheets = spreadsheet.Sheets.Select(sh => sh.Name).ToList();
+
             Languages = new List<string>();
             var indexRow = 0;
             foreach (var cell in row.Cells)
@@ -92,15 +92,15 @@ namespace StansAssets.GoogleDoc.Localization
 
                 indexRow++;
             }
+
             if (!Languages.Any())
             {
                 throw new Exception("No headings found for available languages");
             }
-            
+
             CurrentLanguage = Languages[0];
             m_CurrentLanguageCodeIndex = 1;
         }
-        
 
         /// <summary>
         /// Set current chosen language
@@ -178,7 +178,15 @@ namespace StansAssets.GoogleDoc.Localization
 
             return sheet.GetCell(tokenIndex, m_CurrentLanguageCodeIndex).Value.FormattedValue;
         }
+
+        public string GetLocalizedString(ILocalizationToken token)
+        {
+            var text = Default.GetLocalizedString(token.Token, token.Section, token.TextType);
+            var finalText = $"{token.Prefix}{text}{token.Suffix}";
+            return finalText;
+        }
         
+        /*
         internal string GetLocalizedString(string token, string section, string lang)
         {
             var spr = GetSettingsLocalizationSpreadsheet();
@@ -195,7 +203,7 @@ namespace StansAssets.GoogleDoc.Localization
             }
 
             return sheet.GetCell(tokenIndex, Languages.IndexOf(lang) + 1).Value.FormattedValue;
-        }
+        }*/
 
         /// <summary>
         /// Returns localized string by token
@@ -210,7 +218,7 @@ namespace StansAssets.GoogleDoc.Localization
             var value = GetLocalizedString(token, section);
             return ConvertLocalizedString(value, textType);
         }
-        
+
         internal string GetLocalizedString(string token, string section, TextType textType, string lang)
         {
             var value = GetLocalizedString(token, section, lang);
@@ -226,10 +234,11 @@ namespace StansAssets.GoogleDoc.Localization
         public string GetLocalizedString(string token, string section, params object[] args)
         {
             var value = GetLocalizedString(token, section);
-            if(args != null && args.Length > 0)
+            if (args != null && args.Length > 0)
             {
                 value = string.Format(value, args);
             }
+
             return value;
         }
 
@@ -253,7 +262,7 @@ namespace StansAssets.GoogleDoc.Localization
                     return str;
             }
         }
-        
+
         /// <summary>
         /// Returns a capitalized string
         /// </summary>
@@ -268,7 +277,7 @@ namespace StansAssets.GoogleDoc.Localization
             ch[0] = char.ToUpper(ch[0]);
             return new string(ch);
         }
-        
+
         /// <summary>
         /// Returns a string with a capital letter each word
         /// </summary>
@@ -302,7 +311,7 @@ namespace StansAssets.GoogleDoc.Localization
 
             return new string(array);
         }
-        
+
         /// <summary>
         /// Returns localization spreadsheet
         /// </summary>
@@ -311,7 +320,7 @@ namespace StansAssets.GoogleDoc.Localization
             var id = GoogleDocConnectorLocalization.SpreadsheetId;
             return GoogleDocConnector.GetSpreadsheet(id);
         }
-        
+
         /// <summary>
         /// Returns the position of the cell where the token is in the first column
         /// </summary>
