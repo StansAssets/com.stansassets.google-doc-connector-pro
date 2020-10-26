@@ -28,58 +28,6 @@ namespace StansAssets.GoogleDoc
             s_Spreadsheet = spreadsheet;
         }
 
-       /* public void Save()
-        {
-            try
-            {
-                var sheetChange = false;
-                var batchUpdate = new GoogleSheet.BatchUpdateSpreadsheetRequest { Requests = new List<GoogleSheet.Request>() };
-                foreach (var sheet in s_Spreadsheet.Sheets)
-                {
-                    if (sheet.DataState == DataState.Created)
-                    {
-                        var requestSheetCreate = new GoogleSheet.Request { AddSheet = new GoogleSheet.AddSheetRequest { Properties = new GoogleSheet.SheetProperties { Title = sheet.Name, Index = sheet.Id } } };
-                        batchUpdate.Requests.Add(requestSheetCreate);
-                        sheetChange = true;
-                    }
-                }
-
-                if (sheetChange)
-                {
-                    var request = Service.Spreadsheets.BatchUpdate(batchUpdate, s_Spreadsheet.Id);
-                    request.Execute();
-                }
-
-                foreach (var sheet in s_Spreadsheet.Sheets)
-                {
-                    foreach (var row in sheet.Rows)
-                    {
-                        foreach (var cell in row.Cells)
-                        {
-                            if (cell.DataState == DataState.Updated)
-                            {
-                                var range = $"{sheet.Name}!{cell.Name}";
-                                var valueRange = new GoogleSheet.ValueRange();
-                                var list = new List<object>() { cell.Value.StringValue };
-                                valueRange.Values = new List<IList<object>> { list };
-                                var updateRequest = Service.Spreadsheets.Values.Update(valueRange, s_Spreadsheet.Id, range);
-                                updateRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
-                                updateRequest.Execute();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (GoogleApiException exception)
-            {
-                SetSpreadsheetSyncError(s_Spreadsheet, exception.Error.Message);
-            }
-            catch (Exception exception)
-            {
-                SetSpreadsheetSyncError(s_Spreadsheet, exception.Message);
-            }
-        }*/
-
         public void CreateSheet(string name)
         {
             try

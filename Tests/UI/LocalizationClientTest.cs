@@ -15,15 +15,15 @@ namespace StansAssets.GoogleDoc.Tests
         {
             m_Spreadsheet = GoogleDocConnectorEditor.CreateSpreadsheet(k_SpreadsheetId);
             m_Spreadsheet.Load();
-            m_OldLocalizationClientId = LocalizationSettings.Instance.SpreadsheetId;
-            LocalizationSettings.Instance.SpreadsheetIdSet(k_SpreadsheetId);
+            m_OldLocalizationClientId = GoogleDocConnectorLocalization.SpreadsheetId;
+            GoogleDocConnectorLocalization.SpreadsheetIdSet(k_SpreadsheetId);
             m_Client = LocalizationClient.Default;
         }
 
         [OneTimeTearDown]
         public void Teardown()
         {
-            LocalizationSettings.Instance.SpreadsheetIdSet(m_OldLocalizationClientId);
+            GoogleDocConnectorLocalization.SpreadsheetIdSet(m_OldLocalizationClientId);
             GoogleDocConnectorEditor.RemoveSpreadsheet(k_SpreadsheetId);
         }
 

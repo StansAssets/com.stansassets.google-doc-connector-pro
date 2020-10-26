@@ -2,6 +2,7 @@
     "name": "StansAssets.GoogleDoc.Editor",
     "references": [
         "StansAssets.GoogleDoc",
+        "StansAssets.GoogleDoc.Localization",
         "StansAssets.Foundation.Editor",
         "StansAssets.Foundation",
         "StansAssets.Plugins",

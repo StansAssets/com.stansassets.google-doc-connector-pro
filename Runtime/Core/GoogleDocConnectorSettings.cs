@@ -18,6 +18,10 @@ namespace StansAssets.GoogleDoc
         public List<Spreadsheet> Spreadsheets => m_Spreadsheets;
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
+        
+        [SerializeField]
+        string m_LocalizationSpreadsheetId = "";
+        internal string LocalizationSpreadsheetId => m_LocalizationSpreadsheetId;
 
         internal Spreadsheet CreateSpreadsheet(string id)
         {
@@ -32,6 +36,13 @@ namespace StansAssets.GoogleDoc
 
             Save();
             return spreadsheet;
+        }
+
+
+        internal void LocalizationSpreadsheetIdSet(string newSpreadsheetId)
+        {
+            m_LocalizationSpreadsheetId = newSpreadsheetId;
+            Save();
         }
 
         internal void RemoveSpreadsheet(string id)

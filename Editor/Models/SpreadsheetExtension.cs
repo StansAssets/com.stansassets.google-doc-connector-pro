@@ -24,6 +24,8 @@ namespace StansAssets.GoogleDoc
         {
             var loader = new SpreadsheetLoader(spreadsheet);
             await loader.LoadAsync(saveSpreadsheet);
+            if(saveSpreadsheet)
+                GoogleDocConnectorSettings.Save();
         }
 
        /*/// <summary>
