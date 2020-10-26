@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
-using UnityEditor;
-using UnityEngine;
 
 namespace StansAssets.GoogleDoc
 {
@@ -33,14 +29,6 @@ namespace StansAssets.GoogleDoc
         /// Cell Value representation.
         /// </summary>
         public CellValue Value { get; private set; }
-        
-       /* internal DataState DataState => m_DataState;
-        DataState m_DataState = DataState.Default;
-
-        internal void SetDataState(DataState state)
-        {
-            m_DataState = state;
-        }*/
 
         internal Cell(int row, int column)
         {
@@ -86,11 +74,4 @@ namespace StansAssets.GoogleDoc
             return Value.GetValue<T>();
         }
     }
-
-   /* enum DataState
-    {
-        Default,
-        Updated,
-        Created
-    }*/
 }

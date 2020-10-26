@@ -48,9 +48,9 @@ namespace StansAssets.GoogleDoc
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-spreadsheets-note");
-            GoogleDocConnectorEditor.SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet()); };
+            GoogleDocConnectorEditor.SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet()); };
 
-            Bind(GoogleDocConnector.GetSpreadsheet(LocalizationSettings.Instance.SpreadsheetId) ?? new Spreadsheet());
+            Bind(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet());
         }
 
         void Bind(Spreadsheet spreadsheet)
@@ -102,24 +102,7 @@ namespace StansAssets.GoogleDoc
                     }
                 }
 
-                if (loc.Languages.Any())
-                {
-                    m_ListLang.Clear();
-                    m_LabelLang.text = $"{loc.Languages.Count()} Languages";
-                    foreach (var lang in loc.Languages)
-                    {
-                        var el = new SelectableLabel { text = $"{lang}" };
-                        el.AddManipulator(new ContextualMenuManipulator(evt =>
-                        {
-                            evt.menu.AppendAction("Copy", (x) =>
-                            {
-                                GUIUtility.systemCopyBuffer = lang;
-                            });
-                        }));
-                        el.AddToClassList("lang-element");
-                        m_ListLang.Add(el);
-                    }
-                }
+                SelectedLang(loc.CurrentLanguage);
             }
             catch (Exception ex)
             {
@@ -147,7 +130,7 @@ namespace StansAssets.GoogleDoc
                 var newLocalization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
                 if (newLocalization != null)
                 {
-                    LocalizationSettings.Instance.SpreadsheetIdSet(newLocalization.Id);
+                    GoogleDocConnectorLocalization.SpreadsheetIdSet(newLocalization.Id);
                     Bind(newLocalization);
                 }
             });
@@ -157,10 +140,7 @@ namespace StansAssets.GoogleDoc
 
         void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
         {
-            spreadsheet.LoadAsync(true).ContinueWith(_ =>
-            {
-                GoogleDocConnectorSettings.Save();
-            });
+            spreadsheet.LoadAsync(true).ContinueWith(_ => _);
         }
 
         void ChosenDefault(string newValue)
@@ -169,7 +149,7 @@ namespace StansAssets.GoogleDoc
             if (newValue == k_DefaultSpreadsheetField)
             {
                 m_LabelChooseSpreadsheet.style.display = DisplayStyle.Flex;
-                LocalizationSettings.Instance.SpreadsheetIdSet("");
+                GoogleDocConnectorLocalization.SpreadsheetIdSet("");
                 m_DocumentInfo.style.display =
                     m_RefreshButton.style.display =
                         m_OpenBtn.style.display = DisplayStyle.None;
@@ -203,6 +183,34 @@ namespace StansAssets.GoogleDoc
                         m_DocumentInfo.style.display =
                             m_RefreshButton.style.display =
                                 m_OpenBtn.style.display = DisplayStyle.None;
+            }
+        }
+
+        void SelectedLang(string langNew)
+        {
+            var loc = LocalizationClient.Default;
+            loc.SetLanguage(langNew);
+            if (loc.Languages.Any())
+            {
+                m_ListLang.Clear();
+                m_LabelLang.text = $"{loc.Languages.Count()} Languages";
+                foreach (var lang in loc.Languages)
+                {
+                    var but = new Button { text = $"{lang}" };
+                    
+                    but.AddManipulator(new ContextualMenuManipulator(evt =>
+                    {
+                        evt.menu.AppendAction("Copy", (x) =>
+                        {
+                            GUIUtility.systemCopyBuffer = lang;
+                        });
+                    }));
+
+                    but.AddToClassList(lang == langNew ? "lang-element-selected" : "lang-element");
+
+                    but.clicked += () => {SelectedLang(lang);};
+                    m_ListLang.Add(but);
+                }
             }
         }
     }

@@ -8,7 +8,7 @@
         /// <summary>
         /// Spreadsheet ID used for the Localization client
         /// </summary>
-        public static string SpreadsheetId => LocalizationSettings.Instance.SpreadsheetId; 
+        public static string SpreadsheetId => GoogleDocConnectorSettings.Instance.LocalizationSpreadsheetId; 
         
         /// <summary>
         /// Set a new spreadsheet ID to be used for the Localization client
@@ -16,7 +16,7 @@
         /// <param name="newSpreadsheetId">new spreadsheet ID</param>
         public static void SpreadsheetIdSet(string newSpreadsheetId)
         {
-            LocalizationSettings.Instance.SpreadsheetIdSet(newSpreadsheetId);
+            GoogleDocConnectorSettings.Instance.LocalizationSpreadsheetIdSet(newSpreadsheetId);
         }
     }
 }

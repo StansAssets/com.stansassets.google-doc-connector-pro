@@ -9,7 +9,7 @@ namespace StansAssets.GoogleDoc
         public static void InitFromCache(this Spreadsheet spreadsheet)
         {
             var spreadsheetTextAsset = Resources.Load<TextAsset>($"{GoogleDocConnectorSettings.SpreadsheetsResourcesSubFolder}/{spreadsheet.Name}");
-            if (spreadsheetTextAsset != null)
+            if (!ReferenceEquals(spreadsheetTextAsset, null))
             {
                 var spreadsheetJson = JsonConvert.DeserializeObject<Spreadsheet>(spreadsheetTextAsset.text);
                 spreadsheet.SetSheets(spreadsheetJson.Sheets);

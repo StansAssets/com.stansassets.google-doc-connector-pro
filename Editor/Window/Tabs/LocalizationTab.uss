@@ -34,7 +34,8 @@
 
 .btn-left:hover,
 .btn-right:hover,
-.lang-element:hover {
+.lang-element:hover,
+.lang-element-selected:hover {
     background-color: rgb(134, 134, 134);
 }
 
@@ -67,16 +68,22 @@
     margin-bottom: 5px;
 }
 
-.lang-element {
+.lang-element,
+.lang-element-selected {
     flex-grow: 0;
     flex-shrink: 0;
     margin-left: 0;
     margin-right: 5px;
+    border-width: 0;
     border-bottom-width: 1px;
     padding: 2px 5px 2px 5px;
     margin-bottom: 6px;
     flex-direction: row;
     border-radius: 6px;
+}
+
+.lang-element-selected {
+    color: #00FFFF;
 }
 
 .choose-spreadsheet {

@@ -278,7 +278,7 @@ namespace StansAssets.GoogleDoc.Localization
         /// </summary>
         static Spreadsheet GetSettingsLocalizationSpreadsheet()
         {
-            var id = LocalizationSettings.Instance.SpreadsheetId;
+            var id = GoogleDocConnectorLocalization.SpreadsheetId;
             return GoogleDocConnector.GetSpreadsheet(id);
         }
         
