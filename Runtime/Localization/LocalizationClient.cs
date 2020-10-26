@@ -44,6 +44,11 @@ namespace StansAssets.GoogleDoc.Localization
                 return s_DefaultLocalizationClient;
             }
         }
+
+        internal static void ClearDefault()
+        {
+            s_DefaultLocalizationClient = null;
+        } 
         
         /// <summary>
         /// 
@@ -95,6 +100,7 @@ namespace StansAssets.GoogleDoc.Localization
             CurrentLanguage = Languages[0];
             m_CurrentLanguageCodeIndex = 1;
         }
+        
 
         /// <summary>
         /// Set current chosen language
@@ -172,6 +178,24 @@ namespace StansAssets.GoogleDoc.Localization
 
             return sheet.GetCell(tokenIndex, m_CurrentLanguageCodeIndex).Value.FormattedValue;
         }
+        
+        internal string GetLocalizedString(string token, string section, string lang)
+        {
+            var spr = GetSettingsLocalizationSpreadsheet();
+            var sheet = spr.Sheets.FirstOrDefault(sh => sh.Name == section);
+            if (sheet == null)
+            {
+                throw new Exception($"Can't find sheet with name = {section}");
+            }
+
+            var tokenIndex = GetTokenIndex(sheet.Rows, token);
+            if (tokenIndex == 0)
+            {
+                throw new Exception($"Token {token} not found in available tokens");
+            }
+
+            return sheet.GetCell(tokenIndex, Languages.IndexOf(lang) + 1).Value.FormattedValue;
+        }
 
         /// <summary>
         /// Returns localized string by token
@@ -184,6 +208,12 @@ namespace StansAssets.GoogleDoc.Localization
         public string GetLocalizedString(string token, string section, TextType textType)
         {
             var value = GetLocalizedString(token, section);
+            return ConvertLocalizedString(value, textType);
+        }
+        
+        internal string GetLocalizedString(string token, string section, TextType textType, string lang)
+        {
+            var value = GetLocalizedString(token, section, lang);
             return ConvertLocalizedString(value, textType);
         }
 
