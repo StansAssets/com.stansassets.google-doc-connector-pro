@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using StansAssets.Foundation.UIElements;
 using StansAssets.GoogleDoc.Localization;
@@ -31,6 +32,11 @@ namespace StansAssets.GoogleDoc
 
         readonly HelpBox m_NoCredentialsHelpBox;
 
+        readonly Label m_SpreadsheetDate;
+        readonly Label m_SpreadsheetLastSyncMachineName;
+        readonly Label m_SpreadsheetStatusIcon;
+        readonly VisualElement m_SpreadsheetBottomPane;
+
         const string k_DefaultSpreadsheetField = "None";
 
         public LocalizationTab()
@@ -48,10 +54,14 @@ namespace StansAssets.GoogleDoc
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-spreadsheets-note");
+            m_SpreadsheetBottomPane = this.Q<VisualElement>("spreadsheetBottomPanel");
+            m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
+            m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
+            m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
             GoogleDocConnectorEditor.SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet()); };
 
             Bind();
-            
+
             // In case something is updated 
             SpreadsheetLoader.OnSpreadsheetDataSavedOnDisk += spreadsheet =>
             {
@@ -84,6 +94,12 @@ namespace StansAssets.GoogleDoc
             {
                 BindDocumentInfo(spr);
             }
+            else
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-yellow");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.NotSyncedStringStatus;
+            }
         }
 
         void BindDocumentInfo(Spreadsheet spreadsheet)
@@ -93,6 +109,21 @@ namespace StansAssets.GoogleDoc
             {
                 return;
             }
+            
+            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
+            if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
+            if (spreadsheet.SyncedWithError)
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
+            } 
+            else if (spreadsheet.Synced)
+            {
+                m_SpreadsheetStatusIcon.ClearClassList();
+                m_SpreadsheetStatusIcon.AddToClassList("status-icon-green");
+                m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
+            }
 
             try
             {
@@ -101,17 +132,18 @@ namespace StansAssets.GoogleDoc
                 {
                     m_ListSheet.Clear();
                     m_LabelSheet.text = $"{spreadsheet.Sheets.Count()} Sheets";
-                    foreach (var nameSheet in loc.Sheets)
+                    foreach (var sheet in spreadsheet.Sheets)
                     {
-                        var el = new SelectableLabel { text = $"{nameSheet}" };
+                        var countTokens = sheet.Rows.Count(r => r.Cells.Any());
+                        var el = new SelectableLabel { text = $"{sheet.Name} - {countTokens}", tooltip = $"This sheet has {countTokens} tokens" };
                         el.AddManipulator(new ContextualMenuManipulator(evt =>
                         {
                             evt.menu.AppendAction("Copy", (x) =>
                             {
-                                GUIUtility.systemCopyBuffer = nameSheet;
+                                GUIUtility.systemCopyBuffer = sheet.Name;
                             });
                         }));
-                        el.AddToClassList("lang-element");
+                        el.AddToClassList("sheet-element");
                         m_ListSheet.Add(el);
                     }
                 }
@@ -121,7 +153,8 @@ namespace StansAssets.GoogleDoc
             catch (Exception ex)
             {
                 m_LocalizationError.Text = ex.Message;
-                m_DocumentInfo.style.display = DisplayStyle.None;
+                m_SpreadsheetBottomPane.style.display =
+                    m_DocumentInfo.style.display = DisplayStyle.None;
                 m_LocalizationError.style.display = DisplayStyle.Flex;
             }
         }
@@ -165,16 +198,19 @@ namespace StansAssets.GoogleDoc
                 m_LabelChooseSpreadsheet.style.display = DisplayStyle.Flex;
                 GoogleDocConnectorLocalization.SpreadsheetIdSet("");
                 m_DocumentInfo.style.display =
-                    m_RefreshButton.style.display =
-                        m_OpenBtn.style.display = DisplayStyle.None;
+                    m_SpreadsheetBottomPane.style.display =
+                        m_RefreshButton.style.display =
+                            m_OpenBtn.style.display = DisplayStyle.None;
             }
             else
             {
                 m_LabelChooseSpreadsheet.style.display = DisplayStyle.None;
                 m_DocumentInfo.style.display =
-                    m_RefreshButton.style.display =
-                        m_OpenBtn.style.display = DisplayStyle.Flex;
+                    m_SpreadsheetBottomPane.style.display =
+                        m_RefreshButton.style.display =
+                            m_OpenBtn.style.display = DisplayStyle.Flex;
             }
+
             ListSpreadsheetAvailability();
         }
 
@@ -186,8 +222,9 @@ namespace StansAssets.GoogleDoc
                 m_ListSpreadsheet.style.display =
                     m_LabelChooseSpreadsheet.style.display =
                         m_DocumentInfo.style.display =
-                            m_RefreshButton.style.display =
-                                m_OpenBtn.style.display = DisplayStyle.Flex;
+                            m_SpreadsheetBottomPane.style.display =
+                                m_RefreshButton.style.display =
+                                    m_OpenBtn.style.display = DisplayStyle.Flex;
             }
             else
             {
@@ -195,8 +232,9 @@ namespace StansAssets.GoogleDoc
                 m_ListSpreadsheet.style.display =
                     m_LabelChooseSpreadsheet.style.display =
                         m_DocumentInfo.style.display =
-                            m_RefreshButton.style.display =
-                                m_OpenBtn.style.display = DisplayStyle.None;
+                            m_SpreadsheetBottomPane.style.display =
+                                m_RefreshButton.style.display =
+                                    m_OpenBtn.style.display = DisplayStyle.None;
             }
         }
 
@@ -211,7 +249,7 @@ namespace StansAssets.GoogleDoc
                 foreach (var lang in loc.Languages)
                 {
                     var but = new Button { text = $"{lang}" };
-                    
+
                     but.AddManipulator(new ContextualMenuManipulator(evt =>
                     {
                         evt.menu.AppendAction("Copy", (x) =>
@@ -222,7 +260,7 @@ namespace StansAssets.GoogleDoc
 
                     but.AddToClassList(lang == langNew ? "lang-element-selected" : "lang-element");
 
-                    but.clicked += () => {SelectedLang(lang);};
+                    but.clicked += () => { SelectedLang(lang); };
                     m_ListLang.Add(but);
                 }
             }

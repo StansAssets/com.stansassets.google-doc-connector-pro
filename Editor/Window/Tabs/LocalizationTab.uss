@@ -6,7 +6,15 @@
     background-image: url('../UI/Resources/refresh.png');
 }
 
-.btn-spreadsheet {
+.btn-left:hover,
+.btn-right:hover,
+.lang-element:hover,
+.lang-element-selected:hover {
+    background-color: rgb(134, 134, 134);
+}
+
+.btn-left,
+.btn-right {
     width: 16px;
     height: 16px;
     border-left-width: 1px;
@@ -24,19 +32,19 @@
     padding-left: 1px;
     padding-right: 1px;
     padding-top: 1px;
+    margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
     border-radius: 3px;
     font-size: 12px;
     flex-shrink: 0;
-    margin-right: 10px;
+    border-top-right-radius: -1px;
+    border-bottom-right-radius: -1px;
 }
 
-.btn-left:hover,
-.btn-right:hover,
-.lang-element:hover,
-.lang-element-selected:hover {
-    background-color: rgb(134, 134, 134);
+.btn-right {
+    border-radius: -1px 3px 3px -1px;
+    border-left-width: -1px;
 }
 
 .row {
@@ -47,11 +55,11 @@
     flex-grow: 1;
 }
 
-.spreadsheet-bottom-panel {
-    margin: 0 0 5px 18px;
+.spreadsheet-button-panel {
+    flex: 0 0 auto;
     flex-direction: row;
-    height: 9px;
-    min-height: 9px;
+    flex-wrap: nowrap;
+    margin-right: 2px;
 }
 
 .list-spreadsheet {
@@ -69,7 +77,8 @@
 }
 
 .lang-element,
-.lang-element-selected {
+.lang-element-selected,
+.sheet-element {
     flex-grow: 0;
     flex-shrink: 0;
     margin-left: 0;
@@ -82,6 +91,11 @@
     border-radius: 6px;
 }
 
+.lang-element,
+.lang-element-selected {
+    cursor: link;
+}
+
 .lang-element-selected {
     color: #00FFFF;
 }
@@ -92,4 +106,42 @@
 
 .localization-error {
     margin-top: 5px;
+}
+
+.status-icon-yellow,
+.status-icon-red,
+.status-icon-green {
+    margin: 1px 2px 0 2px;
+    height: 8px;
+    width: 8px;
+    background-image: url('../UI/Resources/circle.png');
+    border-radius: 6px;
+}
+
+.status-icon-yellow {
+    -unity-background-image-tint-color: yellow;
+}
+
+.status-icon-green {
+    -unity-background-image-tint-color: green;
+}
+
+.status-icon-red {
+    -unity-background-image-tint-color: red;
+}
+
+.spreadsheet-bottom-panel {
+    margin: 4px 0 5px 3px;
+    flex-direction: row;
+    height: 9px;
+    min-height: 9px;
+}
+
+.spreadsheet-date {
+    -unity-text-align: middle-right;
+}
+
+.spreadsheet-loading {
+    margin-left: 1px;
+    margin-right: 1px;
 }
