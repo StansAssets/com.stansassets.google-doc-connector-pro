@@ -29,7 +29,7 @@ namespace StansAssets.GoogleDoc
         readonly Label m_LabelChooseSpreadsheet;
         PopupField<string> m_SpreadsheetField;
 
-        HelpBox m_NoCredentialsHelpBox;
+        readonly HelpBox m_NoCredentialsHelpBox;
 
         const string k_DefaultSpreadsheetField = "None";
 
@@ -50,6 +50,20 @@ namespace StansAssets.GoogleDoc
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-spreadsheets-note");
             GoogleDocConnectorEditor.SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet()); };
 
+            Bind();
+            
+            // In case something is updated 
+            SpreadsheetLoader.OnSpreadsheetDataSavedOnDisk += spreadsheet =>
+            {
+                if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(spreadsheet.Id))
+                {
+                    Bind();
+                }
+            };
+        }
+
+        void Bind()
+        {
             Bind(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet());
         }
 
@@ -89,7 +103,7 @@ namespace StansAssets.GoogleDoc
                     m_LabelSheet.text = $"{spreadsheet.Sheets.Count()} Sheets";
                     foreach (var nameSheet in loc.Sheets)
                     {
-                        var el = new SelectableLabel() { text = $"{nameSheet}" };
+                        var el = new SelectableLabel { text = $"{nameSheet}" };
                         el.AddManipulator(new ContextualMenuManipulator(evt =>
                         {
                             evt.menu.AppendAction("Copy", (x) =>
@@ -120,7 +134,7 @@ namespace StansAssets.GoogleDoc
             listName.Add(k_DefaultSpreadsheetField);
             m_SpreadsheetField = new PopupField<string>("", listName, 0) { value = spreadsheet.Name ?? k_DefaultSpreadsheetField };
 
-            m_SpreadsheetField.RegisterCallback<ChangeEvent<string>>((evt) =>
+            m_SpreadsheetField.RegisterCallback<ChangeEvent<string>>(evt =>
             {
                 ChosenDefault(evt.newValue);
 

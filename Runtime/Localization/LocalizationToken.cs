@@ -7,7 +7,7 @@ namespace StansAssets.GoogleDoc.Localization
     public class LocalizationToken : ILocalizationToken
     {
         [SerializeField]
-        string m_Token = "token";
+        string m_TokenId = "token";
 
         [SerializeField]
         string m_Section = default;
@@ -21,7 +21,7 @@ namespace StansAssets.GoogleDoc.Localization
         [SerializeField]
         string m_Suffix = default;
 
-        public string Token => m_Token;
+        public string Token => m_TokenId;
         public string Section => m_Section;
         public TextType TextType => m_TextType;
         public string Prefix => m_Prefix;

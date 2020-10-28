@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using StansAssets.Plugins;
 using UnityEngine;
 
@@ -18,9 +19,9 @@ namespace StansAssets.GoogleDoc
         public List<Spreadsheet> Spreadsheets => m_Spreadsheets;
 
         readonly Dictionary<string, Spreadsheet> m_SpreadsheetsMap = new Dictionary<string, Spreadsheet>();
-        
+
         [SerializeField]
-        string m_LocalizationSpreadsheetId = "";
+        string m_LocalizationSpreadsheetId = string.Empty;
         internal string LocalizationSpreadsheetId => m_LocalizationSpreadsheetId;
 
         internal Spreadsheet CreateSpreadsheet(string id)
@@ -37,7 +38,6 @@ namespace StansAssets.GoogleDoc
             Save();
             return spreadsheet;
         }
-
 
         internal void LocalizationSpreadsheetIdSet(string newSpreadsheetId)
         {
@@ -66,22 +66,25 @@ namespace StansAssets.GoogleDoc
 
         internal Spreadsheet GetSpreadsheet(string id)
         {
-            if (m_SpreadsheetsMap != null)
+            if (m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet))
             {
-                if (m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet))
+                if (!spreadsheet.IsLoaded)
                 {
-                    if (!spreadsheet.IsLoaded)
-                    {
-                        spreadsheet.InitFromCache();
-                    }
-
-                    return spreadsheet;
+                    spreadsheet.InitFromCache();
                 }
 
-                return null;
+                return spreadsheet;
             }
 
             return null;
+        }
+
+        internal void ForceUpdateSpreadsheet(string id)
+        {
+            if (m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet))
+            {
+                spreadsheet.InitFromCache();
+            }
         }
 
         public void OnBeforeSerialize()

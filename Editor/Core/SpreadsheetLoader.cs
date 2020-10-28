@@ -7,6 +7,8 @@ using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json;
+using StansAssets.GoogleDoc.Localization;
+using UnityEditor;
 using UnityEngine;
 using FileMode = System.IO.FileMode;
 using Task = System.Threading.Tasks.Task;
@@ -16,6 +18,8 @@ namespace StansAssets.GoogleDoc
 {
     sealed class SpreadsheetLoader
     {
+        public static event Action<Spreadsheet> OnSpreadsheetDataSavedOnDisk;
+
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
         static readonly string[] s_Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
@@ -132,6 +136,7 @@ namespace StansAssets.GoogleDoc
                         rowIndex++;
                     }
                 }
+
                 //Set NamedRanges
                 if (spreadsheetData.NamedRanges != null)
                 {
@@ -140,7 +145,7 @@ namespace StansAssets.GoogleDoc
                         var sheetId = namedRangeData.Range.SheetId ?? 0;
                         var sheet = m_Spreadsheet.GetSheet(sheetId);
                         var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex-1, namedRangeData.Range.EndColumnIndex-1);
+                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex - 1, namedRangeData.Range.EndColumnIndex - 1);
 
                         var cells = sheet.GetRange(range);
                         namedRange.SetCells(cells, range);
@@ -162,171 +167,183 @@ namespace StansAssets.GoogleDoc
             }
         }
 
-            public async Task LoadAsync(bool saveSpreadsheet = false)
+        public async Task LoadAsync(bool saveSpreadsheet = false)
+        {
+            m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
+            UserCredential credential;
+
+            try
             {
-                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
-                UserCredential credential;
-
-                try
+                using (var stream = new FileStream(GoogleDocConnectorSettings.Instance.CredentialsPath, FileMode.Open, FileAccess.Read))
                 {
-                    using (var stream = new FileStream(GoogleDocConnectorSettings.Instance.CredentialsPath, FileMode.Open, FileAccess.Read))
-                    {
-                        // The file token.json stores the user's access and refresh tokens, and is created
-                        // automatically when the authorization flow completes for the first time.
-                        var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
-                        credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                            GoogleClientSecrets.Load(stream).Secrets,
-                            s_Scopes,
-                            "user",
-                            CancellationToken.None,
-                            new FileDataStore(credPath, true)).Result;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
-                    return;
-                }
-
-                // Create Google Sheets API service.
-                var service = new SheetsService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = credential,
-                    ApplicationName = GoogleDocConnectorSettings.Instance.PackageName,
-                });
-
-                // Define request parameters.
-                var rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
-                rangeRequest.IncludeGridData = true;
-                GoogleSheet.Spreadsheet spreadsheetData;
-                try
-                {
-                    spreadsheetData = await rangeRequest.ExecuteAsync();
-
-                    m_Spreadsheet.SyncDateTime = DateTime.Now;
-                    m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
-                    
-                    m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
-                    m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
-                    m_Spreadsheet.CleanupSheets();
-
-                    //Set Sheets
-                    foreach (var sheetData in spreadsheetData.Sheets)
-                    {
-                        var sheetId = sheetData.Properties.SheetId ?? 0;
-                        var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
-                        sheet.CleanupRows();
-
-                        // We always request the whole grid to get full data set.
-                        // So there is only one item that represents the whole sheet.
-                        var gridData = sheetData.Data[0];
-                        if (gridData?.RowData == null)
-                            continue;
-
-                        var rowIndex = 0;
-                        foreach (var rowData in gridData.RowData)
-                        {
-                            var row = new RowData();
-                            if (rowData.Values != null)
-                            {
-                                var columnIndex = 0;
-                                foreach (var cellData in rowData.Values)
-                                {
-                                    if (cellData.FormattedValue == null)
-                                    {
-                                        continue;
-                                    }
-
-                                    string stringValue;
-                                    if (cellData.EffectiveValue.BoolValue != null)
-                                    {
-                                        stringValue = cellData.EffectiveValue.BoolValue.ToString();
-                                    }
-                                    else if (cellData.EffectiveValue.NumberValue != null)
-                                    {
-                                        stringValue = cellData.EffectiveValue.NumberValue.ToString();
-                                    }
-                                    else
-                                    {
-                                        stringValue = cellData.EffectiveValue.StringValue;
-                                    }
-
-                                    var cellValue = new CellValue(
-                                        cellData.FormattedValue,
-                                        cellData.EffectiveValue.FormulaValue,
-                                        stringValue);
-
-                                    var cell = new Cell(rowIndex, columnIndex, cellValue);
-                                    row.AddCell(cell);
-
-                                    columnIndex++;
-                                }
-                            }
-
-                            sheet.AddRow(row);
-
-                            rowIndex++;
-                        }
-                    }
-
-                    //Set NamedRanges
-                    if (spreadsheetData.NamedRanges != null)
-                    {
-                        foreach (var namedRangeData in spreadsheetData.NamedRanges)
-                        {
-                            var sheetId = namedRangeData.Range.SheetId ?? 0;
-                            var sheet = m_Spreadsheet.GetSheet(sheetId);
-                            var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name); 
-                            var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex-1, namedRangeData.Range.EndColumnIndex-1);
-
-                            var cells = sheet.GetRange(range);
-                            namedRange.SetCells(cells, range);
-                        }
-                    }
-
-                    if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
-                        Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
-
-                    if (saveSpreadsheet)
-                    {
-                        File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
-                    }
-
-                    
-                    m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
-                }
-                catch (GoogleApiException exception)
-                {
-                    SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
-                }
-                catch (Exception exception)
-                {
-                    SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
+                    // The file token.json stores the user's access and refresh tokens, and is created
+                    // automatically when the authorization flow completes for the first time.
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        s_Scopes,
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true)).Result;
                 }
             }
-            public Task CacheDocument()
+            catch (Exception ex)
             {
-                return new Task(() => {try
-                    {
-                        m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
-                        File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
-                        m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
-                    }
-                    catch (Exception e)
-                    {
-                        m_Spreadsheet.SetError($"Error: {e.Message}");
-                        m_Spreadsheet.SyncDateTime = DateTime.Now;
-                        m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
-                    }});
+                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
+                return;
             }
 
-            void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
+            // Create Google Sheets API service.
+            var service = new SheetsService(new BaseClientService.Initializer()
             {
-                spreadsheet.SetError($"Error: {exceptionMessage}");
-                spreadsheet.SetMachineName(SystemInfo.deviceName);
+                HttpClientInitializer = credential,
+                ApplicationName = GoogleDocConnectorSettings.Instance.PackageName,
+            });
+
+            // Define request parameters.
+            var rangeRequest = service.Spreadsheets.Get(m_Spreadsheet.Id);
+            rangeRequest.IncludeGridData = true;
+            try
+            {
+                var spreadsheetData = await rangeRequest.ExecuteAsync();
+
                 m_Spreadsheet.SyncDateTime = DateTime.Now;
+                m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
 
-                spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
+                m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
+                m_Spreadsheet.CleanupSheets();
+
+                //Set Sheets
+                foreach (var sheetData in spreadsheetData.Sheets)
+                {
+                    var sheetId = sheetData.Properties.SheetId ?? 0;
+                    var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
+                    sheet.CleanupRows();
+
+                    // We always request the whole grid to get full data set.
+                    // So there is only one item that represents the whole sheet.
+                    var gridData = sheetData.Data[0];
+                    if (gridData?.RowData == null)
+                        continue;
+
+                    var rowIndex = 0;
+                    foreach (var rowData in gridData.RowData)
+                    {
+                        var row = new RowData();
+                        if (rowData.Values != null)
+                        {
+                            var columnIndex = 0;
+                            foreach (var cellData in rowData.Values)
+                            {
+                                if (cellData.FormattedValue == null)
+                                {
+                                    continue;
+                                }
+
+                                string stringValue;
+                                if (cellData.EffectiveValue.BoolValue != null)
+                                {
+                                    stringValue = cellData.EffectiveValue.BoolValue.ToString();
+                                }
+                                else if (cellData.EffectiveValue.NumberValue != null)
+                                {
+                                    stringValue = cellData.EffectiveValue.NumberValue.ToString();
+                                }
+                                else
+                                {
+                                    stringValue = cellData.EffectiveValue.StringValue;
+                                }
+
+                                var cellValue = new CellValue(
+                                    cellData.FormattedValue,
+                                    cellData.EffectiveValue.FormulaValue,
+                                    stringValue);
+
+                                var cell = new Cell(rowIndex, columnIndex, cellValue);
+                                row.AddCell(cell);
+
+                                columnIndex++;
+                            }
+                        }
+
+                        sheet.AddRow(row);
+
+                        rowIndex++;
+                    }
+                }
+
+                //Set NamedRanges
+                if (spreadsheetData.NamedRanges != null)
+                {
+                    foreach (var namedRangeData in spreadsheetData.NamedRanges)
+                    {
+                        var sheetId = namedRangeData.Range.SheetId ?? 0;
+                        var sheet = m_Spreadsheet.GetSheet(sheetId);
+                        var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
+                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex - 1, namedRangeData.Range.EndColumnIndex - 1);
+
+                        var cells = sheet.GetRange(range);
+                        namedRange.SetCells(cells, range);
+                    }
+                }
+
+                if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
+                    Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
+
+                if (saveSpreadsheet)
+                {
+                    File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
+                    var spreadSheetProjectPath = $"{GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath}/{m_Spreadsheet.Name}.json";
+                    AssetDatabase.ImportAsset(spreadSheetProjectPath, ImportAssetOptions.ForceUpdate);
+                    GoogleDocConnectorSettings.Instance.ForceUpdateSpreadsheet(m_Spreadsheet.Id);
+
+                    if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(m_Spreadsheet.Id))
+                    {
+                        LocalizationClient.Default.Refresh();
+                    }
+
+                    OnSpreadsheetDataSavedOnDisk.Invoke(m_Spreadsheet);
+                }
+
+                m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
+            }
+            catch (GoogleApiException exception)
+            {
+                SetSpreadsheetSyncError(m_Spreadsheet, exception.Error.Message);
+            }
+            catch (Exception exception)
+            {
+                SetSpreadsheetSyncError(m_Spreadsheet, exception.Message);
             }
         }
+
+        public Task CacheDocument()
+        {
+            return new Task(() =>
+            {
+                try
+                {
+                    m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
+                    File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
+                    m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
+                }
+                catch (Exception e)
+                {
+                    m_Spreadsheet.SetError($"Error: {e.Message}");
+                    m_Spreadsheet.SyncDateTime = DateTime.Now;
+                    m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+                }
+            });
+        }
+
+        void SetSpreadsheetSyncError(Spreadsheet spreadsheet, string exceptionMessage)
+        {
+            spreadsheet.SetError($"Error: {exceptionMessage}");
+            spreadsheet.SetMachineName(SystemInfo.deviceName);
+            m_Spreadsheet.SyncDateTime = DateTime.Now;
+
+            spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+        }
     }
+}

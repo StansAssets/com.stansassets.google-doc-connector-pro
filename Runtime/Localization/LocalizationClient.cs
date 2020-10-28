@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace StansAssets.GoogleDoc.Localization
 {
@@ -14,12 +15,12 @@ namespace StansAssets.GoogleDoc.Localization
         /// <summary>
         /// Available Languages
         /// </summary>
-        public List<string> Languages { get; }
+        public List<string> Languages { get; private set; }
 
         /// <summary>
         /// Available Spreadsheet sheet names
         /// </summary>
-        public List<string> Sheets { get; }
+        public List<string> Sheets { get; private set; }
 
         /// <summary>
         /// Current chosen language
@@ -38,7 +39,7 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 if (s_DefaultLocalizationClient == null)
                 {
-                    s_DefaultLocalizationClient = new LocalizationClient(GetSettingsLocalizationSpreadsheet());
+                    s_DefaultLocalizationClient = new LocalizationClient();
                 }
 
                 return s_DefaultLocalizationClient;
@@ -54,8 +55,18 @@ namespace StansAssets.GoogleDoc.Localization
         /// 
         /// </summary>
         /// <exception cref="Exception">Will return an error if there is no first filled line in the first sheet of the spreadsheet</exception>
-        internal LocalizationClient(Spreadsheet spreadsheet)
+        internal LocalizationClient()
         {
+           Refresh();
+        }
+
+        /// <summary>
+        /// Refresh all cached values.
+        /// Method call will also trigger OnLanguageChanged callback
+        /// </summary>
+        public void Refresh()
+        {
+            var spreadsheet = GetSettingsLocalizationSpreadsheet();
             if (!spreadsheet.Sheets.Any())
             {
                 throw new Exception("No sheets in the spreadsheet");
@@ -98,8 +109,17 @@ namespace StansAssets.GoogleDoc.Localization
                 throw new Exception("No headings found for available languages");
             }
 
-            CurrentLanguage = Languages[0];
-            m_CurrentLanguageCodeIndex = 1;
+            if (string.IsNullOrEmpty(CurrentLanguage))
+            {
+                CurrentLanguage = Languages[0];
+                m_CurrentLanguageCodeIndex = 1;
+            }
+            else
+            {
+                m_CurrentLanguageCodeIndex = Languages.IndexOf(CurrentLanguage) + 1;
+            }
+          
+            OnLanguageChanged.Invoke();
         }
 
         /// <summary>
@@ -136,7 +156,7 @@ namespace StansAssets.GoogleDoc.Localization
             var tokenIndex = GetTokenIndex(sheet.Rows, token);
             if (tokenIndex == 0)
             {
-                throw new Exception($"Token {token} not found in available tokens");
+                throw new Exception($"Token {token} not found in available tokens for {sheet.Name}");
             }
 
             return sheet.GetCell(tokenIndex, m_CurrentLanguageCodeIndex).Value.FormattedValue;
@@ -173,10 +193,11 @@ namespace StansAssets.GoogleDoc.Localization
             var tokenIndex = GetTokenIndex(sheet.Rows, token);
             if (tokenIndex == 0)
             {
-                throw new Exception($"Token {token} not found in available tokens");
+                throw new Exception($"Token {token} not found in available tokens for {sheet.Name}");
             }
 
-            return sheet.GetCell(tokenIndex, m_CurrentLanguageCodeIndex).Value.FormattedValue;
+            var cell = sheet.GetCell(tokenIndex, m_CurrentLanguageCodeIndex);
+            return cell.Value.FormattedValue;
         }
 
         public string GetLocalizedString(ILocalizationToken token)
@@ -185,25 +206,6 @@ namespace StansAssets.GoogleDoc.Localization
             var finalText = $"{token.Prefix}{text}{token.Suffix}";
             return finalText;
         }
-        
-        /*
-        internal string GetLocalizedString(string token, string section, string lang)
-        {
-            var spr = GetSettingsLocalizationSpreadsheet();
-            var sheet = spr.Sheets.FirstOrDefault(sh => sh.Name == section);
-            if (sheet == null)
-            {
-                throw new Exception($"Can't find sheet with name = {section}");
-            }
-
-            var tokenIndex = GetTokenIndex(sheet.Rows, token);
-            if (tokenIndex == 0)
-            {
-                throw new Exception($"Token {token} not found in available tokens");
-            }
-
-            return sheet.GetCell(tokenIndex, Languages.IndexOf(lang) + 1).Value.FormattedValue;
-        }*/
 
         /// <summary>
         /// Returns localized string by token
@@ -320,7 +322,8 @@ namespace StansAssets.GoogleDoc.Localization
             var id = GoogleDocConnectorLocalization.SpreadsheetId;
             return GoogleDocConnector.GetSpreadsheet(id);
         }
-
+        
+        
         /// <summary>
         /// Returns the position of the cell where the token is in the first column
         /// </summary>
