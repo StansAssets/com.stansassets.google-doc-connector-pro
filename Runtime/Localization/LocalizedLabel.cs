@@ -16,6 +16,8 @@ namespace StansAssets.GoogleDoc.Localization
         TextMeshProUGUI m_TMPText;
 #endif
         Text m_UGUIText;
+        
+        internal bool MoveUp = true; 
 
         void Awake()
         {

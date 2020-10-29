@@ -19,9 +19,18 @@ namespace StansAssets.GoogleDoc
 
         void OnEnable()
         {
-            var sel = Selection.activeGameObject;
-            var targetComponent = sel.GetComponent<LocalizedLabel>();
-            UnityEditorInternal.ComponentUtility.MoveComponentUp(targetComponent);
+            if (Target.MoveUp)
+            {
+                var sel = Selection.activeGameObject;
+                var targetComponent = sel.GetComponents<LocalizedLabel>().Last();
+                var count = sel.GetComponents(typeof(Component)).ToList().IndexOf(targetComponent);
+                for (var pos = count; pos > 1; pos--)
+                {
+                    UnityEditorInternal.ComponentUtility.MoveComponentUp(targetComponent);
+                }
+                Target.MoveUp = false;
+            }
+
             m_Token = serializedObject.FindProperty("m_Token.m_TokenId");
             m_Section = serializedObject.FindProperty("m_Token.m_Section");
             m_TextType = serializedObject.FindProperty("m_Token.m_TextType");
