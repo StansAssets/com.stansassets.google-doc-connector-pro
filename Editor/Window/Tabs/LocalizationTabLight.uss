@@ -8,3 +8,9 @@
     border-color: rgb(138, 138, 138);
     background-color: rgb(165, 165, 165);
 }
+
+.spreadsheet-panel {
+
+    border-color: rgb(138, 138, 138);
+    background-color: rgb(165, 165, 165);
+}

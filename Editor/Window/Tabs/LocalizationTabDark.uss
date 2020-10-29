@@ -9,3 +9,7 @@
     background-color: #4d4d4d;
 }
 
+.spreadsheet-panel {
+    border-color: rgb(0, 0, 0);
+    background-color: #4d4d4d;
+}

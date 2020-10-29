@@ -35,7 +35,8 @@ namespace StansAssets.GoogleDoc
         readonly Label m_SpreadsheetDate;
         readonly Label m_SpreadsheetLastSyncMachineName;
         readonly Label m_SpreadsheetStatusIcon;
-        readonly VisualElement m_SpreadsheetBottomPane;
+        readonly VisualElement m_SpreadsheetBottomPanel;
+        readonly VisualElement m_SpreadsheetPanel;
 
         const string k_DefaultSpreadsheetField = "None";
 
@@ -54,7 +55,8 @@ namespace StansAssets.GoogleDoc
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_NoCredentialsHelpBox = this.Q<HelpBox>("no-spreadsheets-note");
-            m_SpreadsheetBottomPane = this.Q<VisualElement>("spreadsheetBottomPanel");
+            m_SpreadsheetPanel = this.Q<VisualElement>("spreadsheetPanel");
+            m_SpreadsheetBottomPanel = this.Q<VisualElement>("spreadsheetBottomPanel");
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
@@ -104,20 +106,21 @@ namespace StansAssets.GoogleDoc
 
         void BindDocumentInfo(Spreadsheet spreadsheet)
         {
-            ChosenDefault(m_SpreadsheetField.value);
+            SelectingComponentsRender(m_SpreadsheetField.value);
             if (spreadsheet.Id == null)
             {
                 return;
             }
-            
+
             m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
+
             if (spreadsheet.SyncedWithError)
             {
                 m_SpreadsheetStatusIcon.ClearClassList();
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
-            } 
+            }
             else if (spreadsheet.Synced)
             {
                 m_SpreadsheetStatusIcon.ClearClassList();
@@ -153,7 +156,7 @@ namespace StansAssets.GoogleDoc
             catch (Exception ex)
             {
                 m_LocalizationError.Text = ex.Message;
-                m_SpreadsheetBottomPane.style.display =
+                m_SpreadsheetBottomPanel.style.display =
                     m_DocumentInfo.style.display = DisplayStyle.None;
                 m_LocalizationError.style.display = DisplayStyle.Flex;
             }
@@ -169,7 +172,7 @@ namespace StansAssets.GoogleDoc
 
             m_SpreadsheetField.RegisterCallback<ChangeEvent<string>>(evt =>
             {
-                ChosenDefault(evt.newValue);
+                SelectingComponentsRender(evt.newValue);
 
                 spreadsheet.OnSyncStateChange -= LocalizationSpinner;
                 m_Spinner.style.display = DisplayStyle.None;
@@ -193,25 +196,25 @@ namespace StansAssets.GoogleDoc
         void ChosenDefault(string newValue)
         {
             m_LocalizationError.style.display = DisplayStyle.None;
+            m_SpreadsheetPanel.ClearClassList();
             if (newValue == k_DefaultSpreadsheetField)
             {
                 m_LabelChooseSpreadsheet.style.display = DisplayStyle.Flex;
-                GoogleDocConnectorLocalization.SpreadsheetIdSet("");
                 m_DocumentInfo.style.display =
-                    m_SpreadsheetBottomPane.style.display =
+                    m_SpreadsheetBottomPanel.style.display =
                         m_RefreshButton.style.display =
                             m_OpenBtn.style.display = DisplayStyle.None;
+                GoogleDocConnectorLocalization.SpreadsheetIdSet("");
             }
             else
             {
                 m_LabelChooseSpreadsheet.style.display = DisplayStyle.None;
                 m_DocumentInfo.style.display =
-                    m_SpreadsheetBottomPane.style.display =
+                    m_SpreadsheetBottomPanel.style.display =
                         m_RefreshButton.style.display =
                             m_OpenBtn.style.display = DisplayStyle.Flex;
+                m_SpreadsheetPanel.AddToClassList("spreadsheet-panel");
             }
-
-            ListSpreadsheetAvailability();
         }
 
         void ListSpreadsheetAvailability()
@@ -220,22 +223,26 @@ namespace StansAssets.GoogleDoc
             {
                 m_NoCredentialsHelpBox.style.display = DisplayStyle.None;
                 m_ListSpreadsheet.style.display =
-                    m_LabelChooseSpreadsheet.style.display =
-                        m_DocumentInfo.style.display =
-                            m_SpreadsheetBottomPane.style.display =
-                                m_RefreshButton.style.display =
-                                    m_OpenBtn.style.display = DisplayStyle.Flex;
+                    m_DocumentInfo.style.display =
+                        m_SpreadsheetBottomPanel.style.display =
+                            m_RefreshButton.style.display =
+                                m_OpenBtn.style.display = DisplayStyle.Flex;
             }
             else
             {
                 m_NoCredentialsHelpBox.style.display = DisplayStyle.Flex;
                 m_ListSpreadsheet.style.display =
-                    m_LabelChooseSpreadsheet.style.display =
-                        m_DocumentInfo.style.display =
-                            m_SpreadsheetBottomPane.style.display =
-                                m_RefreshButton.style.display =
-                                    m_OpenBtn.style.display = DisplayStyle.None;
+                    m_DocumentInfo.style.display =
+                        m_SpreadsheetBottomPanel.style.display =
+                            m_RefreshButton.style.display =
+                                m_OpenBtn.style.display = DisplayStyle.None;
             }
+        }
+        
+        void SelectingComponentsRender(string newValue)
+        {
+            ListSpreadsheetAvailability();
+            ChosenDefault(newValue);
         }
 
         void SelectedLang(string langNew)
