@@ -2,7 +2,15 @@
     background-color: rgb(190, 190, 190);
 }
 
-.lang-element {
+.lang-element,
+.lang-element-selected,
+.sheet-element {
+    border-color: rgb(138, 138, 138);
+    background-color: rgb(165, 165, 165);
+}
+
+.spreadsheet-panel {
+
     border-color: rgb(138, 138, 138);
     background-color: rgb(165, 165, 165);
 }
