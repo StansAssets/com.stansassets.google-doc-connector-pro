@@ -26,5 +26,30 @@ namespace StansAssets.GoogleDoc.Localization
         public TextType TextType => m_TextType;
         public string Prefix => m_Prefix;
         public string Suffix => m_Suffix;
+
+        internal void TokenSet(string newValue)
+        {
+            m_TokenId = newValue;
+        }
+
+        internal void SectionSet(string newValue)
+        {
+            m_Section = newValue;
+        }
+
+        internal void TextTypeSet(TextType newValue)
+        {
+            m_TextType = newValue;
+        }
+
+        internal void PrefixSet(string newValue)
+        {
+            m_Prefix = newValue;
+        }
+
+        internal void SuffixSet(string newValue)
+        {
+            m_Suffix = newValue;
+        }
     }
 }

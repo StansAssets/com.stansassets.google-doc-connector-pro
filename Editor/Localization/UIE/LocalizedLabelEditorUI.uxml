@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+    <ui:VisualElement name="LocalizedLabelEditorRoot" class="root">
+    </ui:VisualElement>
+</ui:UXML>

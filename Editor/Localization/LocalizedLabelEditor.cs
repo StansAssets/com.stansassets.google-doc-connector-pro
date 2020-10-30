@@ -3,6 +3,7 @@ using System.Linq;
 using StansAssets.GoogleDoc.Localization;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UIElements;
 
 namespace StansAssets.GoogleDoc
 {
@@ -10,6 +11,8 @@ namespace StansAssets.GoogleDoc
     [CanEditMultipleObjects]
     public class LocalizedLabelEditor : Editor
     {
+        LocalizedLabel Target => (LocalizedLabel)target;
+#if !UNITY_2019_4_OR_NEWER
         SerializedProperty m_Token;
         SerializedProperty m_Section;
         SerializedProperty m_TextType;
@@ -25,8 +28,6 @@ namespace StansAssets.GoogleDoc
             m_Prefix = serializedObject.FindProperty("m_Token.m_Prefix");
             m_Suffix = serializedObject.FindProperty("m_Token.m_Suffix");
         }
-
-        LocalizedLabel Target => (LocalizedLabel)target;
 
         public override void OnInspectorGUI()
         {
@@ -89,5 +90,13 @@ namespace StansAssets.GoogleDoc
                 EditorGUILayout.EndHorizontal();
             }
         }
+#endif
+        
+#if UNITY_2019_4_OR_NEWER
+        public override VisualElement CreateInspectorGUI()
+        {
+            return new LocalizedLabelEditorUI(Target);
+        }
+#endif
     }
 }
