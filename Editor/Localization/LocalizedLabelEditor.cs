@@ -17,20 +17,24 @@ namespace StansAssets.GoogleDoc
         SerializedProperty m_Suffix;
         string m_ErrorMessage = string.Empty;
 
-        void OnEnable()
+        void Reset()
         {
             if (Target.MoveUp)
             {
                 var sel = Selection.activeGameObject;
                 var targetComponent = sel.GetComponents<LocalizedLabel>().Last();
                 var count = sel.GetComponents(typeof(Component)).ToList().IndexOf(targetComponent);
-                for (var pos = count; pos > 1; pos--)
+                for (var pos = count; pos > 0; pos--)
                 {
                     UnityEditorInternal.ComponentUtility.MoveComponentUp(targetComponent);
                 }
+
                 Target.MoveUp = false;
             }
+        }
 
+        void OnEnable()
+        {
             m_Token = serializedObject.FindProperty("m_Token.m_TokenId");
             m_Section = serializedObject.FindProperty("m_Token.m_Section");
             m_TextType = serializedObject.FindProperty("m_Token.m_TextType");
@@ -44,8 +48,18 @@ namespace StansAssets.GoogleDoc
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(m_Token);
-            var sectionPopup = EditorGUILayout.Popup(new GUIContent() { text = "Section" }, LocalizationClient.Default.Sheets.IndexOf(m_Section.stringValue),
-                LocalizationClient.Default.Sheets.ToArray());
+            var sectionPopup = 0;
+            try
+            {
+                sectionPopup = EditorGUILayout.Popup(new GUIContent() { text = "Section" }, LocalizationClient.Default.Sheets.IndexOf(m_Section.stringValue),
+                    LocalizationClient.Default.Sheets.ToArray());
+            }
+            catch
+            {
+                EditorGUILayout.Popup(new GUIContent() { text = "Section" }, 0, new[] { "" });
+                m_ErrorMessage = "Error in the localization client";
+            }
+
             EditorGUILayout.PropertyField(m_TextType);
             EditorGUILayout.PropertyField(m_Prefix);
             EditorGUILayout.PropertyField(m_Suffix);
@@ -54,9 +68,12 @@ namespace StansAssets.GoogleDoc
             {
                 EditorGUILayout.HelpBox(m_ErrorMessage, MessageType.Error);
             }
+            else
+            {
+                EditorGUILayout.Separator();
+                SelectedLang();
+            }
 
-            EditorGUILayout.Separator();
-            SelectedLang();
             serializedObject.ApplyModifiedProperties();
 
             if (GUI.changed)
