@@ -52,10 +52,10 @@ namespace StansAssets.GoogleDoc
 
                 PropertyPopup("Section", "m_Token.m_Section", LocalizationClient.Default.Sheets);
             }
-            catch
+            catch (Exception exception)
             {
                 m_Root.Clear();
-                UpdateLocalizationError("There are errors in LocalizationClient, more detailed on Localization Tab");
+                UpdateLocalizationError(exception.Message);
                 return;
             }
 
