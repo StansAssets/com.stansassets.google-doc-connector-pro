@@ -21,10 +21,34 @@ namespace StansAssets.GoogleDoc.Localization
         [SerializeField]
         string m_Suffix = default;
 
-        public string Token => m_TokenId;
-        public string Section => m_Section;
-        public TextType TextType => m_TextType;
-        public string Prefix => m_Prefix;
-        public string Suffix => m_Suffix;
+        public string Token
+        {
+            get => m_TokenId;
+            set => m_TokenId = value;
+        }
+
+        public string Section
+        {
+            get => m_Section;
+            set => m_Section = value;
+        }
+
+        public TextType TextType          
+        {
+            get => m_TextType;
+            set => m_TextType = value;
+        }
+        
+        public string Prefix
+        {
+            get => m_Prefix;
+            set => m_Prefix = value;
+        }
+        
+        public string Suffix
+        {
+            get => m_Suffix;
+            set => m_Suffix = value;
+        }
     }
 }
