@@ -53,6 +53,7 @@ namespace StansAssets.GoogleDoc.Localization
             get => m_Suffix;
             set => m_Suffix = value;
         }
+        
         public object[] Args
         {
             get => m_Args;
