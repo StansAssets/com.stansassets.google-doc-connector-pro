@@ -273,9 +273,10 @@ namespace StansAssets.GoogleDoc.Localization
             m_LocalizationToken = new LocalizationToken()
             {
                 Token = token,
-                Section = section
+                Section = section,
+                Args = args
             };
-            return GetLocalizedString(m_LocalizationToken, CurrentLanguage, args);
+            return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
         }
 
         /// <summary>
@@ -290,7 +291,7 @@ namespace StansAssets.GoogleDoc.Localization
         /// </exception>
         /// <exception cref="Exception"> Can't find <param name="langCode" /> in the available languages
         /// </exception>
-        public string GetLocalizedString(ILocalizationToken localizationToken, string langCode, params object[] args)
+        public string GetLocalizedString(ILocalizationToken localizationToken, string langCode)
         {
             var token = localizationToken.Token.Trim();
             var section = localizationToken.Section.Trim();
@@ -303,7 +304,7 @@ namespace StansAssets.GoogleDoc.Localization
             //TokenСache
             if (!m_TokenСache.TryGetLocalizedString(token, sheetIndex, out var tokenIndex))
             {
-                tokenIndex = GetTokenIndexWithUpdateTokenСache(m_LocalizationSpreadsheet.m_Sheets[sheetIndex], token);
+                tokenIndex = GetTokenIndex(m_LocalizationSpreadsheet.m_Sheets[sheetIndex], token);
                 if (tokenIndex == 0)
                 {
                     throw new Exception($"Token {token} not found in available tokens for {section}");
@@ -322,9 +323,9 @@ namespace StansAssets.GoogleDoc.Localization
             var text = cell.Value.FormattedValue;
 
             //Insert the args in a string
-            if (args != null && args.Length > 0)
+            if (localizationToken.Args != null && localizationToken.Args.Length > 0)
             {
-                text = string.Format(text, args);
+                text = string.Format(text, localizationToken.Args);
             }
 
             //Returns string converted by the textType
@@ -418,7 +419,7 @@ namespace StansAssets.GoogleDoc.Localization
         /// <summary>
         /// Returns the position of the cell where the token is in the first column with add new tokens to TokenСache
         /// </summary>
-        int GetTokenIndexWithUpdateTokenСache(Sheet sheet, string token)
+        int GetTokenIndex(Sheet sheet, string token)
         {
             var index = 0;
             token = token.Trim();

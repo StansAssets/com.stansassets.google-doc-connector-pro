@@ -20,6 +20,9 @@ namespace StansAssets.GoogleDoc.Localization
 
         [SerializeField]
         string m_Suffix = default;
+        
+        [SerializeField]
+        object[] m_Args = default;
 
         public string Token
         {
@@ -49,6 +52,11 @@ namespace StansAssets.GoogleDoc.Localization
         {
             get => m_Suffix;
             set => m_Suffix = value;
+        }
+        public object[] Args
+        {
+            get => m_Args;
+            set => m_Args = value;
         }
     }
 }
