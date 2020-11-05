@@ -67,7 +67,7 @@ namespace StansAssets.GoogleDoc
         public string SyncErrorMassage => m_SyncErrorMassage;
 
         [SerializeField]
-        List<Sheet> m_Sheets = new List<Sheet>();
+        internal List<Sheet> m_Sheets = new List<Sheet>();
 
         /// <summary>
         /// The spreadsheet sheets list.

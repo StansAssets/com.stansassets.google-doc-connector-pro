@@ -5,23 +5,23 @@ namespace StansAssets.GoogleDoc.Localization
 {
     class TokenСache
     {
-        Dictionary<string, TokenСacheSection> m_Sections = new Dictionary<string, TokenСacheSection>();
+        Dictionary<int, TokenСacheSection> m_Sections = new Dictionary<int, TokenСacheSection>();
         
         /// <summary>
-        /// Checks if the given token is in this section and get localized string
+        /// Checks if the given token is in this section and get localized string index
         /// </summary>
-        /// <param name="localizedValue">localized string; otherwise empty string</param>
+        /// <param name="localizedValue">localized string index; otherwise -1</param>
         /// <returns>true if contain; otherwise false</returns>
-        internal bool TryGetLocalizedString(string token, string section, out string localizedValue)
+        internal bool TryGetLocalizedString(string token, int section, out int localizedValue)
         {
-            localizedValue = string.Empty;
+            localizedValue = -1;
             return m_Sections.TryGetValue(section, out var tokens) && tokens.TryGetLocalizedString(token, out localizedValue);
         }
 
         /// <summary>
         /// Add new cached record
         /// </summary>
-        internal void AddLocalizedString(string token, string section, string localizedValue)
+        internal void AddLocalizedString(string token, int section, int localizedValue)
         {
             if (m_Sections.TryGetValue(section, out var tokens))
             {
@@ -36,14 +36,14 @@ namespace StansAssets.GoogleDoc.Localization
 
     class TokenСacheSection
     {
-        Dictionary<string, string> m_Tokens = new Dictionary<string, string>();
+        Dictionary<string, int> m_Tokens = new Dictionary<string, int>();
         
-        internal bool TryGetLocalizedString(string token, out string localizedValue)
+        internal bool TryGetLocalizedString(string token, out int localizedValue)
         {
             return m_Tokens.TryGetValue(token, out localizedValue);
         }
         
-        internal TokenСacheSection AddLocalizedString(string token, string value)
+        internal TokenСacheSection AddLocalizedString(string token, int value)
         {
             m_Tokens.Add(token, value);
             return this;

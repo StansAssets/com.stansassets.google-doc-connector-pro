@@ -10,7 +10,7 @@ namespace StansAssets.GoogleDoc.Localization
         string m_TokenId = "token";
 
         [SerializeField]
-        string m_Section = default;
+        string m_Section = string.Empty;
 
         [SerializeField]
         TextType m_TextType = TextType.Default;
