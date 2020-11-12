@@ -9,5 +9,6 @@ namespace StansAssets.GoogleDoc.Localization
         TextType TextType { get; }
         string Prefix { get; }
         string Suffix { get; }
+        object[] Args { get; }
     }
 }

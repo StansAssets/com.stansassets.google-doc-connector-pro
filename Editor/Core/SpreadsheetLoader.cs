@@ -18,7 +18,7 @@ namespace StansAssets.GoogleDoc
 {
     sealed class SpreadsheetLoader
     {
-        public static event Action<Spreadsheet> OnSpreadsheetDataSavedOnDisk;
+        public static event Action<Spreadsheet> OnSpreadsheetDataSavedOnDisk = delegate {  };
 
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
@@ -300,7 +300,7 @@ namespace StansAssets.GoogleDoc
 
                     if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(m_Spreadsheet.Id))
                     {
-                        LocalizationClient.Default.Refresh();
+                        LocalizationClient.Default.Refresh(m_Spreadsheet);
                     }
 
                     OnSpreadsheetDataSavedOnDisk.Invoke(m_Spreadsheet);

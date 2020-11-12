@@ -10,7 +10,7 @@ namespace StansAssets.GoogleDoc.Localization
         string m_TokenId = "token";
 
         [SerializeField]
-        string m_Section = default;
+        string m_Section = string.Empty;
 
         [SerializeField]
         TextType m_TextType = TextType.Default;
@@ -20,36 +20,44 @@ namespace StansAssets.GoogleDoc.Localization
 
         [SerializeField]
         string m_Suffix = default;
+        
+        [SerializeField]
+        object[] m_Args = default;
 
-        public string Token => m_TokenId;
-        public string Section => m_Section;
-        public TextType TextType => m_TextType;
-        public string Prefix => m_Prefix;
-        public string Suffix => m_Suffix;
-
-        internal void TokenSet(string newValue)
+        public string Token
         {
-            m_TokenId = newValue;
+            get => m_TokenId;
+            set => m_TokenId = value;
         }
 
-        internal void SectionSet(string newValue)
+        public string Section
         {
-            m_Section = newValue;
+            get => m_Section;
+            set => m_Section = value;
         }
 
-        internal void TextTypeSet(TextType newValue)
+        public TextType TextType          
         {
-            m_TextType = newValue;
+            get => m_TextType;
+            set => m_TextType = value;
         }
-
-        internal void PrefixSet(string newValue)
+        
+        public string Prefix
         {
-            m_Prefix = newValue;
+            get => m_Prefix;
+            set => m_Prefix = value;
         }
-
-        internal void SuffixSet(string newValue)
+        
+        public string Suffix
         {
-            m_Suffix = newValue;
+            get => m_Suffix;
+            set => m_Suffix = value;
+        }
+        
+        public object[] Args
+        {
+            get => m_Args;
+            set => m_Args = value;
         }
     }
 }
