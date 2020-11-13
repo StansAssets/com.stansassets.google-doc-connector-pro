@@ -44,13 +44,13 @@ namespace StansAssets.GoogleDoc
             PropertyField("Token Id", "m_Token.m_TokenId");
             try
             {
-                var values = LocalizationClient.Default.Sheets;
+                var values = LocalizationClient.Default.Sections;
                 if (!values.Contains(m_LocalizedLabel.m_Token.Section))
                 {
-                    m_LocalizedLabel.m_Token.SectionSet(values.First());
+                    m_LocalizedLabel.m_Token.Section = values.First();
                 }
 
-                PropertyPopup("Section", "m_Token.m_Section", LocalizationClient.Default.Sheets);
+                PropertyPopup("Section", "m_Token.m_Section", LocalizationClient.Default.Sections);
             }
             catch (Exception exception)
             {

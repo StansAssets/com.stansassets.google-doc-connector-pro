@@ -131,7 +131,7 @@ namespace StansAssets.GoogleDoc
             try
             {
                 var loc = LocalizationClient.Default;
-                if (loc.Sheets.Any())
+                if (loc.Sections.Any())
                 {
                     m_ListSheet.Clear();
                     m_LabelSheet.text = $"{spreadsheet.Sheets.Count()} Sheets";
