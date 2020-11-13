@@ -10,7 +10,7 @@ namespace StansAssets.GoogleDoc.Localization
     public class LocalizedLabel : MonoBehaviour
     {
         [SerializeField]
-        internal LocalizationToken m_Token = default;
+        LocalizationToken m_Token = default;
 
 #if TMP_AVAILABLE
         TextMeshProUGUI m_TMPText;

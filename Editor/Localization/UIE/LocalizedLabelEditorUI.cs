@@ -49,7 +49,7 @@ namespace StansAssets.GoogleDoc
             try
             {
                 var values = LocalizationClient.Default.Sections;
-                if (!values.Contains(m_LocalizedLabel.m_Token.Section))
+                if (!values.Contains(m_SectionProperty.stringValue))
                 {
                     m_SectionProperty.stringValue = values.First();
                     m_SerializedObject.ApplyModifiedProperties();

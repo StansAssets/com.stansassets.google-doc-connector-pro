@@ -21,7 +21,6 @@ namespace StansAssets.GoogleDoc.Localization
         [SerializeField]
         string m_Suffix = default;
 
-        [SerializeField]
         object[] m_Args = default;
 
         public string Token

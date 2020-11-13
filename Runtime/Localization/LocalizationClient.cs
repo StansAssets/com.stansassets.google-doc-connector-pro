@@ -275,6 +275,7 @@ namespace StansAssets.GoogleDoc.Localization
                 Section = section,
                 Args = args
             };
+
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
         }
 
