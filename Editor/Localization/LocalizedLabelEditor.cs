@@ -91,11 +91,11 @@ namespace StansAssets.GoogleDoc
             }
         }
 #endif
-        
+
 #if UNITY_2019_4_OR_NEWER
         public override VisualElement CreateInspectorGUI()
         {
-            return new LocalizedLabelEditorUI(Target);
+            return new LocalizedLabelEditorUI(Target, serializedObject);
         }
 #endif
     }

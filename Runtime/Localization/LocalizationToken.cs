@@ -20,7 +20,7 @@ namespace StansAssets.GoogleDoc.Localization
 
         [SerializeField]
         string m_Suffix = default;
-        
+
         [SerializeField]
         object[] m_Args = default;
 
@@ -36,24 +36,24 @@ namespace StansAssets.GoogleDoc.Localization
             set => m_Section = value;
         }
 
-        public TextType TextType          
+        public TextType TextType
         {
             get => m_TextType;
             set => m_TextType = value;
         }
-        
+
         public string Prefix
         {
             get => m_Prefix;
             set => m_Prefix = value;
         }
-        
+
         public string Suffix
         {
             get => m_Suffix;
             set => m_Suffix = value;
         }
-        
+
         public object[] Args
         {
             get => m_Args;

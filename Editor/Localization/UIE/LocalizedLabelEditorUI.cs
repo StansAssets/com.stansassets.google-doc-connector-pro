@@ -17,11 +17,15 @@ namespace StansAssets.GoogleDoc
         HelpBox m_ErrorHelpBox;
 
         readonly LocalizedLabel m_LocalizedLabel;
+        readonly SerializedObject m_SerializedObject;
+        readonly SerializedProperty m_SectionProperty;
 
-        public LocalizedLabelEditorUI(LocalizedLabel localizedLabel)
+        public LocalizedLabelEditorUI(LocalizedLabel localizedLabel, SerializedObject serializedObject)
             : base($"{GoogleDocConnectorPackage.UILocalizationPath}/LocalizedLabelEditorUI")
         {
             m_LocalizedLabel = localizedLabel;
+            m_SerializedObject = serializedObject;
+            m_SectionProperty = serializedObject.FindProperty("m_Token.m_Section");
             m_Root = this.Q<VisualElement>("LocalizedLabelEditorRoot");
 
             GoogleDocConnectorLocalization.SpreadsheetIdChanged += Bind;
@@ -47,7 +51,8 @@ namespace StansAssets.GoogleDoc
                 var values = LocalizationClient.Default.Sections;
                 if (!values.Contains(m_LocalizedLabel.m_Token.Section))
                 {
-                    m_LocalizedLabel.m_Token.Section = values.First();
+                    m_SectionProperty.stringValue = values.First();
+                    m_SerializedObject.ApplyModifiedProperties();
                 }
 
                 PropertyPopup("Section", "m_Token.m_Section", LocalizationClient.Default.Sections);
@@ -88,7 +93,7 @@ namespace StansAssets.GoogleDoc
         void PropertyPopup(string propertyName, string bindingPath, List<string> values)
         {
             var propertyField = new PopupField<string>(propertyName, values, 0) { bindingPath = bindingPath };
-            propertyField.RegisterCallback<MouseDownEvent>((ev) =>
+            propertyField.RegisterCallback<MouseDownEvent>(ev =>
             {
                 schedule.Execute(UpdateLocalization).StartingIn(5);
             });
