@@ -13,3 +13,14 @@
     border-color: rgb(0, 0, 0);
     background-color: #4d4d4d;
 }
+
+.spreadsheet-id-copy,
+.spreadsheet-url-copy,
+.btn-refresh,
+.btn-remove {
+    -unity-background-image-tint-color: rgb(228, 228, 228);
+}
+
+.lang-element-selected {
+    color: #00FFFF;
+}
