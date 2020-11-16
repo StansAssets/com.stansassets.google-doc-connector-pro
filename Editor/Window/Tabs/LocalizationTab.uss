@@ -11,6 +11,7 @@
 .lang-element:hover,
 .lang-element-selected:hover {
     background-color: rgb(134, 134, 134);
+    border-color: rgb(165, 165, 165);
 }
 
 .btn-left,
@@ -27,7 +28,6 @@
     flex: 0 0 auto;
     overflow: hidden;
     white-space: nowrap;
-    -unity-background-image-tint-color: rgb(228, 228, 228);
     border-width: 1px;
     padding-left: 1px;
     padding-right: 1px;
@@ -94,10 +94,6 @@
 .lang-element,
 .lang-element-selected {
     cursor: link;
-}
-
-.lang-element-selected {
-    color: #00FFFF;
 }
 
 .choose-spreadsheet {
