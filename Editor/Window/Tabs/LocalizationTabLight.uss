@@ -9,6 +9,12 @@
     background-color: rgb(165, 165, 165);
 }
 
+.lang-element:hover,
+.lang-element-selected:hover {
+    border-color: rgb(165, 165, 165);
+    background-color: rgb(180, 180, 180);
+}
+
 .spreadsheet-panel {
     border-color: rgb(138, 138, 138);
     background-color: rgb(165, 165, 165);

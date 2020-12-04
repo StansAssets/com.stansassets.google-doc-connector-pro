@@ -109,13 +109,6 @@
     border-left-width: -1px;
 }
 
-.btn-middle:hover,
-.btn-left:hover,
-.btn-right:hover {
-    background-color: rgb(134, 134, 134);
-    border-color: rgb(165, 165, 165);
-}
-
 .btn-refresh {
     background-image: url('Resources/refresh.png');
 }
