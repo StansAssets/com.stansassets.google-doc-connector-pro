@@ -140,9 +140,9 @@ namespace StansAssets.GoogleDoc
             {
                 if (!string.IsNullOrEmpty(m_DateTimeStr))
                 {
-                    return DateTime.Parse(m_DateTimeStr);
+                    DateTime.TryParse(m_DateTimeStr, out var dateTime);
+                    return  dateTime;
                 }
-
                 return null;
             }
             set => m_DateTimeStr = value.ToString();
