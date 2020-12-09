@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
@@ -48,16 +49,14 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public event Action<Spreadsheet> OnSyncStateChange = delegate { };
 
-        [SerializeField]
-        SyncState m_State;
+        [SerializeField] SyncState m_State;
 
         /// <summary>
-        /// The spreadsheet sync state. 
+        /// The spreadsheet sync state.
         /// </summary>
         public SyncState State => m_State;
 
-        [SerializeField]
-        string m_SyncErrorMassage;
+        [SerializeField] string m_SyncErrorMassage;
 
         /// <summary>
         /// If last spreadsheet sync attempt was finished with an error,
@@ -66,8 +65,7 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         public string SyncErrorMassage => m_SyncErrorMassage;
 
-        [SerializeField]
-        internal List<Sheet> m_Sheets = new List<Sheet>();
+        [SerializeField] internal List<Sheet> m_Sheets = new List<Sheet>();
 
         /// <summary>
         /// The spreadsheet sheets list.
@@ -76,40 +74,35 @@ namespace StansAssets.GoogleDoc
 
         internal bool IsLoaded { get; set; }
 
-        [SerializeField]
-        string m_Id;
+        [SerializeField] string m_Id;
 
         /// <summary>
         /// The ID of the spreadsheet.
         /// </summary>
         public string Id => m_Id;
 
-        [SerializeField]
-        string m_Url;
+        [SerializeField] string m_Url;
 
         /// <summary>
         /// The spreadsheet absolute web URL.
         /// </summary>
         public string Url => m_Url;
 
-        [SerializeField]
-        string m_Name;
+        [SerializeField] string m_Name;
 
         /// <summary>
         /// The name of the spreadsheet.
         /// </summary>
         public string Name => m_Name;
 
-        [SerializeField]
-        string m_LastSyncMachineName;
+        [SerializeField] string m_LastSyncMachineName;
 
         /// <summary>
-        /// The name of the Machine where last sync was performed. 
+        /// The name of the Machine where last sync was performed.
         /// </summary>
         public string LastSyncMachineName => m_LastSyncMachineName;
 
-        [SerializeField]
-        string m_DateTimeStr;
+        [SerializeField] string m_DateTimeStr;
 
         /// <summary>
         /// Property is `true` if <see cref="State"/> is equals to <see cref="SyncState.Synced"/>, otherwise 'false'
@@ -134,24 +127,34 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// The <see cref="DateTime"/> value when the last sync was performed.
         /// </summary>
-        public DateTime? SyncDateTime
+        public DateTime SyncDateTime
         {
             get
             {
+                //TODO probably unix date value will be mush better here
+                // see DateTimeExtensions.UnixTimestampToDateTime
                 if (!string.IsNullOrEmpty(m_DateTimeStr))
                 {
-                    return DateTime.Parse(m_DateTimeStr);
+                    try
+                    {
+                        return DateTime.ParseExact(m_DateTimeStr, "g", CultureInfo.CreateSpecificCulture("de-DE"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"{ex.Message}: '{m_DateTimeStr}'");
+                        return DateTime.MinValue;
+                    }
                 }
 
-                return null;
+                return DateTime.MinValue;
             }
-            set => m_DateTimeStr = value.ToString();
+            set => m_DateTimeStr = value.ToString("g", CultureInfo.CreateSpecificCulture("de-DE"));
         }
 
         internal Spreadsheet() { }
-        
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="id">Spreadsheet Id</param>
         public Spreadsheet(string id)
@@ -242,23 +245,23 @@ namespace StansAssets.GoogleDoc
         {
             return m_Sheets.FirstOrDefault(sheet => sheetName == sheet.Name);
         }
-        
-       /* /// <summary>
-        /// Gets first spreadsheet sheet by it's name or create it.
-        /// </summary>
-        /// <param name="sheetName"></param>
-        /// <returns>
-        /// Returns the <see cref="Sheets"/> object
-        /// if spreadsheet contains a sheet with the name, otherwise `null`
-        /// </returns>
-        public Sheet GetSheetOrCreate(string sheetName)
-        {
-            if (HasSheet(sheetName))
-                return GetSheet(sheetName);
-            var sheet = CreateSheet(m_Sheets.Count, sheetName);
-            sheet.SetDataState(DataState.Created);
-            return sheet;
-        }*/
+
+        /* /// <summary>
+         /// Gets first spreadsheet sheet by it's name or create it.
+         /// </summary>
+         /// <param name="sheetName"></param>
+         /// <returns>
+         /// Returns the <see cref="Sheets"/> object
+         /// if spreadsheet contains a sheet with the name, otherwise `null`
+         /// </returns>
+         public Sheet GetSheetOrCreate(string sheetName)
+         {
+             if (HasSheet(sheetName))
+                 return GetSheet(sheetName);
+             var sheet = CreateSheet(m_Sheets.Count, sheetName);
+             sheet.SetDataState(DataState.Created);
+             return sheet;
+         }*/
 
         internal Sheet CreateSheet(int sheetId, string name)
         {

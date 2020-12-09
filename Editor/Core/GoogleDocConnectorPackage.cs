@@ -31,6 +31,8 @@ namespace StansAssets.GoogleDoc
         internal static readonly string SamplesPath = $"{RootPath}/Samples/Scene";
         internal static readonly string CoversPath = $"{RootPath}/Art/Covers";
 
+        internal static readonly string LocalizationTabPath = $"{WindowTabsPath}/LocalizationTab";
+
         internal static Texture2D Image => (EditorGUIUtility.isProSkin)? EditorAssets.GetImage($"{CoversPath}/logo-dark.png") :  EditorAssets.GetImage($"{CoversPath}/logo-light.png");
     }
 }

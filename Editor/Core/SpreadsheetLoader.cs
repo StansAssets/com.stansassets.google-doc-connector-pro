@@ -22,7 +22,7 @@ namespace StansAssets.GoogleDoc
 
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
-        static readonly string[] s_Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+        static readonly string[] s_Scopes = { SheetsService.Scope.Spreadsheets };
 
         readonly Spreadsheet m_Spreadsheet;
 

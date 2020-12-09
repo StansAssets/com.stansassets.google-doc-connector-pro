@@ -41,7 +41,7 @@ namespace StansAssets.GoogleDoc
         const string k_DefaultSpreadsheetField = "None";
 
         public LocalizationTab()
-            : base($"{GoogleDocConnectorPackage.WindowTabsPath}/LocalizationTab")
+            : base($"{GoogleDocConnectorPackage.LocalizationTabPath}")
         {
             m_ListSpreadsheet = this.Q<VisualElement>("list-spreadsheet");
             m_LabelLang = this.Q<Label>("labelLang");
@@ -64,7 +64,7 @@ namespace StansAssets.GoogleDoc
 
             Bind();
 
-            // In case something is updated 
+            // In case something is updated
             SpreadsheetLoader.OnSpreadsheetDataSavedOnDisk += spreadsheet =>
             {
                 if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(spreadsheet.Id))
@@ -112,7 +112,16 @@ namespace StansAssets.GoogleDoc
                 return;
             }
 
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
+            if (spreadsheet.SyncDateTime == DateTime.MinValue)
+            {
+                m_SpreadsheetDate.text = Spreadsheet.NotSyncedStringStatus;
+            }
+            else
+            {
+                m_SpreadsheetDate.text = spreadsheet.SyncDateTime.ToString("dddd, MMMM d, yyyy HH:mm:ss",
+                    CultureInfo.CreateSpecificCulture("en-US"));
+            }
+
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
 
             if (spreadsheet.SyncedWithError)
@@ -238,7 +247,7 @@ namespace StansAssets.GoogleDoc
                                 m_OpenBtn.style.display = DisplayStyle.None;
             }
         }
-        
+
         void SelectingComponentsRender(string newValue)
         {
             ListSpreadsheetAvailability();

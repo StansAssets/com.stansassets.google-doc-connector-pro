@@ -31,7 +31,7 @@ namespace StansAssets.GoogleDoc
         readonly VisualElement m_SheetsContainer;
         readonly VisualElement m_RangesContainer;
 
-        public SpreadsheetView(Spreadsheet spreadsheet): 
+        public SpreadsheetView(Spreadsheet spreadsheet):
             base($"{GoogleDocConnectorPackage.UILayoutPath}/SpreadsheetView")
         {
             m_SpreadsheetId = this.Q<SelectableLabel>("spreadsheet-id");
@@ -46,22 +46,22 @@ namespace StansAssets.GoogleDoc
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
-            
+
             m_SheetFoldoutLabelPanel = this.Q<VisualElement>("sheetFoldoutLabelPanel");
             m_SheetFoldoutScrollView = this.Q<ScrollView>("sheetFoldoutScrollView");
-            
+
             var spreadsheetExpandedPanel = this.Q<VisualElement>("spreadsheetExpandedPanel");
 
             m_SheetsContainer = this.Q<VisualElement>("sheets-container");
             m_RangesContainer = this.Q<VisualElement>("ranges-container");
-           
+
 
             m_Spinner = this.Q<LoadingSpinner>("loadingSpinner");
             m_Spinner.style.display = spreadsheet.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
-            
+
             m_SpreadsheetFoldout = this.Q<Foldout>("arrowToggleFoldout");
             m_SpreadsheetFoldout.viewDataKey = $"spreadsheet_toggle_{spreadsheet.Id}";
-            
+
             m_SpreadsheetFoldout.RegisterValueChangedCallback(e =>
             {
                 spreadsheetExpandedPanel.style.display = e.newValue ? DisplayStyle.Flex : DisplayStyle.None;
@@ -70,26 +70,35 @@ namespace StansAssets.GoogleDoc
             {
                 spreadsheetExpandedPanel.style.display = m_SpreadsheetFoldout.value ? DisplayStyle.Flex : DisplayStyle.None;
             }).StartingIn(1000);
-            
+
             var removeButton = this.Q<Button>("removeBtn");
             removeButton.clicked += () => { OnRemoveClick(this, spreadsheet); };
 
             var refreshButton = this.Q<Button>("refreshBtn");
             refreshButton.clicked += () => { OnRefreshClick(spreadsheet); };
-            
+
             var openBtn = this.Q<Button>("openBtn");
             openBtn.clicked += () => { Application.OpenURL(spreadsheet.Url); };
-            
+
             spreadsheet.OnSyncStateChange += StateChange;
 
             Bind(spreadsheet);
         }
-      
+
         void Bind(Spreadsheet spreadsheet)
         {
             m_SpreadsheetId.text = spreadsheet.Id;
             m_SpreadsheetFoldout.text = spreadsheet.Name;
-            m_SpreadsheetDate.text = spreadsheet.SyncDateTime.HasValue ? spreadsheet.SyncDateTime.Value.ToString("dddd, MMMM d, yyyy HH:mm:ss", CultureInfo.CreateSpecificCulture("en-US")) : $"[{Spreadsheet.NotSyncedStringStatus}]";
+            if (spreadsheet.SyncDateTime == DateTime.MinValue)
+            {
+                m_SpreadsheetDate.text = Spreadsheet.NotSyncedStringStatus;
+            }
+            else
+            {
+                m_SpreadsheetDate.text = spreadsheet.SyncDateTime.ToString("dddd, MMMM d, yyyy HH:mm:ss",
+                    CultureInfo.CreateSpecificCulture("en-US"));
+            }
+
             if (!string.IsNullOrEmpty(spreadsheet.LastSyncMachineName)) { m_SpreadsheetLastSyncMachineName.text = $"| {spreadsheet.LastSyncMachineName}"; }
 
             //Synced With Error
@@ -104,14 +113,14 @@ namespace StansAssets.GoogleDoc
                 m_SpreadsheetStatusIcon.ClearClassList();
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-red");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedWithErrorStringStatus;
-            } 
+            }
             else if (spreadsheet.Synced)
             {
                 m_SpreadsheetStatusIcon.ClearClassList();
                 m_SpreadsheetStatusIcon.AddToClassList("status-icon-green");
                 m_SpreadsheetStatusIcon.tooltip = Spreadsheet.SyncedStringStatus;
             }
-            
+
 
             m_SheetsContainer.Clear();
             m_RangesContainer.Clear();
