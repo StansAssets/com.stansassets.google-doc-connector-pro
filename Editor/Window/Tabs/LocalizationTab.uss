@@ -6,14 +6,6 @@
     background-image: url('../UI/Resources/refresh.png');
 }
 
-.btn-left:hover,
-.btn-right:hover,
-.lang-element:hover,
-.lang-element-selected:hover {
-    background-color: rgb(134, 134, 134);
-    border-color: rgb(165, 165, 165);
-}
-
 .btn-left,
 .btn-right {
     width: 16px;
