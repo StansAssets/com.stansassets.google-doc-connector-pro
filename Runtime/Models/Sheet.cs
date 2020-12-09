@@ -12,8 +12,6 @@ namespace StansAssets.GoogleDoc
     [Serializable]
     public class Sheet: SheetMetadata
     {
-
-
         List<NamedRange> m_NamedRanges = new List<NamedRange>();
 
         /// <summary>
@@ -53,6 +51,11 @@ namespace StansAssets.GoogleDoc
         internal void SetRows(List<RowData> rows)
         {
             m_Rows = rows;
+        }
+        
+        internal void SetNamedRanges(List<NamedRange> namedRange)
+        {
+            m_NamedRanges = namedRange;
         }
 
         /// <summary>

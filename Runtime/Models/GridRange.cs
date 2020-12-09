@@ -8,23 +8,28 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// The end column of the range, property are zero-based or null if unbounded.
         /// </summary>
+        [JsonIgnore]
         public int? EndColumnIndex { get; }
         /// <summary>
         /// The end row of the range, property are zero-based or null if unbounded.
         /// </summary>
+        [JsonIgnore]
         public int? EndRowIndex { get; }
         /// <summary>
         /// The start column of the range, property are zero-based or null if unbounded.
         /// </summary>
+        [JsonIgnore]
         public int? StartColumnIndex { get; }
         /// <summary>
         /// The start row of the range, property are zero-based or null if unbounded.
         /// </summary>
+        [JsonIgnore]
         public int? StartRowIndex { get; }
         
         /// <summary>
         /// Name of the range. For example A1:B2, A:B, 1:2, etc.
         /// </summary>
+        [JsonProperty("n")]
         public string Name { get; private set; }
 
         public GridRange() { }
@@ -44,6 +49,7 @@ namespace StansAssets.GoogleDoc
         /// </summary>
         /// <param name="name">The name of the range</param>
         /// <exception cref="ArgumentException">Range name must consist of 2 point</exception>
+        [JsonConstructor]
         public GridRange(string name)
         {
             var cells = name.Split(':');
@@ -94,7 +100,6 @@ namespace StansAssets.GoogleDoc
         /// <param name="startColumnIndex">number of first column</param>
         /// <param name="endRowIndex">number of last row</param>
         /// <param name="endColumnIndex">number of column column</param>
-        [JsonConstructor]
         public GridRange(int startRowIndex, int startColumnIndex, int endRowIndex, int endColumnIndex)
         {
             EndColumnIndex = endColumnIndex;

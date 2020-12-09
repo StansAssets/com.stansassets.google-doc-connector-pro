@@ -12,22 +12,26 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Cell Row. Index starts from `0`.
         /// </summary>
+        [JsonIgnore]
         public int Row { get; }
 
         /// <summary>
         /// Cell Column Index starts from `0`.
         /// </summary>
+        [JsonIgnore]
         public int Column { get; }
 
         /// <summary>
         /// Cell Name.
         /// For example "A1" / "B20" 
         /// </summary>
+        [JsonProperty("n")]
         public string Name { get; }
 
         /// <summary>
         /// Cell Value representation.
         /// </summary>
+        [JsonProperty("v")]
         public CellValue Value { get; private set; }
 
         internal Cell(int row, int column)
@@ -36,8 +40,7 @@ namespace StansAssets.GoogleDoc
             Column = column;
             Name = CellNameUtility.GetCellName(row, column);
         }
-
-        [JsonConstructor]
+        
         internal Cell(int row, int column, CellValue value)
             : this(row, column)
         {
@@ -52,11 +55,12 @@ namespace StansAssets.GoogleDoc
             Column = cell.Column;
             Name = name;
         }
-
-        internal Cell(string cell, CellValue cellValue)
-            : this(cell)
+        
+        [JsonConstructor]
+        internal Cell(string name, CellValue value)
+            : this(name)
         {
-            Value = cellValue;
+            Value = value;
         }
 
         internal void SetValue(CellValue cellValue)

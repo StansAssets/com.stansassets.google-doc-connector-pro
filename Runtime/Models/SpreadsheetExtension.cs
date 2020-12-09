@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -11,8 +13,16 @@ namespace StansAssets.GoogleDoc
             var spreadsheetTextAsset = Resources.Load<TextAsset>($"{GoogleDocConnectorSettings.SpreadsheetsResourcesSubFolder}/{spreadsheet.Name}");
             if (!ReferenceEquals(spreadsheetTextAsset, null))
             {
-                var spreadsheetJson = JsonConvert.DeserializeObject<Spreadsheet>(spreadsheetTextAsset.text);
-                spreadsheet.SetSheets(spreadsheetJson.Sheets);
+                var sheetsJson = JsonConvert.DeserializeObject<IEnumerable<SheetJson>>(spreadsheetTextAsset.text);
+                spreadsheet.SetSheets(sheetsJson.Select(s => s.ConvertToSheet()));
+                foreach (var sheet in spreadsheet.Sheets)
+                {
+                    foreach (var namedRange in sheet.NamedRanges)
+                    {
+                        var cells = sheet.GetRange(namedRange.Range);
+                        namedRange.SetCells(cells, namedRange.Range);
+                    }
+                }
             }
         }
 
