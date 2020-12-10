@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -14,18 +15,21 @@ namespace StansAssets.GoogleDoc
         /// The formatted value of the cell. This is the value as it's shown to the user.
         /// </summary>
         [JsonProperty("v")]
+        [DefaultValue("")]
         public string FormattedValue { get; }
 
         /// <summary>
         /// Represents a formula. 
         /// </summary>
         [JsonProperty("f")]
+        [DefaultValue("")]
         public string FormulaValue { get; }
 
         /// <summary>
         /// Represents a value in string format. 
         /// </summary>
         [JsonProperty("s")]
+        [DefaultValue("")]
         public string StringValue { get; }
 
         public CellValue() { }
