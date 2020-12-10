@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Google;
 using Google.Apis.Auth.OAuth2;
@@ -120,9 +121,9 @@ namespace StansAssets.GoogleDoc
                                 }
 
                                 var cellValue = new CellValue(
-                                    cellData.FormattedValue,
-                                    cellData.EffectiveValue.FormulaValue,
-                                    stringValue);
+                                    cellData.FormattedValue?.Trim(),
+                                    cellData.EffectiveValue.FormulaValue?.Trim(),
+                                    stringValue?.Trim());
 
                                 var cell = new Cell(rowIndex, columnIndex, cellValue);
                                 row.AddCell(cell);
@@ -256,9 +257,9 @@ namespace StansAssets.GoogleDoc
                                 }
 
                                 var cellValue = new CellValue(
-                                    cellData.FormattedValue,
-                                    cellData.EffectiveValue.FormulaValue,
-                                    stringValue);
+                                    cellData.FormattedValue?.Trim(),
+                                    cellData.EffectiveValue.FormulaValue?.Trim(),
+                                    stringValue?.Trim());
 
                                 var cell = new Cell(rowIndex, columnIndex, cellValue);
                                 row.AddCell(cell);
@@ -293,7 +294,9 @@ namespace StansAssets.GoogleDoc
 
                 if (saveSpreadsheet)
                 {
-                    File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(m_Spreadsheet));
+                    var sheetJsons = m_Spreadsheet.m_Sheets.Select(s => new SheetJson(s));
+                    File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(sheetJsons, Formatting.None,
+                        new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore }));
                     var spreadSheetProjectPath = $"{GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath}/{m_Spreadsheet.Name}.json";
                     AssetDatabase.ImportAsset(spreadSheetProjectPath, ImportAssetOptions.ForceUpdate);
                     GoogleDocConnectorSettings.Instance.ForceUpdateSpreadsheet(m_Spreadsheet.Id);
