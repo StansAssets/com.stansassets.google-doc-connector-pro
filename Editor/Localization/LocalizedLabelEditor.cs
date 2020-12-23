@@ -17,22 +17,6 @@ namespace StansAssets.GoogleDoc
         SerializedProperty m_Suffix;
         string m_ErrorMessage = string.Empty;
 
-        void Reset()
-        {
-            if (Target.MoveUp)
-            {
-                var sel = Selection.activeGameObject;
-                var targetComponent = sel.GetComponents<LocalizedLabel>().Last();
-                var count = sel.GetComponents(typeof(Component)).ToList().IndexOf(targetComponent);
-                for (var pos = count; pos > 0; pos--)
-                {
-                    UnityEditorInternal.ComponentUtility.MoveComponentUp(targetComponent);
-                }
-
-                Target.MoveUp = false;
-            }
-        }
-
         void OnEnable()
         {
             m_Token = serializedObject.FindProperty("m_Token.m_TokenId");
