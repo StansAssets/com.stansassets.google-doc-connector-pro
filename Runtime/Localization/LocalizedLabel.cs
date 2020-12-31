@@ -1,6 +1,8 @@
 #if TMP_AVAILABLE
 using TMPro;
 #endif
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +18,20 @@ namespace StansAssets.GoogleDoc.Localization
         TextMeshProUGUI m_TMPText;
 #endif
         Text m_UGUIText;
-
+        
+#if UNITY_EDITOR
+        void Reset()
+        {
+            var sel = Selection.activeGameObject;
+            var targetComponent = sel.GetComponents<LocalizedLabel>().Last();
+            var count = sel.GetComponents(typeof(Component)).ToList().IndexOf(targetComponent);
+            for (var pos = count; pos > 0; pos--)
+            {
+                UnityEditorInternal.ComponentUtility.MoveComponentUp(targetComponent);
+            }
+        }
+#endif
+        
         void Awake()
         {
             m_UGUIText = GetComponent<Text>() ?? GetComponentInChildren<Text>();

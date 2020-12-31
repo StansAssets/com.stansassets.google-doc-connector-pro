@@ -33,8 +33,18 @@ namespace StansAssets.GoogleDoc
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(m_Token);
-            var sectionPopup = EditorGUILayout.Popup(new GUIContent() { text = "Section" }, LocalizationClient.Default.Sheets.IndexOf(m_Section.stringValue),
-                LocalizationClient.Default.Sheets.ToArray());
+            var sectionPopup = 0;
+            try
+            {
+                sectionPopup = EditorGUILayout.Popup(new GUIContent() { text = "Section" }, LocalizationClient.Default.Sheets.IndexOf(m_Section.stringValue),
+                    LocalizationClient.Default.Sheets.ToArray());
+            }
+            catch
+            {
+                EditorGUILayout.Popup(new GUIContent() { text = "Section" }, 0, new[] { "" });
+                m_ErrorMessage = "Error in the localization client";
+            }
+
             EditorGUILayout.PropertyField(m_TextType);
             EditorGUILayout.PropertyField(m_Prefix);
             EditorGUILayout.PropertyField(m_Suffix);
@@ -43,9 +53,12 @@ namespace StansAssets.GoogleDoc
             {
                 EditorGUILayout.HelpBox(m_ErrorMessage, MessageType.Error);
             }
+            else
+            {
+                EditorGUILayout.Separator();
+                SelectedLang();
+            }
 
-            EditorGUILayout.Separator();
-            SelectedLang();
             serializedObject.ApplyModifiedProperties();
 
             if (GUI.changed)
