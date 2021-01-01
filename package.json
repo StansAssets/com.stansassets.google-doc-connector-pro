@@ -6,7 +6,8 @@
   "description": "The plugin allows you to use Google Sheets as a configuration repository for your game. And also use Google Sheets as a repository for localization.",
   "dependencies": {
     "com.stansassets.foundation": "1.0.13",
-    "com.stansassets.plugins-dev-kit": "0.0.5-preview"
+    "com.stansassets.plugins-dev-kit": "0.0.5-preview",
+    "com.stansassets.newtonjson" : "12.0.101"
   },
   "author": {
     "name": "Stan's Assets",
