@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using StansAssets.Foundation.UIElements;
 using StansAssets.GoogleDoc.Localization;
 using StansAssets.Plugins.Editor;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
 namespace StansAssets.GoogleDoc
 {
