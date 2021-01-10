@@ -3,4 +3,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("StansAssets.GoogleDoc.Tests")]
 [assembly: InternalsVisibleTo("StansAssets.GoogleDoc.Samples")]
 
-[assembly: InternalsVisibleTo("StansAssets.Build.Editor")]
+[assembly: InternalsVisibleTo("StansAssets.Build.Meta.Editor")]
