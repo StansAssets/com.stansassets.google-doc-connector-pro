@@ -32,7 +32,13 @@ namespace StansAssets.GoogleDoc
         [DefaultValue("")]
         public string StringValue { get; }
 
-        public CellValue() { }
+        public CellValue()
+        {
+            FormattedValue = string.Empty;
+            FormulaValue = string.Empty;
+            StringValue = string.Empty;
+        }
+        
         /// <summary>
         /// 
         /// </summary>
