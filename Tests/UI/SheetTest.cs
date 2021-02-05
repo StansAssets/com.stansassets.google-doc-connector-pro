@@ -69,7 +69,7 @@ namespace StansAssets.GoogleDoc.Tests
             var spreadsheet = m_Spreadsheets[index];
             var sheet = spreadsheet.GetSheet(0);
             var cell = sheet.GetCell(1000, 1000);
-            Assert.True(cell == null, "Unexpected get first cell from spreadsheet but it was");
+            Assert.True(string.IsNullOrEmpty(cell.ToString()), "Unexpected get thousandth cell from spreadsheet but it was");
         }
 
         [Test]

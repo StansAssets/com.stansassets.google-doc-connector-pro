@@ -39,6 +39,7 @@ namespace StansAssets.GoogleDoc
             Row = row;
             Column = column;
             Name = CellNameUtility.GetCellName(row, column);
+            Value = new CellValue();
         }
         
         internal Cell(int row, int column, CellValue value)
@@ -54,6 +55,7 @@ namespace StansAssets.GoogleDoc
             Row = cell.Row;
             Column = cell.Column;
             Name = name;
+            Value = new CellValue();
         }
         
         [JsonConstructor]

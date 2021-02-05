@@ -86,21 +86,23 @@ namespace StansAssets.GoogleDoc
         }
 
         /// <summary>
-        /// Gets cell from specified row & col.
+        /// Gets cell from specified row and column
         /// </summary>
         /// <param name="row">Row index. Index starts from 0 </param>
         /// <param name="column">Column index. Index starts from 0 </param>
-        /// <returns>Cell objects or `null` if cell wasn't found.</returns>
-        public Cell GetCell(int row, int column)
+        /// <returns>Cell object or cell with empty cell value if cell wasn't found.</returns>
+       public Cell GetCell(int row, int column)
         {
             if (row >= 0 && row < m_Rows.Count)
             {
                 var r = m_Rows[row];
-                if (column < r.Cells.Count())
+                if (column < r.Cells.Count()) {
                     return r.Cells.ElementAt(column);
+                }
+                    
             }
 
-            return null;
+            return new Cell(row, column);
         }
 
         /// <summary>
@@ -109,15 +111,16 @@ namespace StansAssets.GoogleDoc
         /// Therefore, the reference to the cell name will differ from the name on the site (for the cell name to match the name on the site, the table must be filled with data without blank cells)
         /// </summary>
         /// <param name="name">The name of the cell.</param>
-        /// <returns>Cell objects or `null` if cell wasn't found.</returns>
+        /// <returns>Cell object or cell with empty cell value if cell wasn't found.</returns>
         public Cell GetCell(string name)
         {
             try
             {
-                var cellNew = new Cell(name);
-                if (cellNew.Row < 0 || cellNew.Row > m_Rows.Count)
-                    return null;
-                return m_Rows[cellNew.Row].Cells.FirstOrDefault(cell => cell.Column == cellNew.Column);
+                var emptyCell = new Cell(name);
+                if (emptyCell.Row < 0 || emptyCell.Row > m_Rows.Count)
+                    return emptyCell;
+                var res = m_Rows[emptyCell.Row].Cells.FirstOrDefault(cell => cell.Column == emptyCell.Column);
+                return (res != null)? res : emptyCell;
             }
             catch (Exception e)
             {
