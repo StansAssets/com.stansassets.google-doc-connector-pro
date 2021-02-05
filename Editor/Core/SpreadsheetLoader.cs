@@ -19,7 +19,7 @@ namespace StansAssets.GoogleDoc
 {
     sealed class SpreadsheetLoader
     {
-        public static event Action<Spreadsheet> OnSpreadsheetDataSavedOnDisk = delegate {  };
+        public static event Action<Spreadsheet> OnSpreadsheetDataSavedOnDisk = delegate { };
 
         // If modifying these scopes, delete your previously saved credentials
         // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
@@ -73,85 +73,13 @@ namespace StansAssets.GoogleDoc
             {
                 spreadsheetData = rangeRequest.Execute();
 
-                m_Spreadsheet.SyncDateTime = DateTime.Now;
-                m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
-                m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
-                m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
-                m_Spreadsheet.CleanupSheets();
+                UpdateSpreadsheetMeta(spreadsheetData);
 
                 //Set Sheets
-                foreach (var sheetData in spreadsheetData.Sheets)
-                {
-                    var sheetId = sheetData.Properties.SheetId ?? 0;
-                    var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
-                    sheet.CleanupRows();
-
-                    // We always request the whole grid to get full data set.
-                    // So there is only one item that represents the whole sheet.
-                    var gridData = sheetData.Data[0];
-                    if (gridData?.RowData == null)
-                        continue;
-
-                    var rowIndex = 0;
-                    foreach (var rowData in gridData.RowData)
-                    {
-                        var row = new RowData();
-                        if (rowData.Values != null)
-                        {
-                            var columnIndex = 0;
-                            foreach (var cellData in rowData.Values)
-                            {
-                                if (cellData.FormattedValue == null)
-                                {
-                                    continue;
-                                }
-
-                                string stringValue;
-                                if (cellData.EffectiveValue.BoolValue != null)
-                                {
-                                    stringValue = cellData.EffectiveValue.BoolValue.ToString();
-                                }
-                                else if (cellData.EffectiveValue.NumberValue != null)
-                                {
-                                    stringValue = cellData.EffectiveValue.NumberValue.ToString();
-                                }
-                                else
-                                {
-                                    stringValue = cellData.EffectiveValue.StringValue;
-                                }
-
-                                var cellValue = new CellValue(
-                                    cellData.FormattedValue?.Trim(),
-                                    cellData.EffectiveValue.FormulaValue?.Trim(),
-                                    stringValue?.Trim());
-
-                                var cell = new Cell(rowIndex, columnIndex, cellValue);
-                                row.AddCell(cell);
-
-                                columnIndex++;
-                            }
-                        }
-
-                        sheet.AddRow(row);
-
-                        rowIndex++;
-                    }
-                }
+                SetSheet(spreadsheetData);
 
                 //Set NamedRanges
-                if (spreadsheetData.NamedRanges != null)
-                {
-                    foreach (var namedRangeData in spreadsheetData.NamedRanges)
-                    {
-                        var sheetId = namedRangeData.Range.SheetId ?? 0;
-                        var sheet = m_Spreadsheet.GetSheet(sheetId);
-                        var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex - 1, namedRangeData.Range.EndColumnIndex - 1);
-
-                        var cells = sheet.GetRange(range);
-                        namedRange.SetCells(cells, range);
-                    }
-                }
+                SetNamedRanges(spreadsheetData);
 
                 if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                     Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
@@ -208,86 +136,13 @@ namespace StansAssets.GoogleDoc
             {
                 var spreadsheetData = await rangeRequest.ExecuteAsync();
 
-                m_Spreadsheet.SyncDateTime = DateTime.Now;
-                m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
-
-                m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
-                m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
-                m_Spreadsheet.CleanupSheets();
+                UpdateSpreadsheetMeta(spreadsheetData);
 
                 //Set Sheets
-                foreach (var sheetData in spreadsheetData.Sheets)
-                {
-                    var sheetId = sheetData.Properties.SheetId ?? 0;
-                    var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
-                    sheet.CleanupRows();
-
-                    // We always request the whole grid to get full data set.
-                    // So there is only one item that represents the whole sheet.
-                    var gridData = sheetData.Data[0];
-                    if (gridData?.RowData == null)
-                        continue;
-
-                    var rowIndex = 0;
-                    foreach (var rowData in gridData.RowData)
-                    {
-                        var row = new RowData();
-                        if (rowData.Values != null)
-                        {
-                            var columnIndex = 0;
-                            foreach (var cellData in rowData.Values)
-                            {
-                                if (cellData.FormattedValue == null)
-                                {
-                                    continue;
-                                }
-
-                                string stringValue;
-                                if (cellData.EffectiveValue.BoolValue != null)
-                                {
-                                    stringValue = cellData.EffectiveValue.BoolValue.ToString();
-                                }
-                                else if (cellData.EffectiveValue.NumberValue != null)
-                                {
-                                    stringValue = cellData.EffectiveValue.NumberValue.ToString();
-                                }
-                                else
-                                {
-                                    stringValue = cellData.EffectiveValue.StringValue;
-                                }
-
-                                var cellValue = new CellValue(
-                                    cellData.FormattedValue?.Trim(),
-                                    cellData.EffectiveValue.FormulaValue?.Trim(),
-                                    stringValue?.Trim());
-
-                                var cell = new Cell(rowIndex, columnIndex, cellValue);
-                                row.AddCell(cell);
-
-                                columnIndex++;
-                            }
-                        }
-
-                        sheet.AddRow(row);
-
-                        rowIndex++;
-                    }
-                }
+                SetSheet(spreadsheetData);
 
                 //Set NamedRanges
-                if (spreadsheetData.NamedRanges != null)
-                {
-                    foreach (var namedRangeData in spreadsheetData.NamedRanges)
-                    {
-                        var sheetId = namedRangeData.Range.SheetId ?? 0;
-                        var sheet = m_Spreadsheet.GetSheet(sheetId);
-                        var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
-                        var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex - 1, namedRangeData.Range.EndColumnIndex - 1);
-
-                        var cells = sheet.GetRange(range);
-                        namedRange.SetCells(cells, range);
-                    }
-                }
+                SetNamedRanges(spreadsheetData);
 
                 if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                     Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
@@ -347,6 +202,92 @@ namespace StansAssets.GoogleDoc
             m_Spreadsheet.SyncDateTime = DateTime.Now;
 
             spreadsheet.ChangeStatus(Spreadsheet.SyncState.SyncedWithError);
+        }
+
+        void UpdateSpreadsheetMeta(GoogleSheet.Spreadsheet spreadsheetData)
+        {
+            m_Spreadsheet.SyncDateTime = DateTime.Now;
+            m_Spreadsheet.SetName(spreadsheetData.Properties.Title);
+
+            m_Spreadsheet.SetMachineName(SystemInfo.deviceName);
+            m_Spreadsheet.SetUrl(spreadsheetData.SpreadsheetUrl);
+            m_Spreadsheet.CleanupSheets();
+        }
+
+        void SetSheet(GoogleSheet.Spreadsheet spreadsheetData)
+        {
+            foreach (var sheetData in spreadsheetData.Sheets)
+            {
+                var sheetId = sheetData.Properties.SheetId ?? 0;
+                var sheet = m_Spreadsheet.CreateSheet(sheetId, sheetData.Properties.Title);
+                sheet.CleanupRows();
+
+                // We always request the whole grid to get full data set.
+                // So there is only one item that represents the whole sheet.
+                var gridData = sheetData.Data[0];
+                if (gridData?.RowData == null)
+                    continue;
+
+                var rowIndex = 0;
+                foreach (var rowData in gridData.RowData)
+                {
+                    var row = new RowData();
+                    if (rowData.Values != null)
+                    {
+                        var columnIndex = 0;
+                        foreach (var cellData in rowData.Values)
+                        {
+                            var cellValue = new CellValue();
+                            if (cellData.FormattedValue != null)
+                            {
+                                string stringValue;
+                                if (cellData.EffectiveValue.BoolValue != null)
+                                {
+                                    stringValue = cellData.EffectiveValue.BoolValue.ToString();
+                                }
+                                else if (cellData.EffectiveValue.NumberValue != null)
+                                {
+                                    stringValue = cellData.EffectiveValue.NumberValue.ToString();
+                                }
+                                else
+                                {
+                                    stringValue = cellData.EffectiveValue.StringValue;
+                                }
+
+                                cellValue = new CellValue(
+                                    cellData.FormattedValue?.Trim(),
+                                    cellData.EffectiveValue.FormulaValue?.Trim(),
+                                    stringValue?.Trim());
+                            }
+                            var cell = new Cell(rowIndex, columnIndex, cellValue);
+                            row.AddCell(cell);
+
+                            columnIndex++;
+                        }
+                    }
+
+                    sheet.AddRow(row);
+
+                    rowIndex++;
+                }
+            }
+        }
+        
+        void SetNamedRanges(GoogleSheet.Spreadsheet spreadsheetData)
+        {
+            if (spreadsheetData.NamedRanges != null)
+            {
+                foreach (var namedRangeData in spreadsheetData.NamedRanges)
+                {
+                    var sheetId = namedRangeData.Range.SheetId ?? 0;
+                    var sheet = m_Spreadsheet.GetSheet(sheetId);
+                    var namedRange = sheet.CreateNamedRange(namedRangeData.NamedRangeId, namedRangeData.Name);
+                    var range = new GridRange(namedRangeData.Range.StartRowIndex, namedRangeData.Range.StartColumnIndex, namedRangeData.Range.EndRowIndex - 1, namedRangeData.Range.EndColumnIndex - 1);
+
+                    var cells = sheet.GetRange(range);
+                    namedRange.SetCells(cells, range);
+                }
+            }
         }
     }
 }
