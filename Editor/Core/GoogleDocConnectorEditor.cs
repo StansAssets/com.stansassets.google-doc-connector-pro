@@ -26,9 +26,9 @@ namespace StansAssets.GoogleDoc
         }
         
         /// <summary>
-        /// Get update all added spreadsheets 
+        /// Get all currently configured spreadsheets.
         /// </summary>
-        public static IEnumerable<Spreadsheet> GetAllSpreadsheets(string id) {
+        public static IEnumerable<Spreadsheet> GetAllSpreadsheets() {
             return GoogleDocConnectorSettings.Instance.Spreadsheets;
         }
         
