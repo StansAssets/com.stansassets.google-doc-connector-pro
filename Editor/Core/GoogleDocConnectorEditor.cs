@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,20 +9,45 @@ using Google.Apis.Util.Store;
 
 namespace StansAssets.GoogleDoc
 {
-    static class GoogleDocConnectorEditor
+     public static class GoogleDocConnectorEditor
     {
         internal static Action SpreadsheetsChange = delegate { };
 
-        public static Spreadsheet CreateSpreadsheet(string id)
+        internal static Spreadsheet CreateSpreadsheet(string id)
         {
             var spr = GoogleDocConnectorSettings.Instance.CreateSpreadsheet(id);
             return spr;
         }
 
-        public static void RemoveSpreadsheet(string id)
+        internal static void RemoveSpreadsheet(string id)
         {
             GoogleDocConnectorSettings.Instance.RemoveSpreadsheet(id);
             SpreadsheetsChange();
+        }
+        
+        /// <summary>
+        /// Get update all added spreadsheets 
+        /// </summary>
+        public static IEnumerable<Spreadsheet> GetAllSpreadsheets(string id) {
+            return GoogleDocConnectorSettings.Instance.Spreadsheets;
+        }
+        
+        /// <summary>
+        /// Async update spreadsheet by spreadsheet id
+        /// </summary>
+        /// <param name="id">An id of the spreadsheet</param>
+        public static void UpdateSpreadsheet(string id) {
+            var spreadsheet = GoogleDocConnectorSettings.Instance.GetSpreadsheet(id);
+            spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+        }
+        
+        /// <summary>
+        /// Async update all added spreadsheets 
+        /// </summary>
+        public static void UpdateAllSpreadsheets() {
+            foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets) {
+                spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+            }
         }
 
         /// <summary>
