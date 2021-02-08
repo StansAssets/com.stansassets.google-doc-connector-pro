@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     class SpreadsheetsTab : BaseTab
     {

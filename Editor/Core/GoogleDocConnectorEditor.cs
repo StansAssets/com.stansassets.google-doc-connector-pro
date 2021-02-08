@@ -7,7 +7,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
      public static class GoogleDocConnectorEditor
     {

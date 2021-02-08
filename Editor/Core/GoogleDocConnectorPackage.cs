@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     /// <summary>
     /// Google Doc Connector Package Static info.
@@ -29,7 +29,7 @@ namespace StansAssets.GoogleDoc
         internal static readonly string WindowTabsPath = $"{RootPath}/Editor/Window/Tabs";
         internal static readonly string UILocalizationPath = $"{RootPath}/Editor/Localization/UIE";
         internal static readonly string SamplesPath = $"{RootPath}/Samples/Scene";
-        internal static readonly string CoversPath = $"{RootPath}/Art/Covers";
+        internal static readonly string CoversPath = $"{RootPath}/Editor/Art/Covers";
 
         internal static readonly string LocalizationTabPath = $"{WindowTabsPath}/LocalizationTab";
 

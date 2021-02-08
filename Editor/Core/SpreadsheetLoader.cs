@@ -15,7 +15,7 @@ using FileMode = System.IO.FileMode;
 using Task = System.Threading.Tasks.Task;
 using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     sealed class SpreadsheetLoader
     {

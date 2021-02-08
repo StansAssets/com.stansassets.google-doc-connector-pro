@@ -8,9 +8,9 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
-    public class LocalizedLabelEditorUI : BaseTab
+    class LocalizedLabelEditorUI : BaseTab
     {
         readonly VisualElement m_Root;
         VisualElement m_ListLang;

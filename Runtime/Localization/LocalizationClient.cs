@@ -113,7 +113,7 @@ namespace StansAssets.GoogleDoc.Localization
             var indexRow = 0;
             foreach (var cell in row.Cells)
             {
-                if (indexRow != 0)
+                if (indexRow != 0 && !string.IsNullOrEmpty(cell.Value.StringValue))
                 {
                     m_Languages[cell.Value.StringValue.ToUpper()] = indexRow;
                 }
