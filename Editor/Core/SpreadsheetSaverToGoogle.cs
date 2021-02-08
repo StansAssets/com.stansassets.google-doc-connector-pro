@@ -11,7 +11,7 @@ using UnityEngine;
 using FileMode = System.IO.FileMode;
 using GoogleSheet = Google.Apis.Sheets.v4.Data;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     sealed class SpreadsheetSaverToGoogle
     {

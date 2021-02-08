@@ -9,9 +9,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using HelpBox = StansAssets.Foundation.UIElements.HelpBox;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
-    public class LocalizationTab : BaseTab
+    class LocalizationTab : BaseTab
     {
         readonly VisualElement m_ListSpreadsheet;
 

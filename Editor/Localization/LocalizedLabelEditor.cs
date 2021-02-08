@@ -5,11 +5,11 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     [CustomEditor(typeof(LocalizedLabel))]
     [CanEditMultipleObjects]
-    public class LocalizedLabelEditor : Editor
+    class LocalizedLabelEditor : UnityEditor.Editor
     {
         LocalizedLabel Target => (LocalizedLabel)target;
 #if !UNITY_2019_4_OR_NEWER

@@ -1,7 +1,7 @@
 using StansAssets.Plugins.Editor;
 using UnityEditor;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     static class GoogleDocConnectorEditorMenu
     {

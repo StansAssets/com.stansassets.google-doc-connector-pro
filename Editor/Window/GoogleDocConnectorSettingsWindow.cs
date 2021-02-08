@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using PackageInfo = UnityEditor.PackageManager.PackageInfo;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
     class GoogleDocConnectorSettingsWindow : PackageSettingsWindow<GoogleDocConnectorSettingsWindow>
     {

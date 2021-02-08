@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using StansAssets.GoogleDoc.Editor;
 using StansAssets.GoogleDoc.Localization;
 
 namespace StansAssets.GoogleDoc.Tests

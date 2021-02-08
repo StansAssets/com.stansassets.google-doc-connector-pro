@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using StansAssets.GoogleDoc.Editor;
 
 namespace StansAssets.GoogleDoc.Tests
 {

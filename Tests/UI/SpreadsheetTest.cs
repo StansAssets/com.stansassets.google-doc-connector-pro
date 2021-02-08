@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
+using StansAssets.GoogleDoc.Editor;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc.Tests

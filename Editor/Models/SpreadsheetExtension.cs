@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace StansAssets.GoogleDoc
+namespace StansAssets.GoogleDoc.Editor
 {
-    public static class SpreadsheetExtension
+    static class SpreadsheetExtension
     {
         /// <summary>
         /// Load spreadsheet from google api
