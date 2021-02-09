@@ -8,10 +8,11 @@ namespace StansAssets.GoogleDoc.Editor
         /// <summary>
         /// Load spreadsheet from google api
         /// </summary>
-        public static void Load(this Spreadsheet spreadsheet)
+        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = false</param>
+        public static void Load(this Spreadsheet spreadsheet, bool saveSpreadsheet = false)
         {
             var loader = new SpreadsheetLoader(spreadsheet);
-            loader.Load();
+            loader.Load(saveSpreadsheet);
         }
         
         /// <summary>

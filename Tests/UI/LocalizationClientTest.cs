@@ -6,7 +6,7 @@ namespace StansAssets.GoogleDoc.Tests
 {
     public class LocalizationClientTest
     {
-        const string k_SpreadsheetId = "1eAqrhsWRP5hw9T_AuCMpJRSslh2_9S2dFaUkw_Vml4c";
+        const string k_SpreadsheetId = "1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo"; 
         Spreadsheet m_Spreadsheet;
         LocalizationClient m_Client;
         string m_OldLocalizationClientId;
@@ -29,11 +29,11 @@ namespace StansAssets.GoogleDoc.Tests
         }
 
         [Test]
-        [TestCase("singin", "en", "Sign in")]
-        [TestCase("singin", "ru", "Войти")]
-        [TestCase("singin", "hz", "לבה")]
-        [TestCase("add_content", "en", "Add your own content")]
-        [TestCase("successfullyLabel", "en", "Successfully!")]
+        [TestCase("signInUsing", "en", "Sign in using")]
+        [TestCase("signInUsing", "ru", "Войдите используя")]
+        [TestCase("signInUsing", "gr", "Melden Sie sich mit an")]
+        [TestCase("alreadyHaveAcc", "en", "have an account")]
+        [TestCase("skip", "en", "skip")]
         public void GetLocalizedString(string token, string langCode, string response)
         {
             m_Client.SetLanguage(langCode);
@@ -55,9 +55,9 @@ namespace StansAssets.GoogleDoc.Tests
         }
 
         [Test]
-        [TestCase("singin", "en", "Sign in", "Lobby")]
-        [TestCase("singin", "en", "Sign in", "General")]
-        [TestCase("sotringTableInfo", "ru", "Это ваш контейнер ресурсов. Вы можете загружать контент нажав на ⊕ и перемещать его в комнату. Чтобы удалить содержимое из вашей комнаты сначала выберите это, а затем нажмите на урну. Чтобы удалить содержимое из таблицы содержимого -  просто выберите и перетащите в корзину.", "Room")]
+        [TestCase("signInUsing", "en", "Sign in using", "Lobby")]
+        [TestCase("signInUsing", "en", "Sign in using", "Auth")]
+        [TestCase("sotringTableInfo", "ru", "Зарегистрируйтесь через электронную почту", "Room")]
         [TestCase("saved_to_camera_roll", "en", "Photo was saved to your device camera roll", "AR")]
         public void GetLocalizedString(string token, string langCode, string response, string section)
         {
@@ -67,11 +67,11 @@ namespace StansAssets.GoogleDoc.Tests
         }
 
         [Test]
-        [TestCase("room_arrangement", "en", "Room arrangement", TextType.Default, "Room Creator")]
-        [TestCase("room_arrangement", "en", "room arrangement", TextType.ToLower, "Room Creator")]
-        [TestCase("room_arrangement", "en", "ROOM ARRANGEMENT", TextType.ToUpper, "Room Creator")]
-        [TestCase("room_arrangement", "en", "Room arrangement", TextType.WithCapital, "Room Creator")]
-        [TestCase("room_arrangement", "en", "Room Arrangement", TextType.EachWithCapital, "Room Creator")]
+        [TestCase("room_arrangement", "en", "Room arrangement", TextType.Default, "Room")]
+        [TestCase("room_arrangement", "en", "room arrangement", TextType.ToLower, "Room")]
+        [TestCase("room_arrangement", "en", "ROOM ARRANGEMENT", TextType.ToUpper, "Room")]
+        [TestCase("room_arrangement", "en", "Room arrangement", TextType.WithCapital, "Room")]
+        [TestCase("room_arrangement", "en", "Room Arrangement", TextType.EachWithCapital, "Room")]
         public void GetLocalizedString(string token, string langCode, string response, TextType textType, string section)
         {
             m_Client.SetLanguage(langCode);
@@ -80,9 +80,9 @@ namespace StansAssets.GoogleDoc.Tests
         }
 
         [Test]
-        [TestCase("welcomeMessage", "en", "Vasa joined in Ukraine. Welcome!", "MatchMaking", new[] { "Vasa", "in Ukraine" })]
-        [TestCase("welcomeMessage", "en", "2 joined 4. Welcome!", "MatchMaking", new object[] { 2, "4" })]
-        [TestCase("welcomeMessage", "en", "Family joined together. Welcome!", "MatchMaking", new[] { "Family", "together" })]
+        [TestCase("welcomeMessage", "en", "Vasa joined in Ukraine. Welcome!", "Lobby", new[] { "Vasa", "in Ukraine" })]
+        [TestCase("welcomeMessage", "en", "2 joined 4. Welcome!", "Lobby", new object[] { 2, "4" })]
+        [TestCase("welcomeMessage", "en", "Family joined together. Welcome!", "Lobby", new[] { "Family", "together" })]
         public void GetLocalizedString(string token, string langCode, string response, string section, object[] args)
         {
             m_Client.SetLanguage(langCode);

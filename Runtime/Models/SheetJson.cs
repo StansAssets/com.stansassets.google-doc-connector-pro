@@ -49,7 +49,7 @@ namespace StansAssets.GoogleDoc
         {
             var sheet = new Sheet(Id, Name);
             sheet.SetNamedRanges(NamedRanges.ToList());
-            var rows = new List<RowData> { new RowData() };
+            var rows = new List<RowData>();
             for (var i = 0; i < Cells.LastOrDefault()?.Row + 1; i++)
             {
                 rows.Add(new RowData());
