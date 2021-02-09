@@ -28,6 +28,7 @@ namespace StansAssets.GoogleDoc.Editor
         /// <summary>
         /// Get all currently configured spreadsheets.
         /// </summary>
+        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
         public static IEnumerable<Spreadsheet> GetAllSpreadsheets() {
             return GoogleDocConnectorSettings.Instance.Spreadsheets;
         }
@@ -36,18 +37,48 @@ namespace StansAssets.GoogleDoc.Editor
         /// Async update spreadsheet by spreadsheet id
         /// </summary>
         /// <param name="id">An id of the spreadsheet</param>
-        public static void UpdateSpreadsheet(string id) {
+        /// <param name="callback">return updated spreadsheet</param>
+        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
+        public static void UpdateAsyncSpreadsheet(string id, Action<Spreadsheet> callback, bool saveSpreadsheet = true) {
             var spreadsheet = GoogleDocConnectorSettings.Instance.GetSpreadsheet(id);
-            spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+            spreadsheet.LoadAsync(saveSpreadsheet).ContinueWith(_ => callback?.Invoke(spreadsheet));
         }
         
         /// <summary>
         /// Async update all added spreadsheets 
         /// </summary>
-        public static void UpdateAllSpreadsheets() {
+        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
+        public static async Task<List<Spreadsheet>> UpdateAsyncAllSpreadsheets(bool saveSpreadsheet = true) {
+            var list = new List<Spreadsheet>();
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets) {
-                spreadsheet.LoadAsync(true).ContinueWith(_ => _);
+                await spreadsheet.LoadAsync(saveSpreadsheet);
+                list.Add(spreadsheet);
             }
+            return list;
+        }
+        
+        /// <summary>
+        /// Sync update spreadsheet by spreadsheet id
+        /// </summary>
+        /// <param name="id">An id of the spreadsheet</param>
+        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
+        public static Spreadsheet UpdateSpreadsheet(string id, bool saveSpreadsheet = true) {
+            var spreadsheet = GoogleDocConnectorSettings.Instance.GetSpreadsheet(id);
+            spreadsheet.Load(saveSpreadsheet);
+            return spreadsheet;
+        }
+        
+        /// <summary>
+        /// Sync update all added spreadsheets 
+        /// </summary>
+        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
+        public static IEnumerable<Spreadsheet> UpdateAllSpreadsheets(bool saveSpreadsheet = true) {
+            var list = new List<Spreadsheet>();
+            foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets) {
+                spreadsheet.Load(saveSpreadsheet);
+                list.Add(spreadsheet);
+            }
+            return list;
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_Spreadsheet = spreadsheet;
         }
 
-        public void Load()
+        public void Load(bool saveSpreadsheet)
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
@@ -83,6 +83,23 @@ namespace StansAssets.GoogleDoc.Editor
 
                 if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                     Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
+                
+                if (saveSpreadsheet)
+                {
+                    var sheetJsons = m_Spreadsheet.m_Sheets.Select(s => new SheetJson(s));
+                    File.WriteAllText(GoogleDocConnector.SpreadsheetPathInEditor(m_Spreadsheet), JsonConvert.SerializeObject(sheetJsons, Formatting.None,
+                        new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, DefaultValueHandling = DefaultValueHandling.Ignore }));
+                    var spreadSheetProjectPath = $"{GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath}/{m_Spreadsheet.Name}.json";
+                    AssetDatabase.ImportAsset(spreadSheetProjectPath, ImportAssetOptions.ForceUpdate);
+                    GoogleDocConnectorSettings.Instance.ForceUpdateSpreadsheet(m_Spreadsheet.Id);
+
+                    if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(m_Spreadsheet.Id))
+                    {
+                        LocalizationClient.Default.Refresh(m_Spreadsheet);
+                    }
+
+                    OnSpreadsheetDataSavedOnDisk.Invoke(m_Spreadsheet);
+                }
 
                 m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.Synced);
             }
@@ -96,7 +113,7 @@ namespace StansAssets.GoogleDoc.Editor
             }
         }
 
-        public async Task LoadAsync(bool saveSpreadsheet = false)
+        public async Task LoadAsync(bool saveSpreadsheet)
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
             UserCredential credential;
