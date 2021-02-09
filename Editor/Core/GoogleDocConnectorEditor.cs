@@ -28,7 +28,6 @@ namespace StansAssets.GoogleDoc.Editor
         /// <summary>
         /// Get all currently configured spreadsheets.
         /// </summary>
-        /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
         public static IEnumerable<Spreadsheet> GetAllSpreadsheets() {
             return GoogleDocConnectorSettings.Instance.Spreadsheets;
         }
