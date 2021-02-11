@@ -39,7 +39,7 @@ namespace StansAssets.GoogleDoc.Editor
         /// <param name="id">An id of the spreadsheet</param>
         /// <param name="callback">return updated spreadsheet</param>
         /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
-        public static void UpdateAsyncSpreadsheet(string id, Action<Spreadsheet> callback, bool saveSpreadsheet = true) {
+        public static void UpdateSpreadsheetAsync(string id, Action<Spreadsheet> callback, bool saveSpreadsheet = true) {
             var spreadsheet = GoogleDocConnectorSettings.Instance.GetSpreadsheet(id);
             spreadsheet.LoadAsync(saveSpreadsheet).ContinueWith(_ => callback?.Invoke(spreadsheet));
         }
@@ -48,7 +48,7 @@ namespace StansAssets.GoogleDoc.Editor
         /// Async update all added spreadsheets 
         /// </summary>
         /// <param name="saveSpreadsheet">Save spreadsheet in local cache, default = true</param>
-        public static async Task<List<Spreadsheet>> UpdateAsyncAllSpreadsheets(bool saveSpreadsheet = true) {
+        public static async Task<List<Spreadsheet>> UpdateAllSpreadsheetsAsync(bool saveSpreadsheet = true) {
             var list = new List<Spreadsheet>();
             foreach (var spreadsheet in GoogleDocConnectorSettings.Instance.Spreadsheets) {
                 await spreadsheet.LoadAsync(saveSpreadsheet);
