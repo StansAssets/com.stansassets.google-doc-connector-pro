@@ -29,10 +29,12 @@ namespace StansAssets.GoogleDoc.Editor
         internal static readonly string WindowTabsPath = $"{RootPath}/Editor/Window/Tabs";
         internal static readonly string UILocalizationPath = $"{RootPath}/Editor/Localization/UIE";
         internal static readonly string SamplesPath = $"{RootPath}/Samples/Scene";
-        internal static readonly string CoversPath = $"{RootPath}/Editor/Art/Covers";
+        internal static readonly string IconsPath = $"{RootPath}/Editor/Art/Icons";
 
         internal static readonly string LocalizationTabPath = $"{WindowTabsPath}/LocalizationTab";
 
-        internal static Texture2D Image => (EditorGUIUtility.isProSkin)? EditorAssets.GetImage($"{CoversPath}/logo-dark.png") :  EditorAssets.GetImage($"{CoversPath}/logo-light.png");
+        internal static Texture2D Image => EditorGUIUtility.isProSkin
+            ? EditorAssets.GetImage($"{IconsPath}/logo-dark.png")
+            :  EditorAssets.GetImage($"{IconsPath}/logo-light.png");
     }
 }
