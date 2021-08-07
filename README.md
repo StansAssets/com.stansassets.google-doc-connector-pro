@@ -8,7 +8,13 @@ The plugin saves data from spreadsheets in json and uses data from them when bui
 [![Issues](https://img.shields.io/github/issues/StansAssets/com.stansassets.google-doc-connector-pro)](https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/issues)
 
 
-[API Reference](https://api.stansassets.com/foundation/StansAssets.Foundation.html)
+[API Reference](https://api.stansassets.com/foundation/StansAssets.Foundation.html) | [Wiki](https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki)
+
+#### Quick links to explore the library:
+* [Setup.](https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Setup) Required setup steps
+* [Add first spreadsheet.](https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Setup:-First-add-a-spreadsheet-or-update) Add or update first spreadsheet data
+* [Update Google spredsheet.](https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Update-Google-spreadsheet) Update existed Google spreadsheet via script in editor mode
+* [Get spreadsheet data.](https://github.com/StansAssets/com.stansassets.google-doc-connector-pro/wiki/Get-data-from-spreadsheet) Get actual data from the spreadsheet
 
 ### Install from NPM
 * Navigate to the `Packages` directory of your project.
