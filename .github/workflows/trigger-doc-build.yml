@@ -4,6 +4,7 @@
 name: Trigger Documentation Build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
