@@ -5,6 +5,14 @@ name: Trigger Documentation Build
 
 on:
   workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'write description'
+      tags:
+        description: 'Test scenario tags' 
+        
   push:
     branches:
       - master
