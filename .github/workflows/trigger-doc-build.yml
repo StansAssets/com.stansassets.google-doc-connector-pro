@@ -7,11 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       logLevel:
-        description: 'Log level'     
+        description: 'Log level'
         required: true
-        default: 'write description'
-      tags:
-        description: 'Test scenario tags' 
+        default: 'info'
         
   push:
     branches:
