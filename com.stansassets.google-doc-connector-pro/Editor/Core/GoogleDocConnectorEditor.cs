@@ -97,7 +97,7 @@ namespace StansAssets.GoogleDoc.Editor
                     var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
                     await GoogleWebAuthorizationBroker.AuthorizeAsync(
                         GoogleClientSecrets.Load(stream).Secrets,
-                        new[] { SheetsService.Scope.SpreadsheetsReadonly },
+                        new[] { SheetsService.Scope.Spreadsheets },
                         "user",
                         CancellationToken.None,
                         new FileDataStore(credPath, true));
