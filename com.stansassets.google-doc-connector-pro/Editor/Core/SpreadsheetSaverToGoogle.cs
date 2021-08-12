@@ -21,7 +21,7 @@ namespace StansAssets.GoogleDoc.Editor
 
         static Spreadsheet s_Spreadsheet;
         static SheetsService s_SheetsService;
-        static SheetsService Service => s_SheetsService ?? (s_SheetsService = Credential());
+        public static SheetsService Service => s_SheetsService ?? (s_SheetsService = Credential());
 
         public SpreadsheetSaverToGoogle(Spreadsheet spreadsheet)
         {
