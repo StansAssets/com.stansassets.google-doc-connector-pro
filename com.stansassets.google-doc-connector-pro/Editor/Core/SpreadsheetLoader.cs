@@ -76,14 +76,14 @@ namespace StansAssets.GoogleDoc.Editor
                 UpdateSpreadsheetMeta(spreadsheetData);
 
                 //Set Sheets
-                SetSheet(spreadsheetData);
+                SetSheets(spreadsheetData);
 
                 //Set NamedRanges
                 SetNamedRanges(spreadsheetData);
 
                 if (!Directory.Exists(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath))
                     Directory.CreateDirectory(GoogleDocConnectorSettings.Instance.SpreadsheetsFolderPath);
-                
+
                 if (saveSpreadsheet)
                 {
                     var sheetJsons = m_Spreadsheet.m_Sheets.Select(s => new SheetJson(s));
@@ -156,7 +156,7 @@ namespace StansAssets.GoogleDoc.Editor
                 UpdateSpreadsheetMeta(spreadsheetData);
 
                 //Set Sheets
-                SetSheet(spreadsheetData);
+                SetSheets(spreadsheetData);
 
                 //Set NamedRanges
                 SetNamedRanges(spreadsheetData);
@@ -231,7 +231,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_Spreadsheet.CleanupSheets();
         }
 
-        void SetSheet(GoogleSheet.Spreadsheet spreadsheetData)
+        void SetSheets(GoogleSheet.Spreadsheet spreadsheetData)
         {
             foreach (var sheetData in spreadsheetData.Sheets)
             {
@@ -289,7 +289,7 @@ namespace StansAssets.GoogleDoc.Editor
                 }
             }
         }
-        
+
         void SetNamedRanges(GoogleSheet.Spreadsheet spreadsheetData)
         {
             if (spreadsheetData.NamedRanges != null)

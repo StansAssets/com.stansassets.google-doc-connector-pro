@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Google.Apis.Sheets.v4.Data;
 
 namespace StansAssets.GoogleDoc.Editor
 {
@@ -14,7 +15,7 @@ namespace StansAssets.GoogleDoc.Editor
             var loader = new SpreadsheetLoader(spreadsheet);
             loader.Load(saveSpreadsheet);
         }
-        
+
         /// <summary>
         /// Load asynchronously spreadsheet from google API
         /// </summary>
@@ -60,14 +61,14 @@ namespace StansAssets.GoogleDoc.Editor
             saver.AppendCell(range, value);
         }
 
+
         /// <summary>
         ///  Create sheet to docs.google.com
         /// </summary>
-        /// <param name="name">sheet name. For example: Sheet3</param>
-        public static void CreateGoogleSheet(this Spreadsheet spreadsheet, string name)
+        public static int CreateGoogleSheet(this Spreadsheet spreadsheet, SheetProperties sheetProperties)
         {
             var saver = new SpreadsheetSaverToGoogle(spreadsheet);
-            saver.CreateSheet(name);
+            return saver.CreateSheet(sheetProperties);
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace StansAssets.GoogleDoc.Editor
         }
 
         /// <summary>
-        /// Save spreadsheet to local json file. File will be saving in spreadsheet.Path 
+        /// Save spreadsheet to local json file. File will be saving in spreadsheet.Path
         /// </summary>
         internal static void CacheDocument(this Spreadsheet spreadsheet)
         {
