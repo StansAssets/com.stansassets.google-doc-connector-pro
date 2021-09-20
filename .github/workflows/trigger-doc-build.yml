@@ -5,15 +5,9 @@ name: Trigger Documentation Build
 
 on:
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'info'
-        
   push:
     branches:
-      - master
+      - develop
     paths:
       - '**.cs'
 
