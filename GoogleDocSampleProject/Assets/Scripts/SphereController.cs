@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StansAssets.GoogleDoc.Example
@@ -31,6 +32,16 @@ namespace StansAssets.GoogleDoc.Example
                 m_rigidbody.velocity = m_initialVelocity;
                 Release.Invoke();
             }
+        }
+
+        public void SetUpBall(List<float> values)
+        {
+            transform.localScale = new Vector3(values[0], values[0], values[0]);
+            m_rigidbody.mass = values[1];
+            GetComponent<SphereCollider>().material.bounciness = values[2];
+            Color color =  new Color(values[3], values[4], values[5],1);
+            GetComponent<MeshRenderer>().material.color = color;
+
         }
     }
 }

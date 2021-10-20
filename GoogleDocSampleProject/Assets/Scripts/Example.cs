@@ -15,7 +15,11 @@ namespace StansAssets.GoogleDoc.Example
         [SerializeField] Text m_wordsArea;
         [SerializeField] GameObject m_origin;
         [SerializeField] Transform m_originContainer;
-
+         //test
+       
+        
+        private List<float> _values = new List<float>();
+        //tes
         ObjectPool<SphereController> m_spherePool;
         LocalizationClient m_client;
         const float MINUTE = 60;
@@ -67,7 +71,11 @@ namespace StansAssets.GoogleDoc.Example
         }
 
         private void InstantiateSphere() {
-            m_spherePool.Get();
+          var sphere=  m_spherePool.Get();
+           // var spreadsheet = GoogleDocConnector.GetSpreadsheet(_id);
+           // var sheet = spreadsheet.GetSheet("sheet");
+           // var values = sheet.GetNamedRangeValues<int>("Default");
+          sphere.SetUpBall(_values);
             m_totalSpawnedCount++;
            /* if (totalSpawnedCount == m_count) {
                 totalSpawnedCount = 0;
@@ -112,5 +120,22 @@ namespace StansAssets.GoogleDoc.Example
 
         string CombineWords(IEnumerable<string> words) =>
             words.Aggregate(string.Empty, (word, next) => string.Concat(word, next, "\n"));
+        
+        //test
+        public void SetValues(List<float> values)
+        {
+            if (_values.Count > 0)
+            {
+                _values.Clear();
+            }
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                
+                _values.Add(values[i]);
+            }
+
+            m_spawnDelay = _values.Last();
+        }
     }
 }
