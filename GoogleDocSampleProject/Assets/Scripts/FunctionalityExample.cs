@@ -12,52 +12,52 @@ public class FunctionalityExample : MonoBehaviour
 {
     
     [Header("UI references")]
-    [SerializeField]  Dropdown m_valueDropdown;
-    [SerializeField]  Dropdown m_langDropdown;
-    [SerializeField]  Dropdown m_rangeDropdown;
-    [SerializeField]  InputField m_tokenInputField;
-    [SerializeField]  InputField m_rowsInputField;
-    [SerializeField]  InputField m_columsInputField;
-    [SerializeField]  Text m_valueText;
-    [SerializeField]  Transform m_parametrsParent;
-    [SerializeField]  Transform m_valueParent;
-    [SerializeField]  string m_id;
+    [SerializeField]  Dropdown m_ValueDropdown;
+    [SerializeField]  Dropdown m_LangDropdown;
+    [SerializeField]  Dropdown m_RangeDropdown;
+    [SerializeField]  InputField m_TokenInputField;
+    [SerializeField]  InputField m_RowsInputField;
+    [SerializeField]  InputField m_ColumsInputField;
+    [SerializeField]  Text m_ValueText;
+    [SerializeField]  Transform m_ParametrsParent;
+    [SerializeField]  Transform m_ValueParent;
+    [SerializeField]  string m_Id;
 
     private readonly List<string> m_Tokens = new List<string>() {"size", "weight", "bounce","colR","colB","colG"};//, "bounce","colR","colB","colG" };
     private readonly List<string> m_CellRanges = new List<string>() {"B2:C5","C6:D8" };
     List<string> m_NamedRanges = new List<string>();
-    List<string> m_dropdownValues = new List<string>();
-    Example m_example;
-    Spreadsheet m_spreadsheet;
+    List<string> m_DropdownValues = new List<string>();
+    Example m_Example;
+    Spreadsheet m_Spreadsheet;
     LocalizationClient m_Client;
-    GameObject m_blueprint;
+    GameObject m_Blueprint;
 
    
     void Start()
     {
-        m_example = FindObjectOfType<Example>();
-        m_spreadsheet =GoogleDocConnector.GetSpreadsheet(m_id);
-        var sheet = m_spreadsheet.GetSheet("sheet");
+        m_Example = FindObjectOfType<Example>();
+        m_Spreadsheet =GoogleDocConnector.GetSpreadsheet(m_Id);
+        var sheet = m_Spreadsheet.GetSheet("sheet");
         m_NamedRanges = sheet.NamedRanges.Select(n => n.Name).ToList();
       
         
-        m_valueDropdown.ClearOptions();
-        m_valueDropdown.AddOptions(m_NamedRanges);
+        m_ValueDropdown.ClearOptions();
+        m_ValueDropdown.AddOptions(m_NamedRanges);
 
-        m_blueprint = m_parametrsParent.GetChild(0).gameObject;
-        m_blueprint.transform.SetParent(FindObjectOfType<Canvas>().transform); 
-        m_blueprint.SetActive((false));
+        m_Blueprint = m_ParametrsParent.GetChild(0).gameObject;
+        m_Blueprint.transform.SetParent(FindObjectOfType<Canvas>().transform); 
+        m_Blueprint.SetActive((false));
 
         m_Client = LocalizationClient.Default;
-        m_langDropdown.ClearOptions();
-        m_langDropdown.AddOptions(m_Client.Languages);
+        m_LangDropdown.ClearOptions();
+        m_LangDropdown.AddOptions(m_Client.Languages);
        
-        m_langDropdown.onValueChanged.AddListener(PopulateEntries);
-        m_valueDropdown.onValueChanged.AddListener(PopulateValues);
-        m_tokenInputField.onEndEdit.AddListener(AddToken);
-        m_rowsInputField.onEndEdit.AddListener(GetRow);
-        m_columsInputField.onEndEdit.AddListener(GetColumn);
-        m_rangeDropdown.onValueChanged.AddListener(GetCellsInRange);
+        m_LangDropdown.onValueChanged.AddListener(PopulateEntries);
+        m_ValueDropdown.onValueChanged.AddListener(PopulateValues);
+        m_TokenInputField.onEndEdit.AddListener(AddToken);
+        m_RowsInputField.onEndEdit.AddListener(GetRow);
+        m_ColumsInputField.onEndEdit.AddListener(GetColumn);
+        m_RangeDropdown.onValueChanged.AddListener(GetCellsInRange);
         
         PopulateEntries(0);
         PopulateValues(0);
@@ -66,12 +66,12 @@ public class FunctionalityExample : MonoBehaviour
 
     private void OnDisable()
     {
-        m_langDropdown.onValueChanged.RemoveAllListeners();
-        m_valueDropdown.onValueChanged.RemoveAllListeners();
-        m_tokenInputField.onEndEdit.RemoveAllListeners();
-        m_rowsInputField.onEndEdit.RemoveAllListeners();
-        m_columsInputField.onEndEdit.RemoveAllListeners();
-        m_rangeDropdown.onValueChanged.RemoveAllListeners();
+        m_LangDropdown.onValueChanged.RemoveAllListeners();
+        m_ValueDropdown.onValueChanged.RemoveAllListeners();
+        m_TokenInputField.onEndEdit.RemoveAllListeners();
+        m_RowsInputField.onEndEdit.RemoveAllListeners();
+        m_ColumsInputField.onEndEdit.RemoveAllListeners();
+        m_RangeDropdown.onValueChanged.RemoveAllListeners();
     }
     // private void OnDestroy()
     // {
@@ -86,27 +86,27 @@ public class FunctionalityExample : MonoBehaviour
     private void GetRow(string value)
     {
         int numericValue;
-        var sheet = m_spreadsheet.GetSheet("sheet"); 
+        var sheet = m_Spreadsheet.GetSheet("sheet"); 
         if (int.TryParse(value, out numericValue))
         {
             if (numericValue >= sheet.Rows.Count())
             {
-                m_valueText.text = string.Empty;
+                m_ValueText.text = string.Empty;
                 throw new Exception("Entered number bigger them number of Rows");
             }
                
           
             var rowValues = sheet.GetRowValues<string>(numericValue);
-            m_valueText.text = string.Empty;
-            m_valueText.text = "Row №" + $"{numericValue} :"+"\n";
+            m_ValueText.text = string.Empty;
+            m_ValueText.text = "Row №" + $"{numericValue} :"+"\n";
             foreach (var rowValue in rowValues)
             {
-                m_valueText.text+=" "+rowValue;
+                m_ValueText.text+=" "+rowValue;
             }
         }
         else
         {
-            m_valueText.text = string.Empty;
+            m_ValueText.text = string.Empty;
             throw new Exception("Pls enter a number of a row you want to get");
         }
     }
@@ -115,15 +115,15 @@ public class FunctionalityExample : MonoBehaviour
     {
         if (value == 0)
         {
-            m_valueText.text = string.Empty;
+            m_ValueText.text = string.Empty;
             return;
         }
-        var sheet = m_spreadsheet.GetSheet("sheet");
+        var sheet = m_Spreadsheet.GetSheet("sheet");
         var cells = sheet.GetRange(m_CellRanges[value-1]);
-        m_valueText.text = string.Empty;
+        m_ValueText.text = string.Empty;
         foreach (var cell in cells)
         {
-            m_valueText.text += $" {cell.Value.FormattedValue}";
+            m_ValueText.text += $" {cell.Value.FormattedValue}";
         }
     }
     
@@ -131,27 +131,27 @@ public class FunctionalityExample : MonoBehaviour
     {
         if (value == string.Empty) return;
         int numericValue;
-        var sheet = m_spreadsheet.GetSheet("sheet");
+        var sheet = m_Spreadsheet.GetSheet("sheet");
        
         if (int.TryParse(value, out numericValue))
         {
            var columnValues = sheet.GetColumnValues<string>(numericValue);
           
-           m_valueText.text = string.Empty;
-           m_valueText.text = "Column №" + $"{numericValue} :";
+           m_ValueText.text = string.Empty;
+           m_ValueText.text = "Column №" + $"{numericValue} :";
            foreach (var rowValue in columnValues)
            {
-               m_valueText.text+="\n"+rowValue;
+               m_ValueText.text+="\n"+rowValue;
            }
         }
         else
         {
             var columnValues = sheet.GetColumnValues<string>(value);
-            m_valueText.text = string.Empty;
-            m_valueText.text = "Column №" + $"{numericValue} :";
+            m_ValueText.text = string.Empty;
+            m_ValueText.text = "Column №" + $"{numericValue} :";
             foreach (var rowValue in columnValues)
             {
-                m_valueText.text+="\n"+rowValue;
+                m_ValueText.text+="\n"+rowValue;
             }
         }
     }
@@ -163,22 +163,22 @@ public class FunctionalityExample : MonoBehaviour
         var newToken = token;
         var newLoc = m_Client.GetLocalizedString(newToken);
         m_Tokens.Add(newToken);
-        m_tokenInputField.text = String.Empty;
-        PopulateEntries(m_langDropdown.value);
-        PopulateValues(m_valueDropdown.value);
+        m_TokenInputField.text = String.Empty;
+        PopulateEntries(m_LangDropdown.value);
+        PopulateValues(m_ValueDropdown.value);
     }
     private void PopulateEntries(int index)
     {
-        for (int i = 0; i < m_parametrsParent.childCount; i++)
+        for (int i = 0; i < m_ParametrsParent.childCount; i++)
         {
-            Destroy((m_parametrsParent.GetChild(i).gameObject));
+            Destroy((m_ParametrsParent.GetChild(i).gameObject));
         }
         
         m_Client.SetLanguage(m_Client.Languages[index]);
         
         foreach (var token in m_Tokens)
         {
-            var newEntry=  Instantiate(m_blueprint, m_parametrsParent);
+            var newEntry=  Instantiate(m_Blueprint, m_ParametrsParent);
             Text entryText = newEntry.GetComponent<Text>();
             entryText.text = $"  {token} : {m_Client.GetLocalizedString(token)}";
             entryText.enabled = true;
@@ -190,14 +190,14 @@ public class FunctionalityExample : MonoBehaviour
 
     private void PopulateValues(int index)
     {
-        for (int i = 0; i < m_valueParent.childCount; i++)
+        for (int i = 0; i < m_ValueParent.childCount; i++)
         {
-            Destroy((m_valueParent.GetChild(i).gameObject));
+            Destroy((m_ValueParent.GetChild(i).gameObject));
         }
-        var sheet = m_spreadsheet.GetSheet("sheet"); 
+        var sheet = m_Spreadsheet.GetSheet("sheet"); 
         //var cells = sheet.GetNamedRangeValues<string>(m_NamedRanges[index]);
         var values =sheet.GetNamedRangeValues<float>(m_NamedRanges[index]);
-        m_example.SetValues(values);
+        m_Example.SetValues(values);
         // foreach (var value in values)
         // {
         //     var newEntry=  Instantiate(m_blueprint, m_valueParent);
@@ -210,7 +210,7 @@ public class FunctionalityExample : MonoBehaviour
 
         for (int i = 0; i < m_Tokens.Count; i++)
         {
-            var newEntry=  Instantiate(m_blueprint, m_valueParent);
+            var newEntry=  Instantiate(m_Blueprint, m_ValueParent);
             Text entryText = newEntry.GetComponent<Text>();
             entryText.text = values[i].ToString("N");
             entryText.enabled = true;
@@ -219,6 +219,6 @@ public class FunctionalityExample : MonoBehaviour
         
         
     }
-
+    
     
 }

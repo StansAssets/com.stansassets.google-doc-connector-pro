@@ -2183,7 +2183,7 @@ GameObject:
   - component: {fileID: 822992088}
   - component: {fileID: 822992086}
   m_Layer: 5
-  m_Name: Search row filed
+  m_Name: Search row field
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4058,7 +4058,7 @@ GameObject:
   - component: {fileID: 1403232290}
   - component: {fileID: 1403232289}
   m_Layer: 5
-  m_Name: Text (1)
+  m_Name: Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6382,16 +6382,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb9befff10cc6fc4980ff9e228fe4d9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_valueDropdown: {fileID: 9187944}
-  m_langDropdown: {fileID: 2017943526}
-  m_rangeDropdown: {fileID: 459506664}
-  m_tokenInputField: {fileID: 1743286217}
-  m_rowsInputField: {fileID: 822992086}
-  m_columsInputField: {fileID: 1679133650}
-  m_valueText: {fileID: 1038181848}
-  m_parametrsParent: {fileID: 594765997}
-  m_valueParent: {fileID: 1184946891}
-  m_id: 1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ
+  m_ValueDropdown: {fileID: 9187944}
+  m_LangDropdown: {fileID: 2017943526}
+  m_RangeDropdown: {fileID: 459506664}
+  m_TokenInputField: {fileID: 1743286217}
+  m_RowsInputField: {fileID: 822992086}
+  m_ColumsInputField: {fileID: 1679133650}
+  m_ValueText: {fileID: 1038181848}
+  m_ParametrsParent: {fileID: 594765997}
+  m_ValueParent: {fileID: 1184946891}
+  m_Id: 1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ
 --- !u!1 &1859502286
 GameObject:
   m_ObjectHideFlags: 0
