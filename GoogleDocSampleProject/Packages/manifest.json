@@ -9,7 +9,6 @@
     }
   ],
     "dependencies": {
-        "com.stansassets.build": "0.0.16-preview",
         "com.stansassets.google-doc-connector-pro": "file:../../com.stansassets.google-doc-connector-pro",
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.2d.tilemap": "1.0.0",
