@@ -12,46 +12,20 @@ namespace StansAssets.GoogleDoc.Example
     public class Example : MonoBehaviour
     {
         [Header("UI references")]
-        [SerializeField]
-        Dropdown m_ValueDropdown;
-
-        [SerializeField]
-        Dropdown m_LangDropdown;
-
-        [SerializeField]
-        Dropdown m_RangeDropdown;
-
-        [SerializeField]
-        InputField m_TokenInputField;
-
-        [SerializeField]
-        InputField m_RowsInputField;
-
-        [SerializeField]
-        InputField m_ColumnsInputField;
-
-        [SerializeField]
-        InputField m_RangeInputField;
-
-        [SerializeField]
-        Text m_ValueText;
-
-        [SerializeField]
-        Transform m_ParametersParent;
-
-        [SerializeField]
-        Transform m_ValueParent;
-
-        [SerializeField]
-        string m_Id;
-
+        [SerializeField] Dropdown m_ValueDropdown;
+        [SerializeField] Dropdown m_LangDropdown;
+        [SerializeField] Dropdown m_RangeDropdown;
+        [SerializeField] InputField m_TokenInputField;
+        [SerializeField] InputField m_RowsInputField;
+        [SerializeField] InputField m_ColumnsInputField;
+        [SerializeField] InputField m_RangeInputField;
+        [SerializeField] Text m_ValueText;
+        [SerializeField] Transform m_ParametersParent;
+        [SerializeField] Transform m_ValueParent;
+        [SerializeField] string m_Id;
         [Header("Sphere spawn reference")]
-        [SerializeField]
-        GameObject m_Origin;
-
-        [SerializeField]
-        Transform m_OriginContainer;
-
+        [SerializeField] GameObject m_Origin;
+        [SerializeField] Transform m_OriginContainer;
         List<float> m_Values = new List<float>();
         List<string> m_Tokens = new List<string>();
         readonly List<string> m_CellRanges = new List<string>() {"B2:C5", "C6:D7"};
