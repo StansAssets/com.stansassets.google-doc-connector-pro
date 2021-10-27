@@ -18,11 +18,11 @@ MonoBehaviour:
     m_Sheets:
     - m_Name: Localization
       m_Id: 909427049
-    - m_Name: sheet
+    - m_Name: BallConfig
       m_Id: 0
     m_Id: 1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ
     m_Url: https://docs.google.com/spreadsheets/d/1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ/edit
-    m_Name: table
+    m_Name: "\u0421onfig"
     m_LastSyncMachineName: LAPTOP-BHSDG4LU
-    m_DateTimeStr: 27.10.2021 12:03
+    m_DateTimeStr: 27.10.2021 15:55
   m_LocalizationSpreadsheetId: 1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ

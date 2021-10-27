@@ -69,7 +69,7 @@ namespace StansAssets.GoogleDoc.Example
         void Start()
         {
             m_Spreadsheet = GoogleDocConnector.GetSpreadsheet(m_Id);
-            var sheet = m_Spreadsheet.GetSheet("sheet");
+            var sheet = m_Spreadsheet.GetSheet("BallConfig");
             var langSheet = m_Spreadsheet.GetSheet("Localization");
             m_RowsCount = sheet.Rows.Count();
             m_Tokens = new List<string>(langSheet.GetColumnValues<string>(0));
@@ -130,7 +130,7 @@ namespace StansAssets.GoogleDoc.Example
             }
 
             int numericValue;
-            var sheet = m_Spreadsheet.GetSheet("sheet");
+            var sheet = m_Spreadsheet.GetSheet("BallConfig");
             if (int.TryParse(value, out numericValue))
             {
                 if (numericValue >= m_RowsCount)
@@ -157,7 +157,7 @@ namespace StansAssets.GoogleDoc.Example
                 return;
             }
 
-            var sheet = m_Spreadsheet.GetSheet("sheet");
+            var sheet = m_Spreadsheet.GetSheet("BallConfig");
             var cells = sheet.GetRange(m_CellRanges[value - 1]);
             m_ValueText.text = string.Empty;
             foreach (var cell in cells)
@@ -175,7 +175,7 @@ namespace StansAssets.GoogleDoc.Example
             }
 
             int numericValue;
-            var sheet = m_Spreadsheet.GetSheet("sheet");
+            var sheet = m_Spreadsheet.GetSheet("BallConfig");
             if (int.TryParse(value, out numericValue))
             {
                 var columnValues = sheet.GetColumnValues<string>(numericValue);
@@ -255,14 +255,14 @@ namespace StansAssets.GoogleDoc.Example
                 Destroy((m_ValueParent.GetChild(i).gameObject));
             }
 
-            var sheet = m_Spreadsheet.GetSheet("sheet");
+            var sheet = m_Spreadsheet.GetSheet("BallConfig");
             m_Values = sheet.GetNamedRangeValues<float>(m_NamedRanges[index]);
             m_SpawnDelay = m_Values[m_Values.Count - 1];
             for (int i = 0; i < m_Tokens.Count; i++)
             {
                 var newEntry = Instantiate(m_Blueprint, m_ValueParent);
                 var entryText = newEntry.GetComponent<Text>();
-                entryText.text = m_Values[i].ToString("N");
+                entryText.text = m_Values[i].ToString("");
                 entryText.enabled = true;
                 newEntry.SetActive(true);
             }
@@ -276,7 +276,7 @@ namespace StansAssets.GoogleDoc.Example
                 return;
             }
 
-            var sheet = m_Spreadsheet.GetSheet("sheet");
+            var sheet = m_Spreadsheet.GetSheet("BallConfig");
             var cells = sheet.GetRange(range);
             m_ValueText.text = string.Empty;
             foreach (var cell in cells)

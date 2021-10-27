@@ -38,7 +38,7 @@ namespace StansAssets.GoogleDoc.Example
         {
             transform.localScale = new Vector3(values[0], values[0], values[0]);
             m_rigidbody.mass = values[1];
-            Color color =  new Color(values[2], values[3], values[4],1);
+            Color color =  new Color(values[2]/255, values[3]/255, values[4]/255,1);
             GetComponent<MeshRenderer>().material.color = color;
 
         }
