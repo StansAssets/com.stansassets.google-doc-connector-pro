@@ -42,7 +42,7 @@ namespace StansAssets.GoogleDoc
         internal const string NotSyncedStringStatus = "Not Synced";
         internal const string SyncedWithErrorStringStatus = "Synced With Error";
 
-        const string k_DefaultName = "<Spreadsheet>";
+        const string k_DefaultName = "Spreadsheet";
 
         /// <summary>
         /// An event to track spreadsheet sync state.
