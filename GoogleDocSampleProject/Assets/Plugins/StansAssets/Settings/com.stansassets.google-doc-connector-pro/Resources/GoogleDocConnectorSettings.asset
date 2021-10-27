@@ -16,24 +16,6 @@ MonoBehaviour:
   - m_State: 0
     m_SyncErrorMassage: 
     m_Sheets:
-    - m_Name: Auth
-      m_Id: 0
-    - m_Name: Room
-      m_Id: 615936392
-    - m_Name: AR
-      m_Id: 1082202657
-    - m_Name: Lobby
-      m_Id: 1930992173
-    - m_Name: Sample
-      m_Id: 1358809189
-    m_Id: 1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo
-    m_Url: https://docs.google.com/spreadsheets/d/1b_qGZuE5iy9fkK0QoXMObEigJPhuz7OZu27DDbEvUOo/edit
-    m_Name: Exaple Localization
-    m_LastSyncMachineName: LAPTOP-BHSDG4LU
-    m_DateTimeStr: 20.10.2021 15:09
-  - m_State: 0
-    m_SyncErrorMassage: 'Error: Sharing violation on path D:\-=REPOS=-\PROTOTYPE\com.stansassets.google-doc-connector-pro\GoogleDocSampleProject\Assets\Plugins\StansAssets\Settings\com.stansassets.google-doc-connector-pro\token.json\Google.Apis.Auth.OAuth2.Responses.TokenResponse-user'
-    m_Sheets:
     - m_Name: Localization
       m_Id: 909427049
     - m_Name: sheet
@@ -42,5 +24,5 @@ MonoBehaviour:
     m_Url: https://docs.google.com/spreadsheets/d/1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ/edit
     m_Name: table
     m_LastSyncMachineName: LAPTOP-BHSDG4LU
-    m_DateTimeStr: 20.10.2021 16:12
+    m_DateTimeStr: 27.10.2021 12:03
   m_LocalizationSpreadsheetId: 1lxUH2s0g_xcGqqUe-BJSRF2eEXtxS1VCkdaKqwwusnQ
