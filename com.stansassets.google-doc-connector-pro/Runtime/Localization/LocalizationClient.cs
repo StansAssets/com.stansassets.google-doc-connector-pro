@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace StansAssets.GoogleDoc.Localization
 {
@@ -34,7 +35,7 @@ namespace StansAssets.GoogleDoc.Localization
         int m_CurrentLanguageCodeIndex;
 
         Spreadsheet m_LocalizationSpreadsheet;
-
+        Sheet m_LocalizationSheet;
         TokenСache m_TokenCache;
         ILocalizationToken m_LocalizationToken;
 
@@ -82,7 +83,7 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 throw new InvalidOperationException("No sheets in the spreadsheet");
             }
-
+            
             var sheetFirst = m_LocalizationSpreadsheet.Sheets.First();
             if (!sheetFirst.Rows.Any())
             {
@@ -94,13 +95,17 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 throw new InvalidOperationException("The first row on the first sheet of the table has no filled cells");
             }
-
-            var cellToken = row.Cells.FirstOrDefault();
-            if (cellToken != null && (cellToken.Value.StringValue.ToLower() != "token" && cellToken.Value.StringValue.ToLower() != "tokens"))
+            
+            try
             {
-                throw new InvalidOperationException("Token column name not found");
+                m_LocalizationSheet = m_LocalizationSpreadsheet.Sheets.First(n=>n.GetCellValue<string>(0, 0).ToLower().Equals("token")
+                    || n.GetCellValue<string>(0, 0).ToLower().Equals("tokens"));
             }
-
+            catch
+            {
+                throw new InvalidOperationException("Column with name Token not found");
+            }
+            
             var indexSheet = 0;
             m_Sections = new Dictionary<string, int>();
             foreach (var sheet in m_LocalizationSpreadsheet.Sheets)
@@ -108,10 +113,11 @@ namespace StansAssets.GoogleDoc.Localization
                 m_Sections[sheet.Name.Trim()] = indexSheet;
                 indexSheet++;
             }
-
+            
             m_Languages = new Dictionary<string, int>();
             var indexRow = 0;
-            foreach (var cell in row.Cells)
+            var localizationRow = m_LocalizationSheet.Rows.FirstOrDefault();
+            foreach (var cell in localizationRow.Cells)
             {
                 if (indexRow != 0 && !string.IsNullOrEmpty(cell.Value.StringValue))
                 {
@@ -175,7 +181,11 @@ namespace StansAssets.GoogleDoc.Localization
             m_LocalizationToken = new LocalizationToken()
             {
                 Token = token,
-                Section = m_Sections.Keys.First()
+               // Section = m_Sections.Keys.First()
+               // Section = m_LocalizationSpreadsheet.Sheets.First(n =>
+               //     n.GetCellValue<string>(0, 0).ToLower().Equals("token")
+               //     || n.GetCellValue<string>(0, 0).ToLower().Equals("tokens")).Name
+               Section = m_LocalizationSheet.Name
             };
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
         }
