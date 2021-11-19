@@ -180,12 +180,8 @@ namespace StansAssets.GoogleDoc.Localization
         {
             m_LocalizationToken = new LocalizationToken()
             {
-                Token = token,
-               // Section = m_Sections.Keys.First()
-               // Section = m_LocalizationSpreadsheet.Sheets.First(n =>
-               //     n.GetCellValue<string>(0, 0).ToLower().Equals("token")
-               //     || n.GetCellValue<string>(0, 0).ToLower().Equals("tokens")).Name
-               Section = m_LocalizationSheet.Name
+                Token = token, 
+                Section = m_LocalizationSheet.Name
             };
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
         }
