@@ -8,13 +8,16 @@ namespace StansAssets.GoogleDoc
     /// </summary>
      static class GoogleDocConnectorLocalization
     {
-        static string s_LocalizationSheetId;
         internal static Action SpreadsheetIdChanged = delegate { };
         /// <summary>
         /// Spreadsheet ID used for the Localization client
         /// </summary>
         internal static string SpreadsheetId => GoogleDocConnectorSettings.Instance.LocalizationSpreadsheetId;
-        internal static string LocalizationSheetId => s_LocalizationSheetId;
+       
+        /// <summary>
+        /// Sheet ID used for the Localization client
+        /// </summary>
+        internal static int LocalizationSheetId => GoogleDocConnectorSettings.Instance.LocalizationSheetId;
 
         /// <summary>
         /// Set a new spreadsheet ID to be used for the Localization client
@@ -28,14 +31,13 @@ namespace StansAssets.GoogleDoc
         }
 
         /// <summary>
-        /// TODO:Add summary 
+        ///  Set a new spreadsheet ID and sheet ID to be used for the Localization client
         /// </summary>
         /// <param name="newSpreadsheetId"></param>
         /// <param name="newSheetId"></param>
-        internal static void SpreadsheetIdSet(string newSpreadsheetId, string newSheetId)
+        internal static void SpreadsheetIdSet(string newSpreadsheetId, int newSheetId)
         {
-            s_LocalizationSheetId = newSheetId;
-            GoogleDocConnectorSettings.Instance.LocalizationSpreadsheetIdSet(newSpreadsheetId);
+            GoogleDocConnectorSettings.Instance.LocalizationSpreadsheetIdSet(newSpreadsheetId, newSheetId);
             LocalizationClient.ClearDefault();
             SpreadsheetIdChanged.Invoke();
         }

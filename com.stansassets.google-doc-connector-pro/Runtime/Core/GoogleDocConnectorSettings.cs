@@ -21,7 +21,11 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_LocalizationSpreadsheetId = string.Empty;
+        [SerializeField]
+        int m_LocalizationSheetId = -1;
+        
         internal string LocalizationSpreadsheetId => m_LocalizationSpreadsheetId;
+        internal int LocalizationSheetId => m_LocalizationSheetId;
 
         internal Spreadsheet CreateSpreadsheet(string id)
         {
@@ -40,6 +44,13 @@ namespace StansAssets.GoogleDoc
 
         internal void LocalizationSpreadsheetIdSet(string newSpreadsheetId)
         {
+            m_LocalizationSpreadsheetId = newSpreadsheetId;
+            Save();
+        }
+
+        internal void LocalizationSpreadsheetIdSet(string newSpreadsheetId, int sheetId)
+        {
+            m_LocalizationSheetId = sheetId;
             m_LocalizationSpreadsheetId = newSpreadsheetId;
             Save();
         }

@@ -47,7 +47,7 @@ namespace StansAssets.GoogleDoc.Localization
                 if (s_DefaultLocalizationClient == null)
                 {
                     var spr = GetSettingsLocalizationSpreadsheet();
-                    s_DefaultLocalizationClient = new LocalizationClient(spr);
+                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId);
                 }
 
                 return s_DefaultLocalizationClient;
@@ -62,10 +62,10 @@ namespace StansAssets.GoogleDoc.Localization
         /// <summary>
         /// Create localization client with Spreadsheet
         /// </summary>
-        /// <exception cref="Exception">Will return an error if there is no first filled line in the first sheet of the spreadsheet</exception>
-        internal LocalizationClient(Spreadsheet spreadsheet)
+        /// <exception cref="Exception">Will return an error if the sheet hasn't been selected</exception>
+        internal LocalizationClient(Spreadsheet spreadsheet, int sheetId)
         {
-            Refresh(spreadsheet);
+            Refresh(spreadsheet, sheetId);
         }
 
         /// <summary>
@@ -73,8 +73,9 @@ namespace StansAssets.GoogleDoc.Localization
         /// Method call will also trigger OnLanguageChanged callback
         /// </summary>
         /// <param name="spreadsheet">Spreadsheet that will be used as the localization data source</param>
+        /// <param name="localizationSheetId">Sheet id that will be used as the localization data source</param>
         /// <exception cref="InvalidOperationException">Will return an error if there is no first filled line in the first sheet of the spreadsheet</exception>
-        public void Refresh(Spreadsheet spreadsheet)
+        public void Refresh(Spreadsheet spreadsheet, int localizationSheetId)
         {
             m_TokenCache = new TokenСache();
             m_LocalizationSpreadsheet = spreadsheet;
@@ -83,73 +84,8 @@ namespace StansAssets.GoogleDoc.Localization
                 throw new InvalidOperationException("No sheets in the spreadsheet");
             }
 
-            var sheetFirst = m_LocalizationSpreadsheet.Sheets.First();
-            if (!sheetFirst.Rows.Any())
-            {
-                throw new InvalidOperationException("There are no filled lines on the first sheet of the table");
-            }
-
-            var row = sheetFirst.Rows.First();
-            if (!row.Cells.Any())
-            {
-                throw new InvalidOperationException("The first row on the first sheet of the table has no filled cells");
-            }
-
-            var cellToken = row.Cells.FirstOrDefault();
-            if (cellToken != null && (cellToken.Value.StringValue.ToLower() != "token" && cellToken.Value.StringValue.ToLower() != "tokens"))
-            {
-                throw new InvalidOperationException("Token column name not found");
-            }
-
-            var indexSheet = 0;
-            m_Sections = new Dictionary<string, int>();
-            foreach (var sheet in m_LocalizationSpreadsheet.Sheets)
-            {
-                m_Sections[sheet.Name.Trim()] = indexSheet;
-                indexSheet++;
-            }
-
-            m_Languages = new Dictionary<string, int>();
-            var indexRow = 0;
-            foreach (var cell in row.Cells)
-            {
-                if (indexRow != 0 && !string.IsNullOrEmpty(cell.Value.StringValue))
-                {
-                    m_Languages[cell.Value.StringValue.ToUpper()] = indexRow;
-                }
-
-                indexRow++;
-            }
-
-            if (!m_Languages.Any())
-            {
-                throw new Exception("No headings found for available languages");
-            }
-
-            if (string.IsNullOrEmpty(CurrentLanguage))
-            {
-                CurrentLanguage = m_Languages.Keys.First();
-                m_CurrentLanguageCodeIndex = 1;
-            }
-            else
-            {
-                m_CurrentLanguageCodeIndex = m_Languages[CurrentLanguage];
-            }
-
-            OnLanguageChanged.Invoke();
-        }
-
-        public void RefreshSheet(Spreadsheet spreadsheet, string localizationSheetId)
-        {
-            m_TokenCache = new TokenСache();
-            m_LocalizationSpreadsheet = spreadsheet;
-            if (!m_LocalizationSpreadsheet.Sheets.Any())
-            {
-                throw new InvalidOperationException("No sheets in the spreadsheet");
-            }
-
-            Sheet newSheet = m_LocalizationSpreadsheet.Sheets.First(s => s.Name == localizationSheetId);
-            if (localizationSheetId == "None")
+            Sheet newSheet = m_LocalizationSpreadsheet.Sheets.FirstOrDefault(s => s.Id == localizationSheetId);
+            if (newSheet == null)
             {
                 throw new InvalidOperationException("There are no selected sheet");
             }
@@ -484,7 +420,7 @@ namespace StansAssets.GoogleDoc.Localization
             var id = GoogleDocConnectorLocalization.SpreadsheetId;
             return GoogleDocConnector.GetSpreadsheet(id);
         }
-
+        
         /// <summary>
         /// Returns the position of the cell where the token is in the first column with add new tokens to TokenCache
         /// </summary>
