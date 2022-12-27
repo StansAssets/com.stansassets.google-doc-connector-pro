@@ -66,6 +66,12 @@ namespace StansAssets.GoogleDoc
             spreadsheet.CleanUpLocalCache();
             m_Spreadsheets.Remove(spreadsheet);
             m_SpreadsheetsMap.Remove(spreadsheet.Id);
+
+            if (spreadsheet.Id == m_LocalizationSpreadsheetId)
+            {
+                m_LocalizationSpreadsheetId = string.Empty;
+                m_LocalizationSheetId = -1;
+            }
         }
 
         internal bool HasSpreadsheet(string id)

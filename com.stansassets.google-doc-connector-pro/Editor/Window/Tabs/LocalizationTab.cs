@@ -66,8 +66,9 @@ namespace StansAssets.GoogleDoc.Editor
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
             GoogleDocConnectorEditor.SpreadsheetsChange += () =>
             {
-                CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet());
-                CreateSheetList(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet());
+                Spreadsheet spreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet();
+                CreateListSpreadsheet(spreadsheet);
+                CreateSheetList(spreadsheet);
             };
 
             Bind();
@@ -101,7 +102,7 @@ namespace StansAssets.GoogleDoc.Editor
         void LocalizationSpinner(Spreadsheet spr)
         {
             m_Spinner.style.display = spr.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
-            if (spr.Synced)
+            if (spr.Synced || spr.SyncedWithError)
             {
                 BindDocumentInfo(spr);
             }
@@ -195,11 +196,11 @@ namespace StansAssets.GoogleDoc.Editor
                 spreadsheet.OnSyncStateChange -= LocalizationSpinner;
                 m_Spinner.style.display = DisplayStyle.None;
 
-                var newLocalization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
-                if (newLocalization != null)
+                Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
+                if (localizationSpreadsheet != null)
                 {
-                    GoogleDocConnectorLocalization.SpreadsheetIdSet(newLocalization.Id, k_DefaultLocalizationSheetId);
-                    Bind(newLocalization);
+                    GoogleDocConnectorLocalization.SpreadsheetIdSet(localizationSpreadsheet.Id, k_DefaultLocalizationSheetId);
+                    Bind(localizationSpreadsheet);
                 }
             });
             m_ListSpreadsheet.Add(m_SpreadsheetField);
