@@ -23,6 +23,7 @@ namespace StansAssets.GoogleDoc.Editor
         readonly VisualElement m_DocumentInfo;
 
         readonly HelpBox m_LocalizationError;
+        readonly HelpBox m_LocalizationWarning;
 
         readonly Button m_RefreshButton;
         readonly Button m_OpenBtn;
@@ -54,6 +55,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_ListSheet = this.Q<VisualElement>("listSheet");
             m_DocumentInfo = this.Q<VisualElement>("document-info");
             m_LocalizationError = this.Q<HelpBox>("localization-error");
+            m_LocalizationWarning = this.Q<HelpBox>("localization-warning");
             m_RefreshButton = this.Q<Button>("refreshBtn");
             m_OpenBtn = this.Q<Button>("openBtn");
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
@@ -81,6 +83,8 @@ namespace StansAssets.GoogleDoc.Editor
                     Bind();
                 }
             };
+            
+            CheckLocalizationCacheFile();
         }
 
         void Bind()
@@ -176,7 +180,8 @@ namespace StansAssets.GoogleDoc.Editor
             {
                 m_LocalizationError.Text = ex.Message;
                 m_SpreadsheetBottomPanel.style.display =
-                    m_DocumentInfo.style.display = DisplayStyle.None;
+                    m_DocumentInfo.style.display =
+                        m_LocalizationWarning.style.display = DisplayStyle.None;
                 m_LocalizationError.style.display = DisplayStyle.Flex;
             }
         }
@@ -254,12 +259,14 @@ namespace StansAssets.GoogleDoc.Editor
                     m_SpreadsheetBottomPanel.style.display =
                         m_RefreshButton.style.display =
                             m_OpenBtn.style.display =
-                                m_ListSheetIdVisualElement.style.display = DisplayStyle.None;
+                                m_ListSheetIdVisualElement.style.display =
+                                    m_LocalizationWarning.style.display = DisplayStyle.None;
                 GoogleDocConnectorLocalization.SpreadsheetIdSet("", k_DefaultLocalizationSheetId);
             }
             else
             {
-                m_LabelChooseSpreadsheet.style.display = DisplayStyle.None;
+                m_LabelChooseSpreadsheet.style.display =
+                    m_LocalizationWarning.style.display = DisplayStyle.None;
                 m_DocumentInfo.style.display =
                     m_SpreadsheetBottomPanel.style.display =
                         m_RefreshButton.style.display =
@@ -273,7 +280,8 @@ namespace StansAssets.GoogleDoc.Editor
         {
             if (GoogleDocConnectorSettings.Instance.Spreadsheets.Any(v => v.Name != "<Spreadsheet>"))
             {
-                m_NoCredentialsHelpBox.style.display = DisplayStyle.None;
+                m_NoCredentialsHelpBox.style.display =
+                    m_LocalizationWarning.style.display = DisplayStyle.None;
                 m_ListSpreadsheet.style.display =
                     m_DocumentInfo.style.display =
                         m_SpreadsheetBottomPanel.style.display =
@@ -287,7 +295,8 @@ namespace StansAssets.GoogleDoc.Editor
                     m_DocumentInfo.style.display =
                         m_SpreadsheetBottomPanel.style.display =
                             m_RefreshButton.style.display =
-                                m_OpenBtn.style.display = DisplayStyle.None;
+                                m_OpenBtn.style.display =
+                                    m_LocalizationWarning.style.display = DisplayStyle.None;
             }
         }
 
@@ -323,6 +332,31 @@ namespace StansAssets.GoogleDoc.Editor
                     m_ListLang.Add(but);
                 }
             }
+        }
+        
+        void CheckLocalizationCacheFile()
+        {
+            if (string.IsNullOrEmpty(GoogleDocConnectorLocalization.SpreadsheetId) || GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId) return;
+
+            var localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+            if (!localizationSpreadsheet.IsSpreadsheetFileExist())
+            {
+                DisplayWarning("No cached localization file");
+            }
+        }
+
+        void DisplayWarning(string warningMessage)
+        {
+            m_LocalizationWarning.Text = warningMessage;
+
+            m_DocumentInfo.style.display =
+                m_SpreadsheetBottomPanel.style.display =
+                    m_LocalizationError.style.display = DisplayStyle.None;
+
+            m_RefreshButton.style.display =
+                m_OpenBtn.style.display =
+                    m_ListSheetIdVisualElement.style.display =
+                        m_LocalizationWarning.style.display = DisplayStyle.Flex;
         }
     }
 }

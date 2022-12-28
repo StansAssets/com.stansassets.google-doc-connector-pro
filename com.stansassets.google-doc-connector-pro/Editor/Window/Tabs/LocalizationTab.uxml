@@ -19,6 +19,7 @@
                 <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
                 <ui:Label name="lastSyncMachineName" class="spreadsheet-date" />
             </ui:VisualElement>
+            <StansAssets.Foundation.UIElements.HelpBox name="localization-warning" type="Warning" class="localization-warning" />
             <StansAssets.Foundation.UIElements.HelpBox type="Error" name="localization-error" class="localization-error" />
         </ui:VisualElement>
     </StansAssets.Foundation.UIElements.SettingsBlock>

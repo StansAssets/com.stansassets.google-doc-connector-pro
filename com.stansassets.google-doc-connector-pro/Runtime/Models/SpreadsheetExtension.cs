@@ -35,5 +35,11 @@ namespace StansAssets.GoogleDoc
                 File.Delete($"{path}.meta");
             }
         }
+
+        public static bool IsSpreadsheetFileExist(this Spreadsheet spreadsheet)
+        {
+            string path = GoogleDocConnector.SpreadsheetPathInEditor(spreadsheet);
+            return File.Exists(path);
+        } 
     }
 }

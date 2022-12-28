@@ -96,6 +96,10 @@
     margin: 5px 2px 5px 4px;
 }
 
+.localization-warning {
+    margin: 5px 2px 5px 4px;
+}
+
 .status-icon-yellow,
 .status-icon-red,
 .status-icon-green {
