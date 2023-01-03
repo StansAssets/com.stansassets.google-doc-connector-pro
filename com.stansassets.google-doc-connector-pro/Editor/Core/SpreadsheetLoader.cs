@@ -35,7 +35,7 @@ namespace StansAssets.GoogleDoc.Editor
         public void Load(bool saveSpreadsheet)
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
-            UserCredential credential;
+            UserCredential credential = null;
 
             try
             {
@@ -43,13 +43,28 @@ namespace StansAssets.GoogleDoc.Editor
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
-                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                        GoogleClientSecrets.Load(stream).Secrets,
-                        s_Scopes,
-                        "user",
-                        CancellationToken.None,
-                        new FileDataStore(credPath, true)).Result;
+                    var authorizationTread = new Thread(() =>
+                        {
+                            var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json"; 
+                            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                                GoogleClientSecrets.Load(stream).Secrets,
+                                s_Scopes,
+                                "user",
+                                CancellationToken.None,
+                                new FileDataStore(credPath, true)).Result;
+
+                            if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
+                            {
+                                credential.RefreshTokenAsync(CancellationToken.None);
+                            }
+                        })
+                        { IsBackground = false };
+
+                    authorizationTread.Start();
+                    if (!authorizationTread.Join(90000))
+                    {
+                        throw new Exception("Authorization timeout");
+                    }
                 }
             }
             catch (Exception ex)
@@ -133,11 +148,15 @@ namespace StansAssets.GoogleDoc.Editor
                                 "user",
                                 CancellationToken.None,
                                 new FileDataStore(credPath, true)).Result;
+                            if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
+                            {
+                                credential.RefreshTokenAsync(CancellationToken.None);
+                            }
                         })
                         { IsBackground = false };
 
                     authorizationTread.Start();
-                    if (!authorizationTread.Join(60000))
+                    if (!authorizationTread.Join(90000))
                     {
                         throw new Exception("Authorization timeout");
                     }
