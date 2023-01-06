@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" sa="StansAssets.Foundation.UIElements" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
     <StansAssets.Foundation.UIElements.SettingsBlock label="Localization Spreadsheet">
         <ui:VisualElement name="spreadsheetPanel" class="spreadsheet-panel">
             <StansAssets.Foundation.UIElements.HelpBox type="Info" name="no-spreadsheets-note" text="Please add at least one document in the Spreadsheets tab to use this tab." />

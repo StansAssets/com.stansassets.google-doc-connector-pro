@@ -1,4 +1,4 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements"
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
          xmlns:sa="StansAssets.Foundation.UIElements">
 
     <sa:SettingsBlock label="Spreadsheets">
