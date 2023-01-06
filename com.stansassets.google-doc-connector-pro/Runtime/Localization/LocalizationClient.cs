@@ -47,7 +47,7 @@ namespace StansAssets.GoogleDoc.Localization
                 if (s_DefaultLocalizationClient == null)
                 {
                     var spr = GetSettingsLocalizationSpreadsheet();
-                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId == -1 ? 0 : GoogleDocConnectorLocalization.LocalizationSheetId);
+                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId);
                 }
 
                 return s_DefaultLocalizationClient;

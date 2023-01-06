@@ -222,21 +222,24 @@ namespace StansAssets.GoogleDoc.Editor
             }
 
             var sheetNames = spreadsheet.m_Sheets.Select(v => v.Name).ToList();
-            sheetNames.Add(k_DefaultSpreadsheetField);
-
-            string selectedSheetName = GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId ?
-                sheetNames[sheetNames.Count - 1] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.LocalizationSheetId)?.Name;
+            string selectedSheetName = GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId ? sheetNames[0] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.LocalizationSheetId)?.Name;
+            Spreadsheet localization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
+            
+            if (localization != null)
+            {
+                int selectedSheetId = localization.m_Sheets.First(s => s.Name == selectedSheetName).Id;
+                GoogleDocConnectorLocalization.SetSpreadsheet(localization.Id, selectedSheetId);
+            }
 
             m_LocalizationSpreadsheetId = new PopupField<string>("", sheetNames, 0) { value = selectedSheetName };
 
             m_LocalizationSpreadsheetId.RegisterCallback<ChangeEvent<string>>(evt =>
             {
-                Spreadsheet localization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
-                if (localization != null)
+                Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
+                if (localizationSpreadsheet != null)
                 {
-                    int selectedSheetId = evt.newValue == k_DefaultSpreadsheetField ? 
-                        k_DefaultLocalizationSheetId : localization.m_Sheets.First(s => s.Name == evt.newValue).Id;
-                    GoogleDocConnectorLocalization.SetSpreadsheet(localization.Id, selectedSheetId);
+                    int selectedSheetId = evt.newValue == k_DefaultSpreadsheetField ? k_DefaultLocalizationSheetId : localizationSpreadsheet.m_Sheets.First(s => s.Name == evt.newValue).Id;
+                    GoogleDocConnectorLocalization.SetSpreadsheet(localizationSpreadsheet.Id, selectedSheetId);
                 }
             });
 
