@@ -222,8 +222,10 @@ namespace StansAssets.GoogleDoc.Editor
             }
 
             var sheetNames = spreadsheet.m_Sheets.Select(v => v.Name).ToList();
-            string selectedSheetName = GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId ? sheetNames[0] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.LocalizationSheetId)?.Name;
             Spreadsheet localization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
+            string selectedSheetName = GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId ? 
+                sheetNames[0] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.LocalizationSheetId)?.Name;
+
             
             if (localization != null)
             {

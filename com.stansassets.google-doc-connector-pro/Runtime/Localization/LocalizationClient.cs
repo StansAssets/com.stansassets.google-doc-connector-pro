@@ -33,6 +33,11 @@ namespace StansAssets.GoogleDoc.Localization
         /// </summary>
         int m_CurrentLanguageCodeIndex;
 
+        /// <summary>
+        /// Current chosen sheet
+        /// </summary>
+        string m_CurrentSheetName;
+
         Spreadsheet m_LocalizationSpreadsheet;
 
         TokenСache m_TokenCache;
@@ -89,6 +94,8 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 throw new InvalidOperationException("There are no selected sheet");
             }
+
+            m_CurrentSheetName = newSheet.Name.Trim();
 
             if (!newSheet.Rows.Any())
             {
@@ -181,7 +188,7 @@ namespace StansAssets.GoogleDoc.Localization
             m_LocalizationToken = new LocalizationToken()
             {
                 Token = token,
-                Section = m_Sections.Keys.First()
+                Section = m_CurrentSheetName
             };
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
         }
@@ -196,7 +203,7 @@ namespace StansAssets.GoogleDoc.Localization
             m_LocalizationToken = new LocalizationToken()
             {
                 Token = token,
-                Section = m_Sections.Keys.First(),
+                Section = m_CurrentSheetName,
                 TextType = textType
             };
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
