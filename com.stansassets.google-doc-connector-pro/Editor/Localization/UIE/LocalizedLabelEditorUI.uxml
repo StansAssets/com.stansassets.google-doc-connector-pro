@@ -1,6 +1,3 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" sa="StansAssets.Foundation.UIElements" editor-extension-mode="False">
-    <ui:Template name="LocalizationTab" src="/Packages/com.stansassets.google-doc-connector-pro/Editor/Window/Tabs/LocalizationTab.uxml" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:sa="StansAssets.Foundation.UIElements" editor-extension-mode="False">
     <ui:VisualElement name="LocalizedLabelEditorRoot" class="root" />
-    <ui:Instance template="LocalizationTab" name="LocalizationTab" />
-    <ui:VisualElement style="height: 71px;" />
 </ui:UXML>

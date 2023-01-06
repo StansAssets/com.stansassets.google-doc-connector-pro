@@ -58,6 +58,13 @@
     min-width: 150px;
 }
 
+.list-sheet-ids {
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    flex-wrap: wrap;
+}
+
 .label-doc-info {
     margin-bottom: 5px;
 }

@@ -5,8 +5,7 @@
             <ui:Label text="Choose spreadsheet" name="choose-spreadsheet" class="choose-spreadsheet" />
             <ui:VisualElement class="row">
                 <ui:VisualElement name="list-spreadsheet" />
-                <ui:VisualElement name="list-sheet-ids" style="flex-direction: column; align-items: stretch; height: auto; flex-wrap: wrap;" />
-                <ui:VisualElement />
+                <ui:VisualElement name="list-sheet-ids" class="list-sheet-ids" />
                 <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
                 <ui:VisualElement class="flexible-space" />
                 <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
@@ -19,8 +18,8 @@
                 <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
                 <ui:Label name="lastSyncMachineName" class="spreadsheet-date" />
             </ui:VisualElement>
-            <StansAssets.Foundation.UIElements.HelpBox name="localization-warning" type="Warning" class="localization-warning" />
             <StansAssets.Foundation.UIElements.HelpBox type="Error" name="localization-error" class="localization-error" />
+            <StansAssets.Foundation.UIElements.HelpBox type="Warning" name="localization-warning" class="localization-warning" />
         </ui:VisualElement>
     </StansAssets.Foundation.UIElements.SettingsBlock>
     <StansAssets.Foundation.UIElements.SettingsBlock label="Document Info" name="document-info">
