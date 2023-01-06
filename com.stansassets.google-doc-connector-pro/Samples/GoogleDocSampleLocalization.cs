@@ -24,7 +24,7 @@ namespace StansAssets.GoogleDoc.Samples
             try
             {
                 GoogleDocConnector.GetSpreadsheet(SpreadsheetId);
-                GoogleDocConnectorLocalization.SpreadsheetIdSet(SpreadsheetId);
+                GoogleDocConnectorLocalization.SetSpreadsheet(SpreadsheetId);
                 m_Client = LocalizationClient.Default;
             }
             catch

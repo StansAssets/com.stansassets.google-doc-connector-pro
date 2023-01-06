@@ -204,7 +204,7 @@ namespace StansAssets.GoogleDoc.Editor
                 Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
                 if (localizationSpreadsheet != null)
                 {
-                    GoogleDocConnectorLocalization.SpreadsheetIdSet(localizationSpreadsheet.Id, k_DefaultLocalizationSheetId);
+                    GoogleDocConnectorLocalization.SetSpreadsheet(localizationSpreadsheet.Id, k_DefaultLocalizationSheetId);
                     Bind(localizationSpreadsheet);
                 }
             });
@@ -236,7 +236,7 @@ namespace StansAssets.GoogleDoc.Editor
                 {
                     int selectedSheetId = evt.newValue == k_DefaultSpreadsheetField ? 
                         k_DefaultLocalizationSheetId : localization.m_Sheets.First(s => s.Name == evt.newValue).Id;
-                    GoogleDocConnectorLocalization.SpreadsheetIdSet(localization.Id, selectedSheetId);
+                    GoogleDocConnectorLocalization.SetSpreadsheet(localization.Id, selectedSheetId);
                 }
             });
 
@@ -261,7 +261,7 @@ namespace StansAssets.GoogleDoc.Editor
                             m_OpenBtn.style.display =
                                 m_ListSheetIdVisualElement.style.display =
                                     m_LocalizationWarning.style.display = DisplayStyle.None;
-                GoogleDocConnectorLocalization.SpreadsheetIdSet("", k_DefaultLocalizationSheetId);
+                GoogleDocConnectorLocalization.SetSpreadsheet("", k_DefaultLocalizationSheetId);
             }
             else
             {

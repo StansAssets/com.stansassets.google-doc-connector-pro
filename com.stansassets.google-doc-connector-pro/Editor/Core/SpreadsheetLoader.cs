@@ -27,6 +27,8 @@ namespace StansAssets.GoogleDoc.Editor
 
         readonly Spreadsheet m_Spreadsheet;
 
+        const string k_DefaultSpreadsheetField = "None";
+
         public SpreadsheetLoader(Spreadsheet spreadsheet)
         {
             m_Spreadsheet = spreadsheet;
@@ -93,7 +95,7 @@ namespace StansAssets.GoogleDoc.Editor
                     AssetDatabase.ImportAsset(spreadSheetProjectPath, ImportAssetOptions.ForceUpdate);
                     GoogleDocConnectorSettings.Instance.ForceUpdateSpreadsheet(m_Spreadsheet.Id);
 
-                    if (!GoogleDocConnectorLocalization.SpreadsheetId.Equals("None"))
+                    if (!GoogleDocConnectorLocalization.SpreadsheetId.Equals(k_DefaultSpreadsheetField))
                     {
                         LocalizationClient.Default.Refresh(m_Spreadsheet, GoogleDocConnectorSettings.Instance.LocalizationSheetId);
                     }

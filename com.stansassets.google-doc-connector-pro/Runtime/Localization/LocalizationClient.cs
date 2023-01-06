@@ -47,7 +47,7 @@ namespace StansAssets.GoogleDoc.Localization
                 if (s_DefaultLocalizationClient == null)
                 {
                     var spr = GetSettingsLocalizationSpreadsheet();
-                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId);
+                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId == -1 ? 0 : GoogleDocConnectorLocalization.LocalizationSheetId);
                 }
 
                 return s_DefaultLocalizationClient;
@@ -420,7 +420,7 @@ namespace StansAssets.GoogleDoc.Localization
             var id = GoogleDocConnectorLocalization.SpreadsheetId;
             return GoogleDocConnector.GetSpreadsheet(id);
         }
-        
+
         /// <summary>
         /// Returns the position of the cell where the token is in the first column with add new tokens to TokenCache
         /// </summary>
