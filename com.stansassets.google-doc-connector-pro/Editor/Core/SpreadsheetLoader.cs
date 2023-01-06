@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Google;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
@@ -43,29 +44,20 @@ namespace StansAssets.GoogleDoc.Editor
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    var authorizationTread = new Thread(() =>
-                        {
-                            var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json"; 
-                            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                                GoogleClientSecrets.Load(stream).Secrets,
-                                s_Scopes,
-                                "user",
-                                CancellationToken.None,
-                                new FileDataStore(credPath, true)).Result;
-
-                            if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
-                            {
-                                credential.RefreshTokenAsync(CancellationToken.None);
-                            }
-                        })
-                        { IsBackground = false };
-
-                    authorizationTread.Start();
-                    if (!authorizationTread.Join(90000))
-                    {
-                        throw new Exception("Authorization timeout");
-                    }
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        s_Scopes,
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true)).Result;
                 }
+            }
+            catch (TokenResponseException ex)
+            {
+                Debug.LogError(ex.Message);
+                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
+                return;
             }
             catch (Exception ex)
             {
@@ -73,7 +65,6 @@ namespace StansAssets.GoogleDoc.Editor
                 return;
             }
 
-            // Create Google Sheets API service.
             var service = new SheetsService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
@@ -131,40 +122,57 @@ namespace StansAssets.GoogleDoc.Editor
         public async Task LoadAsync(bool saveSpreadsheet)
         {
             m_Spreadsheet.ChangeStatus(Spreadsheet.SyncState.InProgress);
-            UserCredential credential = null;
-
+            UserCredential credential;
             try
             {
                 using (var stream = new FileStream(GoogleDocConnectorSettings.Instance.CredentialsPath, FileMode.Open, FileAccess.Read))
                 {
                     // The file token.json stores the user's access and refresh tokens, and is created
                     // automatically when the authorization flow completes for the first time.
-                    var authorizationTread = new Thread(() =>
-                        {
-                            var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json"; 
-                            credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                                GoogleClientSecrets.Load(stream).Secrets,
-                                s_Scopes,
-                                "user",
-                                CancellationToken.None,
-                                new FileDataStore(credPath, true)).Result;
-                            if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
-                            {
-                                credential.RefreshTokenAsync(CancellationToken.None);
-                            }
-                        })
-                        { IsBackground = false };
 
-                    authorizationTread.Start();
-                    if (!authorizationTread.Join(90000))
+                    var credPath = $"{GoogleDocConnectorSettings.Instance.CredentialsFolderPath}/token.json";
+                    var task = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        s_Scopes,
+                        "user",
+                        CancellationToken.None,
+                        new FileDataStore(credPath, true));
+
+                    credential = await task;
+
+                    if (credential.Token.IsExpired(Google.Apis.Util.SystemClock.Default))
                     {
-                        throw new Exception("Authorization timeout");
+                        var t = credential.RefreshTokenAsync(CancellationToken.None).Result;
                     }
+
+                    Debug.Log("Authorization request completed successfully.");
                 }
             }
-            catch (Exception ex)
+            catch (OperationCanceledException)
+            {
+                SetSpreadsheetSyncError(m_Spreadsheet, "Authorization request cancelled.");
+                return;
+            } 
+            catch (GoogleApiException ex)
             {
                 SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
+                return;
+            }
+            catch (AggregateException ex)
+            {
+                SetSpreadsheetSyncError(m_Spreadsheet, ex.Message);
+                foreach (var innerException in ex.InnerExceptions)
+                {
+                    if (innerException is GoogleApiException apiException)
+                    {
+                        Debug.LogError("Google API error: " + apiException.Message);
+                    }
+                    else
+                    {
+                        Debug.LogError("Error: " + innerException.Message);
+                    }
+                }
+
                 return;
             }
 
