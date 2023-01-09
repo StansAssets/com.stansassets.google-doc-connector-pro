@@ -14,6 +14,7 @@ namespace StansAssets.GoogleDoc.Editor
     class LocalizationTab : BaseTab
     {
         readonly VisualElement m_ListSpreadsheet;
+        readonly VisualElement m_ListSheetIdVisualElement;
 
         readonly Label m_LabelLang;
         readonly VisualElement m_ListLang;
@@ -22,6 +23,7 @@ namespace StansAssets.GoogleDoc.Editor
         readonly VisualElement m_DocumentInfo;
 
         readonly HelpBox m_LocalizationError;
+        readonly HelpBox m_LocalizationWarning;
 
         readonly Button m_RefreshButton;
         readonly Button m_OpenBtn;
@@ -29,6 +31,7 @@ namespace StansAssets.GoogleDoc.Editor
 
         readonly Label m_LabelChooseSpreadsheet;
         PopupField<string> m_SpreadsheetField;
+        PopupField<string> m_LocalizationSpreadsheetId;
 
         readonly HelpBox m_NoCredentialsHelpBox;
 
@@ -39,17 +42,20 @@ namespace StansAssets.GoogleDoc.Editor
         readonly VisualElement m_SpreadsheetPanel;
 
         const string k_DefaultSpreadsheetField = "None";
+        const int k_DefaultLocalizationSheetId = -1;
 
         public LocalizationTab()
             : base($"{GoogleDocConnectorPackage.LocalizationTabPath}")
         {
             m_ListSpreadsheet = this.Q<VisualElement>("list-spreadsheet");
+            m_ListSheetIdVisualElement = this.Q<VisualElement>("list-sheet-ids");
             m_LabelLang = this.Q<Label>("labelLang");
             m_ListLang = this.Q<VisualElement>("listLang");
             m_LabelSheet = this.Q<Label>("labelSheet");
             m_ListSheet = this.Q<VisualElement>("listSheet");
             m_DocumentInfo = this.Q<VisualElement>("document-info");
             m_LocalizationError = this.Q<HelpBox>("localization-error");
+            m_LocalizationWarning = this.Q<HelpBox>("localization-warning");
             m_RefreshButton = this.Q<Button>("refreshBtn");
             m_OpenBtn = this.Q<Button>("openBtn");
             m_LabelChooseSpreadsheet = this.Q<Label>("choose-spreadsheet");
@@ -60,7 +66,12 @@ namespace StansAssets.GoogleDoc.Editor
             m_SpreadsheetDate = this.Q<Label>("spreadsheetDate");
             m_SpreadsheetLastSyncMachineName = this.Q<Label>("lastSyncMachineName");
             m_SpreadsheetStatusIcon = this.Q<Label>("statusIcon");
-            GoogleDocConnectorEditor.SpreadsheetsChange += () => { CreateListSpreadsheet(GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet()); };
+            GoogleDocConnectorEditor.SpreadsheetsChange += () =>
+            {
+                Spreadsheet spreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId) ?? new Spreadsheet();
+                CreateListSpreadsheet(spreadsheet);
+                CreateSheetList(spreadsheet);
+            };
 
             Bind();
 
@@ -72,6 +83,8 @@ namespace StansAssets.GoogleDoc.Editor
                     Bind();
                 }
             };
+            
+            CheckLocalizationCacheFile();
         }
 
         void Bind()
@@ -86,13 +99,14 @@ namespace StansAssets.GoogleDoc.Editor
             m_OpenBtn.clicked += () => Application.OpenURL(spreadsheet.Url);
             spreadsheet.OnSyncStateChange += LocalizationSpinner;
             CreateListSpreadsheet(spreadsheet);
+            CreateSheetList(spreadsheet);
             BindDocumentInfo(spreadsheet);
         }
 
         void LocalizationSpinner(Spreadsheet spr)
         {
             m_Spinner.style.display = spr.InProgress ? DisplayStyle.Flex : DisplayStyle.None;
-            if (spr.Synced)
+            if (spr.Synced || spr.SyncedWithError)
             {
                 BindDocumentInfo(spr);
             }
@@ -166,7 +180,8 @@ namespace StansAssets.GoogleDoc.Editor
             {
                 m_LocalizationError.Text = ex.Message;
                 m_SpreadsheetBottomPanel.style.display =
-                    m_DocumentInfo.style.display = DisplayStyle.None;
+                    m_DocumentInfo.style.display =
+                        m_LocalizationWarning.style.display = DisplayStyle.None;
                 m_LocalizationError.style.display = DisplayStyle.Flex;
             }
         }
@@ -186,15 +201,51 @@ namespace StansAssets.GoogleDoc.Editor
                 spreadsheet.OnSyncStateChange -= LocalizationSpinner;
                 m_Spinner.style.display = DisplayStyle.None;
 
-                var newLocalization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
-                if (newLocalization != null)
+                Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
+                if (localizationSpreadsheet != null)
                 {
-                    GoogleDocConnectorLocalization.SpreadsheetIdSet(newLocalization.Id);
-                    Bind(newLocalization);
+                    GoogleDocConnectorLocalization.SetSpreadsheet(localizationSpreadsheet.Id, k_DefaultLocalizationSheetId);
+                    Bind(localizationSpreadsheet);
                 }
             });
             m_ListSpreadsheet.Add(m_SpreadsheetField);
             ListSpreadsheetAvailability();
+        }
+
+        void CreateSheetList(Spreadsheet spreadsheet)
+        {
+            m_ListSheetIdVisualElement.Clear();
+            if (string.IsNullOrEmpty(spreadsheet.Name) || spreadsheet.m_Sheets.Count == 0)
+            {
+                m_ListSheetIdVisualElement.style.display = DisplayStyle.None;
+                return;
+            }
+
+            var sheetNames = spreadsheet.m_Sheets.Select(v => v.Name).ToList();
+            Spreadsheet localization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
+            string selectedSheetName = GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId ? 
+                sheetNames[0] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.LocalizationSheetId)?.Name;
+
+            
+            if (localization != null)
+            {
+                int selectedSheetId = localization.m_Sheets.First(s => s.Name == selectedSheetName).Id;
+                GoogleDocConnectorLocalization.SetSpreadsheet(localization.Id, selectedSheetId);
+            }
+
+            m_LocalizationSpreadsheetId = new PopupField<string>("", sheetNames, 0) { value = selectedSheetName };
+
+            m_LocalizationSpreadsheetId.RegisterCallback<ChangeEvent<string>>(evt =>
+            {
+                Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
+                if (localizationSpreadsheet != null)
+                {
+                    int selectedSheetId = evt.newValue == k_DefaultSpreadsheetField ? k_DefaultLocalizationSheetId : localizationSpreadsheet.m_Sheets.First(s => s.Name == evt.newValue).Id;
+                    GoogleDocConnectorLocalization.SetSpreadsheet(localizationSpreadsheet.Id, selectedSheetId);
+                }
+            });
+
+            m_ListSheetIdVisualElement.Add(m_LocalizationSpreadsheetId);
         }
 
         void OnSpreadsheetRefreshClick(Spreadsheet spreadsheet)
@@ -212,16 +263,20 @@ namespace StansAssets.GoogleDoc.Editor
                 m_DocumentInfo.style.display =
                     m_SpreadsheetBottomPanel.style.display =
                         m_RefreshButton.style.display =
-                            m_OpenBtn.style.display = DisplayStyle.None;
-                GoogleDocConnectorLocalization.SpreadsheetIdSet("");
+                            m_OpenBtn.style.display =
+                                m_ListSheetIdVisualElement.style.display =
+                                    m_LocalizationWarning.style.display = DisplayStyle.None;
+                GoogleDocConnectorLocalization.SetSpreadsheet("", k_DefaultLocalizationSheetId);
             }
             else
             {
-                m_LabelChooseSpreadsheet.style.display = DisplayStyle.None;
+                m_LabelChooseSpreadsheet.style.display =
+                    m_LocalizationWarning.style.display = DisplayStyle.None;
                 m_DocumentInfo.style.display =
                     m_SpreadsheetBottomPanel.style.display =
                         m_RefreshButton.style.display =
-                            m_OpenBtn.style.display = DisplayStyle.Flex;
+                            m_OpenBtn.style.display =
+                                m_ListSheetIdVisualElement.style.display = DisplayStyle.Flex;
                 m_SpreadsheetPanel.AddToClassList("spreadsheet-panel");
             }
         }
@@ -230,7 +285,8 @@ namespace StansAssets.GoogleDoc.Editor
         {
             if (GoogleDocConnectorSettings.Instance.Spreadsheets.Any(v => v.Name != "<Spreadsheet>"))
             {
-                m_NoCredentialsHelpBox.style.display = DisplayStyle.None;
+                m_NoCredentialsHelpBox.style.display =
+                    m_LocalizationWarning.style.display = DisplayStyle.None;
                 m_ListSpreadsheet.style.display =
                     m_DocumentInfo.style.display =
                         m_SpreadsheetBottomPanel.style.display =
@@ -244,7 +300,8 @@ namespace StansAssets.GoogleDoc.Editor
                     m_DocumentInfo.style.display =
                         m_SpreadsheetBottomPanel.style.display =
                             m_RefreshButton.style.display =
-                                m_OpenBtn.style.display = DisplayStyle.None;
+                                m_OpenBtn.style.display =
+                                    m_LocalizationWarning.style.display = DisplayStyle.None;
             }
         }
 
@@ -280,6 +337,31 @@ namespace StansAssets.GoogleDoc.Editor
                     m_ListLang.Add(but);
                 }
             }
+        }
+        
+        void CheckLocalizationCacheFile()
+        {
+            if (string.IsNullOrEmpty(GoogleDocConnectorLocalization.SpreadsheetId) || GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId) return;
+
+            var localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+            if (!localizationSpreadsheet.IsSpreadsheetFileExist())
+            {
+                DisplayWarning("No cached localization file");
+            }
+        }
+
+        void DisplayWarning(string warningMessage)
+        {
+            m_LocalizationWarning.Text = warningMessage;
+
+            m_DocumentInfo.style.display =
+                m_SpreadsheetBottomPanel.style.display =
+                    m_LocalizationError.style.display = DisplayStyle.None;
+
+            m_RefreshButton.style.display =
+                m_OpenBtn.style.display =
+                    m_ListSheetIdVisualElement.style.display =
+                        m_LocalizationWarning.style.display = DisplayStyle.Flex;
         }
     }
 }

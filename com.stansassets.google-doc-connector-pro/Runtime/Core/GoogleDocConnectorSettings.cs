@@ -21,7 +21,11 @@ namespace StansAssets.GoogleDoc
 
         [SerializeField]
         string m_LocalizationSpreadsheetId = string.Empty;
+        [SerializeField]
+        int m_LocalizationSheetId = -1;
+        
         internal string LocalizationSpreadsheetId => m_LocalizationSpreadsheetId;
+        internal int LocalizationSheetId => m_LocalizationSheetId;
 
         internal Spreadsheet CreateSpreadsheet(string id)
         {
@@ -44,6 +48,13 @@ namespace StansAssets.GoogleDoc
             Save();
         }
 
+        internal void LocalizationSpreadsheetIdSet(string newSpreadsheetId, int sheetId)
+        {
+            m_LocalizationSheetId = sheetId;
+            m_LocalizationSpreadsheetId = newSpreadsheetId;
+            Save();
+        }
+
         internal void RemoveSpreadsheet(string id)
         {
             var spreadsheet = GetSpreadsheet(id);
@@ -55,6 +66,12 @@ namespace StansAssets.GoogleDoc
             spreadsheet.CleanUpLocalCache();
             m_Spreadsheets.Remove(spreadsheet);
             m_SpreadsheetsMap.Remove(spreadsheet.Id);
+
+            if (spreadsheet.Id == m_LocalizationSpreadsheetId)
+            {
+                m_LocalizationSpreadsheetId = string.Empty;
+                m_LocalizationSheetId = -1;
+            }
         }
 
         internal bool HasSpreadsheet(string id)

@@ -33,6 +33,11 @@ namespace StansAssets.GoogleDoc.Localization
         /// </summary>
         int m_CurrentLanguageCodeIndex;
 
+        /// <summary>
+        /// Current chosen sheet
+        /// </summary>
+        string m_CurrentSheetName;
+
         Spreadsheet m_LocalizationSpreadsheet;
 
         TokenСache m_TokenCache;
@@ -47,7 +52,7 @@ namespace StansAssets.GoogleDoc.Localization
                 if (s_DefaultLocalizationClient == null)
                 {
                     var spr = GetSettingsLocalizationSpreadsheet();
-                    s_DefaultLocalizationClient = new LocalizationClient(spr);
+                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId);
                 }
 
                 return s_DefaultLocalizationClient;
@@ -62,10 +67,10 @@ namespace StansAssets.GoogleDoc.Localization
         /// <summary>
         /// Create localization client with Spreadsheet
         /// </summary>
-        /// <exception cref="Exception">Will return an error if there is no first filled line in the first sheet of the spreadsheet</exception>
-        internal LocalizationClient(Spreadsheet spreadsheet)
+        /// <exception cref="Exception">Will return an error if the sheet hasn't been selected</exception>
+        internal LocalizationClient(Spreadsheet spreadsheet, int sheetId)
         {
-            Refresh(spreadsheet);
+            Refresh(spreadsheet, sheetId);
         }
 
         /// <summary>
@@ -73,8 +78,9 @@ namespace StansAssets.GoogleDoc.Localization
         /// Method call will also trigger OnLanguageChanged callback
         /// </summary>
         /// <param name="spreadsheet">Spreadsheet that will be used as the localization data source</param>
+        /// <param name="localizationSheetId">Sheet id that will be used as the localization data source</param>
         /// <exception cref="InvalidOperationException">Will return an error if there is no first filled line in the first sheet of the spreadsheet</exception>
-        public void Refresh(Spreadsheet spreadsheet)
+        public void Refresh(Spreadsheet spreadsheet, int localizationSheetId)
         {
             m_TokenCache = new TokenСache();
             m_LocalizationSpreadsheet = spreadsheet;
@@ -83,13 +89,20 @@ namespace StansAssets.GoogleDoc.Localization
                 throw new InvalidOperationException("No sheets in the spreadsheet");
             }
 
-            var sheetFirst = m_LocalizationSpreadsheet.Sheets.First();
-            if (!sheetFirst.Rows.Any())
+            Sheet newSheet = m_LocalizationSpreadsheet.Sheets.FirstOrDefault(s => s.Id == localizationSheetId);
+            if (newSheet == null)
+            {
+                throw new InvalidOperationException("There are no selected sheet");
+            }
+
+            m_CurrentSheetName = newSheet.Name.Trim();
+
+            if (!newSheet.Rows.Any())
             {
                 throw new InvalidOperationException("There are no filled lines on the first sheet of the table");
             }
 
-            var row = sheetFirst.Rows.First();
+            var row = newSheet.Rows.First();
             if (!row.Cells.Any())
             {
                 throw new InvalidOperationException("The first row on the first sheet of the table has no filled cells");
@@ -175,7 +188,7 @@ namespace StansAssets.GoogleDoc.Localization
             m_LocalizationToken = new LocalizationToken()
             {
                 Token = token,
-                Section = m_Sections.Keys.First()
+                Section = m_CurrentSheetName
             };
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);
         }
@@ -190,7 +203,7 @@ namespace StansAssets.GoogleDoc.Localization
             m_LocalizationToken = new LocalizationToken()
             {
                 Token = token,
-                Section = m_Sections.Keys.First(),
+                Section = m_CurrentSheetName,
                 TextType = textType
             };
             return GetLocalizedString(m_LocalizationToken, CurrentLanguage);

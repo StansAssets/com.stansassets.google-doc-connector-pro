@@ -27,6 +27,8 @@ namespace StansAssets.GoogleDoc.Editor
 
         readonly Spreadsheet m_Spreadsheet;
 
+        const string k_DefaultSpreadsheetField = "None";
+
         public SpreadsheetLoader(Spreadsheet spreadsheet)
         {
             m_Spreadsheet = spreadsheet;
@@ -93,9 +95,9 @@ namespace StansAssets.GoogleDoc.Editor
                     AssetDatabase.ImportAsset(spreadSheetProjectPath, ImportAssetOptions.ForceUpdate);
                     GoogleDocConnectorSettings.Instance.ForceUpdateSpreadsheet(m_Spreadsheet.Id);
 
-                    if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(m_Spreadsheet.Id))
+                    if (!GoogleDocConnectorLocalization.SpreadsheetId.Equals(k_DefaultSpreadsheetField))
                     {
-                        LocalizationClient.Default.Refresh(m_Spreadsheet);
+                        LocalizationClient.Default.Refresh(m_Spreadsheet, GoogleDocConnectorSettings.Instance.LocalizationSheetId);
                     }
 
                     OnSpreadsheetDataSavedOnDisk.Invoke(m_Spreadsheet);
@@ -175,7 +177,7 @@ namespace StansAssets.GoogleDoc.Editor
 
                     if (GoogleDocConnectorLocalization.SpreadsheetId.Equals(m_Spreadsheet.Id))
                     {
-                        LocalizationClient.Default.Refresh(m_Spreadsheet);
+                        LocalizationClient.Default.Refresh(m_Spreadsheet, GoogleDocConnectorSettings.Instance.LocalizationSheetId);
                     }
 
                     OnSpreadsheetDataSavedOnDisk.Invoke(m_Spreadsheet);
@@ -276,6 +278,7 @@ namespace StansAssets.GoogleDoc.Editor
                                     cellData.EffectiveValue.FormulaValue?.Trim(),
                                     stringValue?.Trim());
                             }
+
                             var cell = new Cell(rowIndex, columnIndex, cellValue);
                             row.AddCell(cell);
 
