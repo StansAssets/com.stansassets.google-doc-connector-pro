@@ -1,31 +1,35 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <StansAssets.Foundation.UIElements.SettingsBlock label="Localization Spreadsheet">
+<ui:UXML xmlns:ui="UnityEngine.UIElements"
+         xmlns:sa="StansAssets.Foundation.UIElements">
+
+    <sa:SettingsBlock label="Localization Spreadsheet">
         <ui:VisualElement name="spreadsheetPanel" class="spreadsheet-panel">
-            <StansAssets.Foundation.UIElements.HelpBox type="Info" name="no-spreadsheets-note" text="Please add at least one document in the Spreadsheets tab to use this tab." />
-            <ui:Label text="Choose spreadsheet" name="choose-spreadsheet" class="choose-spreadsheet" />
+            <sa:HelpBox type="Info" name="no-spreadsheets-note" text="Please add at least one document in the Spreadsheets tab to use this tab."/>
+            <ui:Label text="Choose spreadsheet" name="choose-spreadsheet" class="choose-spreadsheet"/>
             <ui:VisualElement class="row">
-                <ui:VisualElement name="list-spreadsheet" />
-                <ui:VisualElement name="list-sheet-ids" class="list-sheet-ids" />
-                <StansAssets.Foundation.UIElements.LoadingSpinner name="loadingSpinner" class="spreadsheet-loading" />
-                <ui:VisualElement class="flexible-space" />
+                <ui:VisualElement name="list-spreadsheet"/>
+                <ui:VisualElement name="list-sheet-ids" class="list-sheet-ids"/>
+                <sa:LoadingSpinner name="loadingSpinner" class="spreadsheet-loading"/>
+                <ui:VisualElement class="flexible-space"/>
                 <ui:VisualElement name="spreadsheetButtonPanel" class="spreadsheet-button-panel">
-                    <ui:Button name="openBtn" tooltip="Open spreadsheet in browser." class="spreadsheet-url-copy btn-left" />
-                    <ui:Button name="refreshBtn" tooltip="Refresh spreadsheet." class="btn-refresh btn-right" />
+                    <ui:Button name="openBtn" tooltip="Open spreadsheet in browser." class="spreadsheet-url-copy btn-left"/>
+                    <ui:Button name="refreshBtn" tooltip="Refresh spreadsheet." class="btn-refresh btn-right"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="spreadsheetBottomPanel" class="spreadsheet-bottom-panel">
-                <ui:Label name="statusIcon" class="status-icon-yellow" />
-                <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date" />
-                <ui:Label name="lastSyncMachineName" class="spreadsheet-date" />
+                <ui:Label name="statusIcon" class="status-icon-yellow"/>
+                <ui:Label text="01/03/2008 07:00:00" name="spreadsheetDate" class="spreadsheet-date"/>
+                <ui:Label name="lastSyncMachineName" class="spreadsheet-date"/>
             </ui:VisualElement>
-            <StansAssets.Foundation.UIElements.HelpBox type="Error" name="localization-error" class="localization-error" />
-            <StansAssets.Foundation.UIElements.HelpBox type="Warning" name="localization-warning" class="localization-warning" />
+            <sa:HelpBox type="Error" name="localization-error" class="localization-error"/>
+            <sa:HelpBox type="Warning" name="localization-warning" class="localization-warning"/>
         </ui:VisualElement>
-    </StansAssets.Foundation.UIElements.SettingsBlock>
-    <StansAssets.Foundation.UIElements.SettingsBlock label="Document Info" name="document-info">
-        <ui:Label name="labelLang" class="label-doc-info" />
-        <ui:VisualElement name="listLang" class="list-doc-info" />
-        <ui:Label name="labelSheet" class="label-doc-info" />
-        <ui:VisualElement name="listSheet" class="list-doc-info" />
-    </StansAssets.Foundation.UIElements.SettingsBlock>
+    </sa:SettingsBlock>
+
+    <sa:SettingsBlock label="Document Info" name="document-info">
+        <ui:Label name="labelLang" class="label-doc-info"/>
+        <ui:VisualElement name="listLang" class="list-doc-info"/>
+        <ui:Label name="labelSheet" class="label-doc-info"/>
+        <ui:VisualElement name="listSheet" class="list-doc-info"/>
+    </sa:SettingsBlock>
+
 </ui:UXML>
