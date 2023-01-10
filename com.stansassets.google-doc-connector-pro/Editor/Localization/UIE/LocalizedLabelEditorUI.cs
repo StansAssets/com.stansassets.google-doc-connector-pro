@@ -15,10 +15,13 @@ namespace StansAssets.GoogleDoc.Editor
         readonly VisualElement m_Root;
         VisualElement m_ListLang;
         HelpBox m_ErrorHelpBox;
-
+        PopupField<string> m_SectionPopupField;
+        PopupField<string> m_TokenPopupField;
+        
         readonly LocalizedLabel m_LocalizedLabel;
         readonly SerializedObject m_SerializedObject;
         readonly SerializedProperty m_SectionProperty;
+        readonly SerializedProperty m_TokenProperty;
 
         public LocalizedLabelEditorUI(LocalizedLabel localizedLabel, SerializedObject serializedObject)
             : base($"{GoogleDocConnectorPackage.UILocalizationPath}/LocalizedLabelEditorUI")
@@ -26,6 +29,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_LocalizedLabel = localizedLabel;
             m_SerializedObject = serializedObject;
             m_SectionProperty = serializedObject.FindProperty("m_Token.m_Section");
+            m_TokenProperty = serializedObject.FindProperty("m_Token.m_TokenId");
             m_Root = this.Q<VisualElement>("LocalizedLabelEditorRoot");
 
             GoogleDocConnectorLocalization.SpreadsheetIdChanged += Bind;
@@ -45,17 +49,43 @@ namespace StansAssets.GoogleDoc.Editor
         void Bind()
         {
             m_Root.Clear();
-            PropertyField("Token Id", "m_Token.m_TokenId");
             try
             {
                 var values = LocalizationClient.Default.Sections;
-                if (!values.Contains(m_SectionProperty.stringValue))
+                string selectedSectionName = m_SectionProperty.stringValue;
+                if (!values.Contains(selectedSectionName))
                 {
-                    m_SectionProperty.stringValue = values.First();
-                    m_SerializedObject.ApplyModifiedProperties();
+                    selectedSectionName = values.First();
                 }
 
-                PropertyPopup("Section", "m_Token.m_Section", LocalizationClient.Default.Sections);
+                UpdateSectionProperty(selectedSectionName);
+                
+                PropertyPopup(out m_SectionPopupField, "Section", "m_Token.m_Section", LocalizationClient.Default.Sections, OnSectionPopupChanged);
+                m_Root.Add(m_SectionPopupField);
+            }
+            catch (Exception exception)
+            {
+                m_Root.Clear();
+                UpdateLocalizationError(exception.Message);
+                return;
+            }
+
+            try
+            {
+                Sheet newSheet = LocalizationClient.Default.LocalizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+                var columnValues = newSheet.GetColumnValues<string>(0);
+                columnValues.RemoveAt(0);
+
+                string selectedTokenName = m_TokenProperty.stringValue;
+                if (!columnValues.Contains(selectedTokenName))
+                {
+                    selectedTokenName = columnValues.First();
+                }
+
+                UpdateTokenProperty(selectedTokenName);
+
+                PropertyPopup(out m_TokenPopupField, "Token Id", "m_Token.m_TokenId", columnValues, OnTokenPopupChanged);
+                m_Root.Add(m_TokenPopupField);
             }
             catch (Exception exception)
             {
@@ -98,6 +128,12 @@ namespace StansAssets.GoogleDoc.Editor
                 schedule.Execute(UpdateLocalization).StartingIn(5);
             });
             m_Root.Add(propertyField);
+        }
+
+        void PropertyPopup(out PopupField<string> createdPopupField, string propertyName, string bindingPath, List<string> values, Action<ChangeEvent<string>> onEventChanged)
+        {
+            createdPopupField = new PopupField<string>(propertyName, values, 0) { bindingPath = bindingPath };
+            createdPopupField.RegisterCallback<ChangeEvent<string>>(ev => onEventChanged?.Invoke(ev));
         }
 
         void UpdateLocalization()
@@ -160,6 +196,56 @@ namespace StansAssets.GoogleDoc.Editor
             m_ErrorHelpBox.style.display = DisplayStyle.None;
             m_ErrorHelpBox.AddToClassList("error-message");
             m_Root.Add(m_ErrorHelpBox);
+        }
+
+        
+        void OnSectionPopupChanged(ChangeEvent<string> changeEvent)
+        {
+            m_SectionPopupField.value = changeEvent.newValue;
+            UpdateSectionProperty(changeEvent.newValue);
+            RefreshChoices();
+        }
+
+        void OnTokenPopupChanged(ChangeEvent<string> changeEvent)
+        {
+            m_TokenPopupField.value = changeEvent.newValue;
+            UpdateTokenProperty(changeEvent.newValue);
+            RefreshChoices();
+        }
+
+        void UpdateSectionProperty(string newValue)
+        {
+            m_SerializedObject.Update();
+            m_SectionProperty.stringValue = newValue;
+            m_SerializedObject.ApplyModifiedProperties();
+        }
+
+        void UpdateTokenProperty(string newValue)
+        {
+            m_SerializedObject.Update();
+            m_TokenProperty.stringValue = newValue;
+            m_SerializedObject.ApplyModifiedProperties();
+        }
+ 
+        
+        void RefreshChoices()
+        {
+            Sheet newSheet = LocalizationClient.Default.LocalizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+            var newChoices = newSheet.GetColumnValues<string>(0);
+            newChoices.RemoveAt(0);
+
+            m_TokenPopupField.RefreshChoices(newChoices);
+
+            string choice = m_TokenProperty.stringValue;
+            if (!newChoices.Contains(choice) || string.IsNullOrEmpty(choice))
+            {
+                choice = newChoices.First();
+            }
+
+            m_TokenPopupField.value = choice;
+            m_TokenProperty.stringValue = choice;
+            UpdateTokenProperty(choice);
+            UpdateLocalization();
         }
     }
 }
