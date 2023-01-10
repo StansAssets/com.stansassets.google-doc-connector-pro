@@ -17,19 +17,22 @@ namespace StansAssets.GoogleDoc.Editor
         HelpBox m_ErrorHelpBox;
         PopupField<string> m_SectionPopupField;
         PopupField<string> m_TokenPopupField;
-        
+
         readonly LocalizedLabel m_LocalizedLabel;
         readonly SerializedObject m_SerializedObject;
         readonly SerializedProperty m_SectionProperty;
         readonly SerializedProperty m_TokenProperty;
+
+        const string k_SectionPropertyPath = "m_Token.m_Section";
+        const string k_TokenIdPropertyPath = "m_Token.m_TokenId";
 
         public LocalizedLabelEditorUI(LocalizedLabel localizedLabel, SerializedObject serializedObject)
             : base($"{GoogleDocConnectorPackage.UILocalizationPath}/LocalizedLabelEditorUI")
         {
             m_LocalizedLabel = localizedLabel;
             m_SerializedObject = serializedObject;
-            m_SectionProperty = serializedObject.FindProperty("m_Token.m_Section");
-            m_TokenProperty = serializedObject.FindProperty("m_Token.m_TokenId");
+            m_SectionProperty = serializedObject.FindProperty(k_SectionPropertyPath);
+            m_TokenProperty = serializedObject.FindProperty(k_TokenIdPropertyPath);
             m_Root = this.Q<VisualElement>("LocalizedLabelEditorRoot");
 
             GoogleDocConnectorLocalization.SpreadsheetIdChanged += Bind;
@@ -97,12 +100,10 @@ namespace StansAssets.GoogleDoc.Editor
             }
 
             UpdateSectionProperty(selectedSectionName);
-
-            PropertyPopup(out m_SectionPopupField, "Section", "m_Token.m_Section", LocalizationClient.Default.Sections, OnSectionPopupChanged);
+            PropertyPopup(out m_SectionPopupField, "Section", k_SectionPropertyPath, LocalizationClient.Default.Sections, OnSectionPopupChanged);
             m_Root.Add(m_SectionPopupField);
         }
 
-        
         void CreateListToken()
         {
             Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
@@ -119,10 +120,10 @@ namespace StansAssets.GoogleDoc.Editor
 
             UpdateTokenProperty(selectedTokenName);
 
-            PropertyPopup(out m_TokenPopupField, "Token Id", "m_Token.m_TokenId", columnValues, OnTokenPopupChanged);
+            PropertyPopup(out m_TokenPopupField, "Token Id", k_TokenIdPropertyPath, columnValues, OnTokenPopupChanged);
             m_Root.Add(m_TokenPopupField);
         }
-        
+
         void PropertyField(string propertyName, string bindingPath)
         {
             var propertyField = new TextField(propertyName) { bindingPath = bindingPath };
@@ -172,11 +173,13 @@ namespace StansAssets.GoogleDoc.Editor
             if (string.IsNullOrEmpty(error))
             {
                 m_ErrorHelpBox.style.display = DisplayStyle.None;
+                m_TokenPopupField.style.display = DisplayStyle.Flex;
                 return;
             }
 
             m_ErrorHelpBox.Text = error;
             m_ErrorHelpBox.style.display = DisplayStyle.Flex;
+            m_TokenPopupField.style.display = DisplayStyle.None;
         }
 
         void SelectedLang(string langNew)
@@ -210,7 +213,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_ErrorHelpBox.AddToClassList("error-message");
             m_Root.Add(m_ErrorHelpBox);
         }
-        
+
         void OnSectionPopupChanged(ChangeEvent<string> changeEvent)
         {
             m_SectionPopupField.value = changeEvent.newValue;
@@ -238,14 +241,13 @@ namespace StansAssets.GoogleDoc.Editor
             m_TokenProperty.stringValue = newValue;
             m_SerializedObject.ApplyModifiedProperties();
         }
-        
+
         void RefreshChoices()
         {
-            
             Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
             Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
-
             var newChoices = newSheet.GetColumnValues<string>(0);
+
             newChoices.RemoveAt(0);
 
             m_TokenPopupField.RefreshChoices(newChoices);

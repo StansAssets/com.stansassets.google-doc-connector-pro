@@ -308,6 +308,30 @@ namespace StansAssets.GoogleDoc.Localization
             var token = localizationToken.Token.Trim();
             var section = localizationToken.Section.Trim();
 
+            Sheet localizationSheet = m_LocalizationSpreadsheet.Sheets.FirstOrDefault(s => s.Name == section);
+            if (localizationSheet == null)
+            {
+                throw new InvalidOperationException("There are no selected sheet");
+            }
+  
+            if (!localizationSheet.Rows.Any())
+            {
+                throw new InvalidOperationException("There are no filled lines on the first sheet of the table");
+            }
+
+            var row = localizationSheet.Rows.First();
+            if (!row.Cells.Any())
+            {
+                throw new InvalidOperationException("The first row on the first sheet of the table has no filled cells");
+            }
+
+            var cellToken = row.Cells.FirstOrDefault();
+            if (cellToken != null && cellToken.Value.StringValue.ToLower() != "token" && cellToken.Value.StringValue.ToLower() != "tokens")
+            {
+                throw new InvalidOperationException("Token column name not found");
+            }
+
+            
             if (!m_Sections.TryGetValue(section, out var sheetIndex))
             {
                 throw new Exception($"Can't find sheet with name = {section}");

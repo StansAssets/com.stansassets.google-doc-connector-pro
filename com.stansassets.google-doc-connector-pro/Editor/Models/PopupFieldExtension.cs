@@ -7,12 +7,12 @@ namespace StansAssets.GoogleDoc.Editor
 {
     public static class PopupFieldExtension
     {
-        public static void RefreshChoices<T>(this PopupField<T> popupField, List<string> list)
+        public static void RefreshChoices<T>(this PopupField<T> popupField, List<string> options)
         {
-            popupField.SetPrivateFieldValue("m_Choices", list);
+            popupField.SetPrivateFieldValue("m_Choices", options);
         }
 
-        public static void SetPrivateFieldValue<T>(this object obj, string propName, T val)
+        static void SetPrivateFieldValue<T>(this object obj, string propName, T val)
         {
             if (obj == null) throw new ArgumentNullException(nameof(obj));
             Type t = obj.GetType();
