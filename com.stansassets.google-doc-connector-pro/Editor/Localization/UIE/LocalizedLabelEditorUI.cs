@@ -51,17 +51,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_Root.Clear();
             try
             {
-                var values = LocalizationClient.Default.Sections;
-                string selectedSectionName = m_SectionProperty.stringValue;
-                if (!values.Contains(selectedSectionName))
-                {
-                    selectedSectionName = values.First();
-                }
-
-                UpdateSectionProperty(selectedSectionName);
-                
-                PropertyPopup(out m_SectionPopupField, "Section", "m_Token.m_Section", LocalizationClient.Default.Sections, OnSectionPopupChanged);
-                m_Root.Add(m_SectionPopupField);
+                CreateListSection();
             }
             catch (Exception exception)
             {
@@ -72,20 +62,7 @@ namespace StansAssets.GoogleDoc.Editor
 
             try
             {
-                Sheet newSheet = LocalizationClient.Default.LocalizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
-                var columnValues = newSheet.GetColumnValues<string>(0);
-                columnValues.RemoveAt(0);
-
-                string selectedTokenName = m_TokenProperty.stringValue;
-                if (!columnValues.Contains(selectedTokenName))
-                {
-                    selectedTokenName = columnValues.First();
-                }
-
-                UpdateTokenProperty(selectedTokenName);
-
-                PropertyPopup(out m_TokenPopupField, "Token Id", "m_Token.m_TokenId", columnValues, OnTokenPopupChanged);
-                m_Root.Add(m_TokenPopupField);
+                CreateListToken();
             }
             catch (Exception exception)
             {
@@ -110,6 +87,42 @@ namespace StansAssets.GoogleDoc.Editor
             m_Root.Bind(so);
         }
 
+        void CreateListSection()
+        {
+            var values = LocalizationClient.Default.Sections;
+            string selectedSectionName = m_SectionProperty.stringValue;
+            if (!values.Contains(selectedSectionName))
+            {
+                selectedSectionName = values.First();
+            }
+
+            UpdateSectionProperty(selectedSectionName);
+
+            PropertyPopup(out m_SectionPopupField, "Section", "m_Token.m_Section", LocalizationClient.Default.Sections, OnSectionPopupChanged);
+            m_Root.Add(m_SectionPopupField);
+        }
+
+        
+        void CreateListToken()
+        {
+            Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+            Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+
+            var columnValues = newSheet.GetColumnValues<string>(0);
+            columnValues.RemoveAt(0);
+
+            string selectedTokenName = m_TokenProperty.stringValue;
+            if (!columnValues.Contains(selectedTokenName))
+            {
+                selectedTokenName = columnValues.First();
+            }
+
+            UpdateTokenProperty(selectedTokenName);
+
+            PropertyPopup(out m_TokenPopupField, "Token Id", "m_Token.m_TokenId", columnValues, OnTokenPopupChanged);
+            m_Root.Add(m_TokenPopupField);
+        }
+        
         void PropertyField(string propertyName, string bindingPath)
         {
             var propertyField = new TextField(propertyName) { bindingPath = bindingPath };
@@ -197,7 +210,6 @@ namespace StansAssets.GoogleDoc.Editor
             m_ErrorHelpBox.AddToClassList("error-message");
             m_Root.Add(m_ErrorHelpBox);
         }
-
         
         void OnSectionPopupChanged(ChangeEvent<string> changeEvent)
         {
@@ -226,11 +238,13 @@ namespace StansAssets.GoogleDoc.Editor
             m_TokenProperty.stringValue = newValue;
             m_SerializedObject.ApplyModifiedProperties();
         }
- 
         
         void RefreshChoices()
         {
-            Sheet newSheet = LocalizationClient.Default.LocalizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+            
+            Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+            Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+
             var newChoices = newSheet.GetColumnValues<string>(0);
             newChoices.RemoveAt(0);
 

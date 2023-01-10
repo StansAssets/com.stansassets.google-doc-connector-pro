@@ -39,8 +39,6 @@ namespace StansAssets.GoogleDoc.Localization
         string m_CurrentSheetName;
 
         Spreadsheet m_LocalizationSpreadsheet;
-        public Spreadsheet LocalizationSpreadsheet => m_LocalizationSpreadsheet;
-
 
         TokenСache m_TokenCache;
         ILocalizationToken m_LocalizationToken;
