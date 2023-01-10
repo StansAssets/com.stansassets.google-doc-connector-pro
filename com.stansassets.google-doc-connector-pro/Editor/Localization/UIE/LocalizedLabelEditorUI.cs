@@ -55,16 +55,6 @@ namespace StansAssets.GoogleDoc.Editor
             try
             {
                 CreateListSection();
-            }
-            catch (Exception exception)
-            {
-                m_Root.Clear();
-                UpdateLocalizationError(exception.Message);
-                return;
-            }
-
-            try
-            {
                 CreateListToken();
             }
             catch (Exception exception)
