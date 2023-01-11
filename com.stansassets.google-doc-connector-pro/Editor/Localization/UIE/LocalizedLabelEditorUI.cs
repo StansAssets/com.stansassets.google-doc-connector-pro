@@ -163,13 +163,13 @@ namespace StansAssets.GoogleDoc.Editor
             if (string.IsNullOrEmpty(error))
             {
                 m_ErrorHelpBox.style.display = DisplayStyle.None;
-                m_TokenPopupField.style.display = DisplayStyle.Flex;
+                DisplayTokenPopupField(DisplayStyle.Flex);
                 return;
             }
 
             m_ErrorHelpBox.Text = error;
             m_ErrorHelpBox.style.display = DisplayStyle.Flex;
-            m_TokenPopupField.style.display = DisplayStyle.None;
+            DisplayTokenPopupField(DisplayStyle.None);
         }
 
         void SelectedLang(string langNew)
@@ -234,24 +234,41 @@ namespace StansAssets.GoogleDoc.Editor
 
         void RefreshChoices()
         {
-            Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
-            Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
-            var newChoices = newSheet.GetColumnValues<string>(0);
-
-            newChoices.RemoveAt(0);
-
-            m_TokenPopupField.RefreshChoices(newChoices);
-
-            string choice = m_TokenProperty.stringValue;
-            if (!newChoices.Contains(choice) || string.IsNullOrEmpty(choice))
+            try
             {
-                choice = newChoices.First();
-            }
+                Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+                Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+                var newChoices = newSheet.GetColumnValues<string>(0);
 
-            m_TokenPopupField.value = choice;
-            m_TokenProperty.stringValue = choice;
-            UpdateTokenProperty(choice);
-            UpdateLocalization();
+                newChoices.RemoveAt(0);
+                if (newChoices.All(x => x == string.Empty))
+                {
+                    throw new InvalidOperationException("There are no filled tokens on the selected sheet");
+                }
+
+                m_TokenPopupField.RefreshChoices(newChoices);
+
+                string choice = m_TokenProperty.stringValue;
+                if (!newChoices.Contains(choice) || string.IsNullOrEmpty(choice))
+                {
+                    choice = newChoices.First();
+                }
+
+                m_TokenPopupField.value = choice;
+                m_TokenProperty.stringValue = choice;
+                UpdateTokenProperty(choice);
+                UpdateLocalization();
+            }
+            catch (Exception e)
+            {
+                UpdateLocalizationError(e.Message);
+            }
+        }
+
+        void DisplayTokenPopupField(DisplayStyle displayStyle)
+        {
+            if (m_TokenPopupField == null) return;
+            m_TokenPopupField.style.display = displayStyle;
         }
     }
 }
