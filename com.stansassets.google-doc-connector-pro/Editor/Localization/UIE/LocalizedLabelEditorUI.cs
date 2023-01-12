@@ -94,24 +94,42 @@ namespace StansAssets.GoogleDoc.Editor
             m_Root.Add(m_SectionPopupField);
         }
 
+        
         void CreateListToken()
         {
-            Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
-            Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
-
-            var columnValues = newSheet.GetColumnValues<string>(0);
-            columnValues.RemoveAt(0);
-
-            string selectedTokenName = m_TokenProperty.stringValue;
-            if (!columnValues.Contains(selectedTokenName))
+            try
             {
-                selectedTokenName = columnValues.First();
+                if (m_TokenPopupField != null && m_Root.Contains(m_TokenPopupField))
+                {
+                    m_TokenPopupField.Clear();
+                    m_Root.Remove(m_TokenPopupField);
+                }
+
+                Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+                Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
+
+                var columnValues = newSheet.GetColumnValues<string>(0);
+                columnValues.RemoveAt(0);
+                if (columnValues.All(x => x == string.Empty))
+                {
+                    throw new InvalidOperationException("There are no filled tokens on the selected sheet");
+                }
+
+                string selectedTokenName = m_TokenProperty.stringValue;
+                if (!columnValues.Contains(selectedTokenName))
+                {
+                    selectedTokenName = columnValues.First();
+                }
+
+                PropertyPopup(out m_TokenPopupField, "Token Id", k_TokenIdPropertyPath, columnValues, OnTokenPopupChanged);
+                m_Root.Insert(1, m_TokenPopupField);
+
+               OnTokenPopupChanged(selectedTokenName);
             }
-
-            UpdateTokenProperty(selectedTokenName);
-
-            PropertyPopup(out m_TokenPopupField, "Token Id", k_TokenIdPropertyPath, columnValues, OnTokenPopupChanged);
-            m_Root.Add(m_TokenPopupField);
+            catch (Exception e)
+            {
+                UpdateLocalizationError(e.Message);
+            }
         }
 
         void PropertyField(string propertyName, string bindingPath)
@@ -134,10 +152,10 @@ namespace StansAssets.GoogleDoc.Editor
             m_Root.Add(propertyField);
         }
 
-        void PropertyPopup(out PopupField<string> createdPopupField, string propertyName, string bindingPath, List<string> values, Action<ChangeEvent<string>> onEventChanged)
+        void PropertyPopup(out PopupField<string> createdPopupField, string propertyName, string bindingPath, List<string> values, Action<string> onValueChanged = null)
         {
             createdPopupField = new PopupField<string>(propertyName, values, 0) { bindingPath = bindingPath };
-            createdPopupField.RegisterCallback<ChangeEvent<string>>(ev => onEventChanged?.Invoke(ev));
+            createdPopupField.RegisterCallback<ChangeEvent<string>>(ev => onValueChanged?.Invoke(ev.newValue));
         }
 
         void UpdateLocalization()
@@ -204,18 +222,18 @@ namespace StansAssets.GoogleDoc.Editor
             m_Root.Add(m_ErrorHelpBox);
         }
 
-        void OnSectionPopupChanged(ChangeEvent<string> changeEvent)
+        void OnSectionPopupChanged(string newValue)
         {
-            m_SectionPopupField.value = changeEvent.newValue;
-            UpdateSectionProperty(changeEvent.newValue);
-            RefreshChoices();
+            m_SectionPopupField.value = newValue;
+            UpdateSectionProperty(newValue);
+            CreateListToken();
         }
 
-        void OnTokenPopupChanged(ChangeEvent<string> changeEvent)
+        void OnTokenPopupChanged(string newValue)
         {
-            m_TokenPopupField.value = changeEvent.newValue;
-            UpdateTokenProperty(changeEvent.newValue);
-            RefreshChoices();
+            m_TokenPopupField.value = newValue;
+            UpdateTokenProperty(newValue);
+            UpdateLocalization();
         }
 
         void UpdateSectionProperty(string newValue)
@@ -230,39 +248,6 @@ namespace StansAssets.GoogleDoc.Editor
             m_SerializedObject.Update();
             m_TokenProperty.stringValue = newValue;
             m_SerializedObject.ApplyModifiedProperties();
-        }
-
-        void RefreshChoices()
-        {
-            try
-            {
-                Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
-                Sheet newSheet = localizationSpreadsheet.GetSheet(m_SectionProperty.stringValue);
-                var newChoices = newSheet.GetColumnValues<string>(0);
-
-                newChoices.RemoveAt(0);
-                if (newChoices.All(x => x == string.Empty))
-                {
-                    throw new InvalidOperationException("There are no filled tokens on the selected sheet");
-                }
-
-                m_TokenPopupField.RefreshChoices(newChoices);
-
-                string choice = m_TokenProperty.stringValue;
-                if (!newChoices.Contains(choice) || string.IsNullOrEmpty(choice))
-                {
-                    choice = newChoices.First();
-                }
-
-                m_TokenPopupField.value = choice;
-                m_TokenProperty.stringValue = choice;
-                UpdateTokenProperty(choice);
-                UpdateLocalization();
-            }
-            catch (Exception e)
-            {
-                UpdateLocalizationError(e.Message);
-            }
         }
 
         void DisplayTokenPopupField(DisplayStyle displayStyle)

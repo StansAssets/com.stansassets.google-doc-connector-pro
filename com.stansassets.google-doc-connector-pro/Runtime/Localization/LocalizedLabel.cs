@@ -1,6 +1,7 @@
 #if TMP_AVAILABLE
 using TMPro;
 #endif
+using System;
 using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -59,7 +60,9 @@ namespace StansAssets.GoogleDoc.Localization
 
         internal void UpdateLocalization()
         {
-            var text = LocalizationClient.Default.GetLocalizedString(m_Token);
+            var t = m_Token.Token;
+            string text = LocalizationClient.Default.GetLocalizedString(m_Token);
+           
             UpdateText(text);
         }
 
