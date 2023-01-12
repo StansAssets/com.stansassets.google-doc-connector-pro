@@ -52,7 +52,7 @@ namespace StansAssets.GoogleDoc.Localization
                 if (s_DefaultLocalizationClient == null)
                 {
                     var spr = GetSettingsLocalizationSpreadsheet();
-                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId);
+                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.SheetId);
                 }
 
                 return s_DefaultLocalizationClient;

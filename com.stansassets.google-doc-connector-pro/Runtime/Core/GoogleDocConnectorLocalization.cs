@@ -8,7 +8,7 @@ namespace StansAssets.GoogleDoc
     /// </summary>
     static class GoogleDocConnectorLocalization
     {
-        internal static Action SpreadsheetIdChanged = delegate { };
+        internal static event Action SpreadsheetIdChanged = delegate { };
         /// <summary>
         /// Spreadsheet ID used for the Localization client
         /// </summary>
@@ -17,7 +17,7 @@ namespace StansAssets.GoogleDoc
         /// <summary>
         /// Sheet ID used for the Localization client
         /// </summary>
-        internal static int LocalizationSheetId => GoogleDocConnectorSettings.Instance.LocalizationSheetId;
+        internal static int SheetId => GoogleDocConnectorSettings.Instance.LocalizationSheetId;
 
         /// <summary>
         ///  Set a new spreadsheet ID and sheet ID to be used for the Localization client
