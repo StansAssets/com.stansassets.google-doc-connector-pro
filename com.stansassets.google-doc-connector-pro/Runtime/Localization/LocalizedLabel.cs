@@ -60,9 +60,7 @@ namespace StansAssets.GoogleDoc.Localization
 
         internal void UpdateLocalization()
         {
-            var t = m_Token.Token;
             string text = LocalizationClient.Default.GetLocalizedString(m_Token);
-           
             UpdateText(text);
         }
 

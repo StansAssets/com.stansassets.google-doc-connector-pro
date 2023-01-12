@@ -35,6 +35,18 @@ namespace StansAssets.GoogleDoc.Editor
             m_TokenProperty = serializedObject.FindProperty(k_TokenIdPropertyPath);
             m_Root = this.Q<VisualElement>("LocalizedLabelEditorRoot");
 
+            RegisterCallback<AttachToPanelEvent>(OnAttachToPanelEventHandler, TrickleDown.TrickleDown);
+            RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEventHandler, TrickleDown.TrickleDown);
+        }
+
+        ~LocalizedLabelEditorUI()
+        {
+            UnregisterCallback<AttachToPanelEvent>(OnAttachToPanelEventHandler, TrickleDown.TrickleDown);
+            UnregisterCallback<DetachFromPanelEvent>(OnDetachFromPanelEventHandler, TrickleDown.TrickleDown);
+        }
+
+        void OnAttachToPanelEventHandler(AttachToPanelEvent e)
+        {
             GoogleDocConnectorLocalization.SpreadsheetIdChanged += Bind;
             try
             {
@@ -49,6 +61,12 @@ namespace StansAssets.GoogleDoc.Editor
             Bind();
         }
 
+        void OnDetachFromPanelEventHandler(DetachFromPanelEvent e)
+        {
+            GoogleDocConnectorLocalization.SpreadsheetIdChanged -= Bind;
+            LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+        }
+        
         void Bind()
         {
             m_Root.Clear();
@@ -241,6 +259,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_SerializedObject.Update();
             m_SectionProperty.stringValue = newValue;
             m_SerializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(m_LocalizedLabel);
         }
 
         void UpdateTokenProperty(string newValue)
@@ -248,6 +267,7 @@ namespace StansAssets.GoogleDoc.Editor
             m_SerializedObject.Update();
             m_TokenProperty.stringValue = newValue;
             m_SerializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(m_LocalizedLabel);
         }
 
         void DisplayTokenPopupField(DisplayStyle displayStyle)
