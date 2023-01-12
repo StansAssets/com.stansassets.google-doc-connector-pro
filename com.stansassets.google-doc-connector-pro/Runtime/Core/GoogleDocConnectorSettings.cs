@@ -100,6 +100,7 @@ namespace StansAssets.GoogleDoc
             if (m_SpreadsheetsMap.TryGetValue(id, out var spreadsheet))
             {
                 spreadsheet.InitFromCache();
+                spreadsheet.FinalizeDataUpdate();
             }
         }
 

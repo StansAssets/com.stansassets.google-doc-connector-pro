@@ -48,6 +48,11 @@ namespace StansAssets.GoogleDoc
         /// An event to track spreadsheet sync state.
         /// </summary>
         public event Action<Spreadsheet> OnSyncStateChange = delegate { };
+        
+        /// <summary> 
+        /// An event track the saving of spreadsheet data.
+        /// </summary>
+        public event Action OnDataStoredOnDisk = delegate { };
 
         [SerializeField] SyncState m_State;
 
@@ -198,6 +203,11 @@ namespace StansAssets.GoogleDoc
         internal void CleanupSheets()
         {
             m_Sheets.Clear();
+        }
+        
+        internal void FinalizeDataUpdate()
+        {
+            OnDataStoredOnDisk?.Invoke();
         }
 
         /// <summary>
