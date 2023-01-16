@@ -72,7 +72,7 @@ namespace StansAssets.GoogleDoc.Localization
         {
             if (spreadsheet == null)
             {
-                throw new NullReferenceException("The spreadsheet object has not been properly initialized");
+                throw new InvalidOperationException("The spreadsheet object has not been properly initialized");
             }
 
             spreadsheet.OnDataStoredOnDisk += OnDataStoredOnDiskHandler;

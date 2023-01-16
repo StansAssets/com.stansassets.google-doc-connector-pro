@@ -84,7 +84,7 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 m_UGUIText.text = finalText;
 #if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(m_UGUIText);
+                EditorUtility.SetDirty(m_UGUIText);
 #endif
             }
 
@@ -93,7 +93,7 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 m_TMPText.text = finalText;
 #if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(m_TMPText);
+                EditorUtility.SetDirty(m_TMPText);
 #endif
             }
 #endif

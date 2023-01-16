@@ -73,12 +73,13 @@ namespace StansAssets.GoogleDoc.Editor
                 UpdateLocalizationError(ex.Message);
             }
         }
-        
+
         void Bind()
         {
             m_Root.Clear();
             try
             {
+                CheckLocalizationCacheFile();
                 CreateListSection();
                 CreateListToken();
             }
@@ -148,7 +149,7 @@ namespace StansAssets.GoogleDoc.Editor
                 PropertyPopup(out m_TokenPopupField, "Token Id", k_TokenIdPropertyPath, columnValues, OnTokenPopupChanged);
                 m_Root.Insert(1, m_TokenPopupField);
 
-               OnTokenPopupChanged(selectedTokenName);
+                OnTokenPopupChanged(selectedTokenName);
             }
             catch (Exception e)
             {
@@ -283,6 +284,17 @@ namespace StansAssets.GoogleDoc.Editor
         {
             if (m_TokenPopupField == null) return;
             m_TokenPopupField.style.display = displayStyle;
+        }
+
+        void CheckLocalizationCacheFile()
+        {
+            if (string.IsNullOrEmpty(GoogleDocConnectorLocalization.SpreadsheetId)) return;
+
+            Spreadsheet localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
+            if (!localizationSpreadsheet.IsSpreadsheetFileExist())
+            {
+                throw new InvalidOperationException("No cached localization file");
+            }
         }
     }
 }
