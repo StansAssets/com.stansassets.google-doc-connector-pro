@@ -1,6 +1,7 @@
 #if TMP_AVAILABLE
 using TMPro;
 #endif
+using System;
 using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -49,12 +50,26 @@ namespace StansAssets.GoogleDoc.Localization
                 enabled = false;
             }
 
-            LocalizationClient.Default.OnLanguageChanged += UpdateLocalization;
+            try
+            {
+                LocalizationClient.Default.OnLanguageChanged += UpdateLocalization;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         void OnDestroy()
         {
-            LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+            try
+            {
+                LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         internal void UpdateLocalization()

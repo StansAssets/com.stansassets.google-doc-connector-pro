@@ -70,6 +70,11 @@ namespace StansAssets.GoogleDoc.Localization
         /// <exception cref="Exception">Will return an error if the sheet hasn't been selected</exception>
         internal LocalizationClient(Spreadsheet spreadsheet, int sheetId)
         {
+            if (spreadsheet == null)
+            {
+                throw new NullReferenceException("The spreadsheet object has not been properly initialized");
+            }
+
             spreadsheet.OnDataStoredOnDisk += OnDataStoredOnDiskHandler;
             Refresh(spreadsheet, sheetId);
         }

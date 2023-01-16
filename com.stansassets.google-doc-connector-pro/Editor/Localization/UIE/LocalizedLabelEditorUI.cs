@@ -64,7 +64,14 @@ namespace StansAssets.GoogleDoc.Editor
         void OnDetachFromPanelEventHandler(DetachFromPanelEvent e)
         {
             GoogleDocConnectorLocalization.SpreadsheetIdChanged -= Bind;
-            LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+            try
+            {
+                LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+            }
+            catch (Exception ex)
+            {
+                UpdateLocalizationError(ex.Message);
+            }
         }
         
         void Bind()
