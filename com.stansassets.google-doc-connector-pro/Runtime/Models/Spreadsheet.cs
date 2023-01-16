@@ -52,7 +52,7 @@ namespace StansAssets.GoogleDoc
         /// <summary> 
         /// An event track the saving of spreadsheet data.
         /// </summary>
-        public event Action OnDataStoredOnDisk = delegate { };
+        public event Action<DataStoredOnDiskArgs> OnDataStoredOnDisk = delegate { };
 
         [SerializeField] SyncState m_State;
 
@@ -207,7 +207,7 @@ namespace StansAssets.GoogleDoc
         
         internal void FinalizeDataUpdate()
         {
-            OnDataStoredOnDisk?.Invoke();
+            OnDataStoredOnDisk.Invoke(new DataStoredOnDiskArgs());
         }
 
         /// <summary>

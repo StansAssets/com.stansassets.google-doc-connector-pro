@@ -70,7 +70,7 @@ namespace StansAssets.GoogleDoc.Localization
         /// <exception cref="Exception">Will return an error if the sheet hasn't been selected</exception>
         internal LocalizationClient(Spreadsheet spreadsheet, int sheetId)
         {
-            spreadsheet.OnDataStoredOnDisk += NotifyLanguageChanged;
+            spreadsheet.OnDataStoredOnDisk += OnDataStoredOnDiskHandler;
             Refresh(spreadsheet, sheetId);
         }
 
@@ -377,9 +377,9 @@ namespace StansAssets.GoogleDoc.Localization
         /// <summary>
         /// Notify that the language settings of the spreadsheet have been changed
         /// </summary>
-        void NotifyLanguageChanged()
+        void OnDataStoredOnDiskHandler(DataStoredOnDiskArgs dataStoredOnDiskArgs)
         {
-            OnLanguageChanged?.Invoke();
+            OnLanguageChanged.Invoke();
         }
 
         /// <summary>
