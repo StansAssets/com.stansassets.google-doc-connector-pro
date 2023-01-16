@@ -101,6 +101,7 @@ namespace StansAssets.GoogleDoc.Editor
             CreateListSpreadsheet(spreadsheet);
             CreateSheetList(spreadsheet);
             BindDocumentInfo(spreadsheet);
+            CheckLocalizationCacheFile();
         }
 
         void LocalizationSpinner(Spreadsheet spr)
@@ -204,7 +205,6 @@ namespace StansAssets.GoogleDoc.Editor
                 Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
                 if (localizationSpreadsheet != null)
                 {
-                    GoogleDocConnectorLocalization.SetSpreadsheet(localizationSpreadsheet.Id, k_DefaultLocalizationSheetId);
                     Bind(localizationSpreadsheet);
                 }
             });

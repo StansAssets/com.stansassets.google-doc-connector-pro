@@ -119,7 +119,6 @@ namespace StansAssets.GoogleDoc.Editor
             m_Root.Add(m_SectionPopupField);
         }
 
-        
         void CreateListToken()
         {
             try
@@ -198,10 +197,7 @@ namespace StansAssets.GoogleDoc.Editor
 
         void UpdateLocalizationError(string error)
         {
-            if (m_ErrorHelpBox == null)
-            {
-                InitErrorHelpBox();
-            }
+            InitErrorHelpBox();
 
             if (string.IsNullOrEmpty(error))
             {
@@ -241,6 +237,12 @@ namespace StansAssets.GoogleDoc.Editor
 
         void InitErrorHelpBox()
         {
+            if (m_Root.Contains(m_ErrorHelpBox))
+            {
+                m_Root.Remove(m_ErrorHelpBox);
+                m_ErrorHelpBox.Clear();
+            }
+
             m_ErrorHelpBox = new HelpBox { MessageType = MessageType.Error };
             m_ErrorHelpBox.style.display = DisplayStyle.None;
             m_ErrorHelpBox.AddToClassList("error-message");
