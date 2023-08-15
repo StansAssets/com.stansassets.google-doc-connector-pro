@@ -1,6 +1,7 @@
 #if TMP_AVAILABLE
 using TMPro;
 #endif
+using System;
 using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -49,17 +50,31 @@ namespace StansAssets.GoogleDoc.Localization
                 enabled = false;
             }
 
-            LocalizationClient.Default.OnLanguageChanged += UpdateLocalization;
+            try
+            {
+                LocalizationClient.Default.OnLanguageChanged += UpdateLocalization;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         void OnDestroy()
         {
-            LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+            try
+            {
+                LocalizationClient.Default.OnLanguageChanged -= UpdateLocalization;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
 
         internal void UpdateLocalization()
         {
-            var text = LocalizationClient.Default.GetLocalizedString(m_Token);
+            string text = LocalizationClient.Default.GetLocalizedString(m_Token);
             UpdateText(text);
         }
 
@@ -69,7 +84,7 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 m_UGUIText.text = finalText;
 #if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(m_UGUIText);
+                EditorUtility.SetDirty(m_UGUIText);
 #endif
             }
 
@@ -78,7 +93,7 @@ namespace StansAssets.GoogleDoc.Localization
             {
                 m_TMPText.text = finalText;
 #if UNITY_EDITOR
-                UnityEditor.EditorUtility.SetDirty(m_TMPText);
+                EditorUtility.SetDirty(m_TMPText);
 #endif
             }
 #endif

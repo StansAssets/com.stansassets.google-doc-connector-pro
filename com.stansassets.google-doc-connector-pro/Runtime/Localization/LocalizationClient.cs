@@ -52,7 +52,7 @@ namespace StansAssets.GoogleDoc.Localization
                 if (s_DefaultLocalizationClient == null)
                 {
                     var spr = GetSettingsLocalizationSpreadsheet();
-                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.LocalizationSheetId);
+                    s_DefaultLocalizationClient = new LocalizationClient(spr, GoogleDocConnectorLocalization.SheetId);
                 }
 
                 return s_DefaultLocalizationClient;
@@ -70,6 +70,12 @@ namespace StansAssets.GoogleDoc.Localization
         /// <exception cref="Exception">Will return an error if the sheet hasn't been selected</exception>
         internal LocalizationClient(Spreadsheet spreadsheet, int sheetId)
         {
+            if (spreadsheet == null)
+            {
+                throw new InvalidOperationException("The spreadsheet object has not been properly initialized");
+            }
+
+            spreadsheet.OnDataStoredOnDisk += OnDataStoredOnDiskHandler;
             Refresh(spreadsheet, sheetId);
         }
 
@@ -308,6 +314,30 @@ namespace StansAssets.GoogleDoc.Localization
             var token = localizationToken.Token.Trim();
             var section = localizationToken.Section.Trim();
 
+            Sheet localizationSheet = m_LocalizationSpreadsheet.Sheets.FirstOrDefault(s => s.Name == section);
+            if (localizationSheet == null)
+            {
+                throw new InvalidOperationException("There are no selected sheet");
+            }
+  
+            if (!localizationSheet.Rows.Any())
+            {
+                throw new InvalidOperationException("There are no filled lines on the first sheet of the table");
+            }
+
+            var row = localizationSheet.Rows.First();
+            if (!row.Cells.Any())
+            {
+                throw new InvalidOperationException("The first row on the first sheet of the table has no filled cells");
+            }
+
+            var cellToken = row.Cells.FirstOrDefault();
+            if (cellToken != null && cellToken.Value.StringValue.ToLower() != "token" && cellToken.Value.StringValue.ToLower() != "tokens")
+            {
+                throw new InvalidOperationException("Token column name not found");
+            }
+
+            
             if (!m_Sections.TryGetValue(section, out var sheetIndex))
             {
                 throw new Exception($"Can't find sheet with name = {section}");
@@ -347,6 +377,14 @@ namespace StansAssets.GoogleDoc.Localization
             var finalText = $"{localizationToken.Prefix}{text}{localizationToken.Suffix}";
 
             return finalText;
+        }
+        
+        /// <summary>
+        /// Notify that the language settings of the spreadsheet have been changed
+        /// </summary>
+        void OnDataStoredOnDiskHandler(DataStoredOnDiskArgs dataStoredOnDiskArgs)
+        {
+            OnLanguageChanged.Invoke();
         }
 
         /// <summary>

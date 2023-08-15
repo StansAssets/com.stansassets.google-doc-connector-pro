@@ -101,6 +101,7 @@ namespace StansAssets.GoogleDoc.Editor
             CreateListSpreadsheet(spreadsheet);
             CreateSheetList(spreadsheet);
             BindDocumentInfo(spreadsheet);
+            CheckLocalizationCacheFile();
         }
 
         void LocalizationSpinner(Spreadsheet spr)
@@ -204,7 +205,6 @@ namespace StansAssets.GoogleDoc.Editor
                 Spreadsheet localizationSpreadsheet = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s.Name == evt.newValue);
                 if (localizationSpreadsheet != null)
                 {
-                    GoogleDocConnectorLocalization.SetSpreadsheet(localizationSpreadsheet.Id, k_DefaultLocalizationSheetId);
                     Bind(localizationSpreadsheet);
                 }
             });
@@ -223,8 +223,8 @@ namespace StansAssets.GoogleDoc.Editor
 
             var sheetNames = spreadsheet.m_Sheets.Select(v => v.Name).ToList();
             Spreadsheet localization = GoogleDocConnectorSettings.Instance.Spreadsheets.FirstOrDefault(s => s == spreadsheet);
-            string selectedSheetName = GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId ? 
-                sheetNames[0] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.LocalizationSheetId)?.Name;
+            string selectedSheetName = GoogleDocConnectorLocalization.SheetId == k_DefaultLocalizationSheetId ? 
+                sheetNames[0] : spreadsheet.m_Sheets.FirstOrDefault(s => s.Id == GoogleDocConnectorLocalization.SheetId)?.Name;
 
             
             if (localization != null)
@@ -341,7 +341,7 @@ namespace StansAssets.GoogleDoc.Editor
         
         void CheckLocalizationCacheFile()
         {
-            if (string.IsNullOrEmpty(GoogleDocConnectorLocalization.SpreadsheetId) || GoogleDocConnectorLocalization.LocalizationSheetId == k_DefaultLocalizationSheetId) return;
+            if (string.IsNullOrEmpty(GoogleDocConnectorLocalization.SpreadsheetId) || GoogleDocConnectorLocalization.SheetId == k_DefaultLocalizationSheetId) return;
 
             var localizationSpreadsheet = GoogleDocConnector.GetSpreadsheet(GoogleDocConnectorLocalization.SpreadsheetId);
             if (!localizationSpreadsheet.IsSpreadsheetFileExist())
