@@ -1,13 +1,13 @@
 {
   "name": "com.stansassets.google-doc-connector-pro",
   "displayName": "Stans Assets - Google Doc Connector Pro",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "unity": "2020.1",
   "description": "The plugin allows you to use Google Sheets as a configuration repository for your game. And also use Google Sheets as a repository for localization.",
   "dependencies": {
     "com.stansassets.foundation": "1.0.21",
     "com.stansassets.plugins-dev-kit": "1.0.3",
-    "com.stansassets.newtonjson" : "12.0.101"
+    "com.unity.nuget.newtonsoft-json" : "3.2.0"
   },
   "author": {
     "name": "Stan's Assets",
